@@ -195,10 +195,18 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         let rayDirection = normalize(position - self.arView.cameraTransform.translation)
 
-        let textPositionInWorldCoordinates = position - (rayDirection * 0.1)
+//        let textPositionInWorldCoordinates = position - (rayDirection * 0.1)
+
+        let textPositionInWorldCoordinates = position
 
         // 5. Create a 3D text to visualize the classification result
         let textEntity = self.generateTextModel(text: text)
+
+        var textPosition = textEntity.position
+        // text size 만큼 위로 올리기 
+        textPosition.y += 0.015
+        textPosition.x += Float(text.count) * 0.005
+        textEntity.position = textPosition
 
         // 6. Scale the text depending on the distance
         let raycastDistance = distance(position, self.arView.cameraTransform.translation)
@@ -209,6 +217,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         var resultWithCameraOrientation = self.arView.cameraTransform
 
         resultWithCameraOrientation.translation = textPositionInWorldCoordinates
+
         let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
         textAnchor.addChild(textEntity)
 
