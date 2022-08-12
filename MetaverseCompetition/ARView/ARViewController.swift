@@ -25,11 +25,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
     private var cancellable: AnyCancellable?
     private var arViewStateCancellable: AnyCancellable?
 
-    //MARK: - Drawing box
-//    var videoPrevies = UIView()
-//    var boxesView= DrawingBoundingBoxView()
-//    var labelsTableView
-
     // MARK: - initializer
     init(mainViewVM: MainView.ViewModel) {
         self.mainViewVM = mainViewVM
