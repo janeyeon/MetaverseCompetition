@@ -173,6 +173,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
         let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
 
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
+        model.position.y += 0.015
+        model.position.x += Float(text.count) * 0.005
         return model
     }
 
@@ -201,12 +203,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         // 5. Create a 3D text to visualize the classification result
         let textEntity = self.generateTextModel(text: text)
-
-        var textPosition = textEntity.position
-        // text size 만큼 위로 올리기 
-        textPosition.y += 0.015
-        textPosition.x += Float(text.count) * 0.005
-        textEntity.position = textPosition
 
         // 6. Scale the text depending on the distance
         let raycastDistance = distance(position, self.arView.cameraTransform.translation)
