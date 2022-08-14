@@ -30,11 +30,15 @@ extension ARViewController {
         do {
             try imagePredictor.makePredictions(for: pixbuff) { [weak self] predictions in
                 self?.imagePredictorHandler(predictions)
-                let sphereAnchor = (self?.generateSphereAnchor(position: position))!
-                let textAnchor = (self?.generateTextAnchor(position: position, text: self!.latestPrediction))!
+                let anchorEntity = AnchorEntity(world: position)
+
+                let sphereEntity = (self?.generateSphereEntity(position: position))!
+                let textEntity = (self?.generateTextEntity(position: position, text: self!.latestPrediction))!
+                anchorEntity.addChild(sphereEntity)
+                anchorEntity.addChild(textEntity)
                 DispatchQueue.main.async {
-                    self?.arView.scene.addAnchor(sphereAnchor)
-                    self?.arView.scene.addAnchor(textAnchor)
+                self?.arView.scene.addAnchor(anchorEntity)
+//                    self?.arView.scene.addAnchor(textAnchor)
                 }
             }
         } catch {

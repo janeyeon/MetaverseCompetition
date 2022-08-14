@@ -39,26 +39,29 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     Just($0).setFailureType(to: Error.self)
                 )
             }
-            .map { [weak self] (modelEntity, modelName) -> (AnchorEntity, AnchorEntity, AnchorEntity) in
+            .map { [weak self] (modelEntity, modelName) -> AnchorEntity in
 
-                guard let self = self else { return (AnchorEntity(), AnchorEntity(), AnchorEntity()) }
+                guard let self = self else { return AnchorEntity()}
+
+                let result = self.camRayCast()
+                let modelHeight = (modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!
+
+//                var position = result.worldTransform.position
+                var position = modelEntity.position
+                position.y += modelHeight / 100
+
 
                 let anchorEntity = AnchorEntity(plane: .any)
                 // model 넣어줌
                 anchorEntity.addChild(modelEntity.clone(recursive: true))
 
-                // 위치는 일단 나중에 생각 ㅋㅋㅋ
+                let sphereEntity = self.generateSphereEntity(position: position)
+                let textEntity = self.generateTextEntity(position: position, text: modelName)
 
-                let result = self.camRayCast()
-                let modelHeight = (modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!
+                anchorEntity.addChild(sphereEntity)
+                anchorEntity.addChild(textEntity)
 
-                var position = result.worldTransform.position
-                position.y += modelHeight / 100
-
-                let sphereAnchor = self.generateSphereAnchor(position: position)
-                let textAnchor = self.generateTextAnchor(position: position, text: modelName)
-
-                return (anchorEntity, sphereAnchor, textAnchor)
+                return anchorEntity
             }
             .receive(on: RunLoop.main)
             .sink(receiveCompletion: { [weak self] loadCompletion in
@@ -68,12 +71,12 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 if case let .failure(error) = loadCompletion {
                     assertionFailure("Unable to load a model due to error \(error)")
                 }
-            }, receiveValue: { [weak self] (anchorEntity, sphereAnchor, textAnchor) in
+            }, receiveValue: { [weak self] anchorEntity in
                 guard let self = self else { return }
 
                 self.arView.scene.addAnchor(anchorEntity)
-                self.arView.scene.addAnchor(sphereAnchor)
-                self.arView.scene.addAnchor(textAnchor)
+//                self.arView.scene.addAnchor(sphereAnchor)
+//                self.arView.scene.addAnchor(textAnchor)
             })
 
         arViewStateCancellable = mainViewVM.$arViewState
@@ -171,35 +174,30 @@ class ARViewController: UIViewController, ARSessionDelegate {
         let textMesh = MeshResource.generateText(text, extrusionDepth: Float(lineHeight * 0.1), font: font)
         let textMeterial = SimpleMaterial(color: UIColor.orange, isMetallic: true)
         let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
-
+//
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
         model.position.y += 0.015
         model.position.x += Float(text.count) * 0.005
         return model
     }
 
-    func sphere(radius: Float, color: UIColor) -> ModelEntity {
+    func generateSphereEntity(position: SIMD3<Float>, radius: Float = 0.01, color: UIColor = UIColor.green) -> ModelEntity {
         let sphere = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
 
         // move sphere slightly up
-        sphere.position.y = radius
+        sphere.position = position
+        sphere.position.y += radius
         return sphere
     }
 
-    func generateSphereAnchor(position: SIMD3<Float>) -> AnchorEntity {
-//        let sphereAnchor = AnchorEntity(world: result.worldTransform)
-        let sphereAnchor = AnchorEntity(world: position)
-        sphereAnchor.addChild(self.sphere(radius: 0.01, color: UIColor.green))
-        return sphereAnchor
-    }
 
-    func generateTextAnchor(position: SIMD3<Float>, text: String) -> AnchorEntity {
+    func generateTextEntity(position: SIMD3<Float>, text: String) -> ModelEntity {
 
-        let rayDirection = normalize(position - self.arView.cameraTransform.translation)
+//        let rayDirection = normalize(position - self.arView.cameraTransform.translation)
 
 //        let textPositionInWorldCoordinates = position - (rayDirection * 0.1)
 
-        let textPositionInWorldCoordinates = position
+//        let textPositionInWorldCoordinates = position
 
         // 5. Create a 3D text to visualize the classification result
         let textEntity = self.generateTextModel(text: text)
@@ -207,17 +205,19 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // 6. Scale the text depending on the distance
         let raycastDistance = distance(position, self.arView.cameraTransform.translation)
 
-        textEntity.scale = .one * raycastDistance
+        textEntity.scale = .one * raycastDistance * 2
 
-        // 7. Place the text facing the camera
+
+//        // 7. Place the text facing the camera
         var resultWithCameraOrientation = self.arView.cameraTransform
+//
+        resultWithCameraOrientation.translation = position
 
-        resultWithCameraOrientation.translation = textPositionInWorldCoordinates
+        textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+        textEntity.position += position
 
-        let textAnchor = AnchorEntity(world: resultWithCameraOrientation.matrix)
-        textAnchor.addChild(textEntity)
 
-        return textAnchor
+        return textEntity
     }
 
     private func getCamVector() -> (position: SIMD3<Float>, direciton: SIMD3<Float>) {
