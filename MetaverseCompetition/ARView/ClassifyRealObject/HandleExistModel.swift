@@ -32,8 +32,9 @@ extension ARViewController {
                 self?.imagePredictorHandler(predictions)
                 let anchorEntity = AnchorEntity(world: position)
 
-                let sphereEntity = (self?.generateSphereEntity(position: position))!
-                let textEntity = (self?.generateTextEntity(position: position, text: self!.latestPrediction))!
+                let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0)))!
+                let textEntity = (self?.generateExistTextEntity(position: position, text: self!.latestPrediction))!
+                
                 anchorEntity.addChild(sphereEntity)
                 anchorEntity.addChild(textEntity)
                 DispatchQueue.main.async {

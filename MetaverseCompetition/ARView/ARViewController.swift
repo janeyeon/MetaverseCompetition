@@ -190,6 +190,20 @@ class ARViewController: UIViewController, ARSessionDelegate {
         return sphere
     }
 
+    func generateExistTextEntity(position: SIMD3<Float>, text: String) -> ModelEntity {
+        let textEntity = self.generateTextModel(text: text)
+        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
+
+        textEntity.scale = .one * raycastDistance 
+
+        var resultWithCameraOrientation = self.arView.cameraTransform
+          resultWithCameraOrientation.translation = position
+
+          textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+
+        return textEntity
+
+    }
 
     func generateTextEntity(position: SIMD3<Float>, text: String) -> ModelEntity {
 
@@ -209,11 +223,11 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
 
 //        // 7. Place the text facing the camera
-        var resultWithCameraOrientation = self.arView.cameraTransform
+//        var resultWithCameraOrientation = self.arView.cameraTransform
+////
+//        resultWithCameraOrientation.translation = position
 //
-        resultWithCameraOrientation.translation = position
-
-        textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+//        textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
         textEntity.position += position
 
 
