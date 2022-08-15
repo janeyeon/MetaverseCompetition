@@ -182,19 +182,27 @@ class ARViewController: UIViewController, ARSessionDelegate {
     }
 
     func generateSphereEntity(position: SIMD3<Float>, radius: Float = 0.01, color: UIColor = UIColor.green) -> ModelEntity {
-        let sphere = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
+
+        let sphere1 = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
+
+        let sphere2 = ModelEntity(mesh: .generateSphere(radius: 0.04), materials: [SimpleMaterial(color: UIColor.red, roughness: 1, isMetallic: false)])
 
         // move sphere slightly up
-        sphere.position = position
-        sphere.position.y += radius
-        return sphere
+        sphere1.position = position
+        sphere1.position.y += radius
+
+        sphere1.physicsBody?.mode = .dynamic
+        sphere2.physicsBody?.mode = .dynamic
+
+        sphere1.addChild(sphere2)
+        return sphere1
     }
 
     func generateExistTextEntity(position: SIMD3<Float>, text: String) -> ModelEntity {
         let textEntity = self.generateTextModel(text: text)
         let raycastDistance = distance(position, self.arView.cameraTransform.translation)
 
-        textEntity.scale = .one * raycastDistance 
+        textEntity.scale = .one * raycastDistance
 
         var resultWithCameraOrientation = self.arView.cameraTransform
           resultWithCameraOrientation.translation = position
@@ -267,11 +275,18 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // MARK: - 여기에서 반드시 WorldModel을 제대로 넣어주어야 함
         switch mainViewVM.arViewState {
         case .none:
-            print("Hello")
+            print("DEBUG: arViewState is none")
         case .handleExistingModel:
             handleExistModel(position: position)
         case .handleImportedModel:
-            print("press handleImportedModel")
+            print("DEBUG: arViewState is handleImportedModel")
+        case .selectModels:
+            print("DEBUG: arViewState is selectModels")
+            // 여기에 빨간색 볼이 선택되었을떄 확인하는 코드 삽입
+//            arView.hitTest(position, types: .Element)
+//            ARHitTestResult.ResultType
+
+
         }
     }
 }

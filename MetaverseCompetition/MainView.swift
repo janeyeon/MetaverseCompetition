@@ -149,6 +149,14 @@ struct MainView: View {
                     .foregroundColor(Color.white)
                     .opacity(0.7)
 
+                    Button("change to Selecting State") {
+                        viewModel.changeARViewState(to: .selectModels)
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 10))
+                    .foregroundColor(Color.white)
+                    .opacity(0.7)
+
                 }
 
 
