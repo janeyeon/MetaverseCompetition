@@ -43,13 +43,10 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
                 guard let self = self else { return AnchorEntity()}
 
-                let result = self.camRayCast()
                 let modelHeight = (modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!
 
-//                var position = result.worldTransform.position
                 var position = modelEntity.position
                 position.y += modelHeight / 100
-
 
                 let anchorEntity = AnchorEntity(plane: .any)
                 // model 넣어줌
@@ -78,10 +75,12 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 self.arView.scene.addAnchor(anchorEntity)
             })
 
+        // focus Entity를 생성하고 없애는 부분 
         arViewStateCancellable = mainViewVM.$arViewState
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] arViewState in
                 guard let self = self else { return }
+                print("DEBUG: arviewState \(arViewState)")
                 if arViewState == .handleImportedModel {
                     self.arView.setFocusSquare(isCreateNeeded: true)
                 } else {
@@ -148,14 +147,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
         arView.session.pause()
     }
 
-    // MARK: - ARSCNViewDelegate
-    func sessionWasInterrupted(_ session: ARSession) {}
-
-    func sessionInterruptionEnded(_ session: ARSession) {}
-
-    func session(_ session: ARSession, didFailWithError error: Error) {}
-
-    func session(_ session: ARSession, cameraDidChangeTrackingState camera: ARCamera) {}
 
     // MARK: - Statue Bar
     override var prefersStatusBarHidden: Bool { true }
@@ -166,7 +157,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         let textMesh = MeshResource.generateText(text, extrusionDepth: Float(lineHeight * 0.1), font: font)
         let textMeterial = SimpleMaterial(color: UIColor.orange, isMetallic: true)
         let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
-//
+
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
         model.position.y += 0.015
         model.position.x += Float(text.count) * 0.005
@@ -186,7 +177,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
         sphere.collision = CollisionComponent(shapes: [ShapeResource.generateSphere(radius: 0.05)])
         sphere.name = "\(modelName)_sphere"
 
-        arView.installGestures(.all, for: sphere)
+        // 맘대로 움직일 수 있음, 다만 anchor위치는 안변하는듯?
+//        arView.installGestures(.all, for: sphere)
 
         return sphere
     }
@@ -244,14 +236,14 @@ class ARViewController: UIViewController, ARSessionDelegate {
         return (cameraTransform.translation, -[camDir.x, camDir.y, camDir.z])
     }
 
-    private func camRayCast() -> ARRaycastResult {
-        let (camPos, camDir) = getCamVector()
-
-        let rcQuery = ARRaycastQuery(origin: camPos, direction: camDir, allowing: arView.focusSquare.allowedRaycast, alignment: .any)
-
-        let results = arView.session.raycast(rcQuery)
-        return results.first!
-    }
+//    private func camRayCast() -> ARRaycastResult {
+//        let (camPos, camDir) = getCamVector()
+//
+//        let rcQuery = ARRaycastQuery(origin: camPos, direction: camDir, allowing: arView.focusSquare.allowedRaycast, alignment: .any)
+//
+//        let results = arView.session.raycast(rcQuery)
+//        return results.first!
+//    }
 
     // MARK: - Handle gestures
     @objc
@@ -279,7 +271,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
             print("DEBUG: arViewState is selectModels")
             selectModel(tapLocation: tapLocation, worldMatrix: result.worldTransform)
 
-
         }
     }
 
@@ -294,7 +285,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         let rotation = simd_float4x4(SCNMatrix4MakeRotation( -90.0 * .pi/180, 0,1,0))
         let transform = simd_mul(worldMatrix, rotation)
-
 
         // 여기에서 text 좀 바꿔주자
         arView.scene.findEntity(named: "\(modelName)_text")?.move(to: transform,

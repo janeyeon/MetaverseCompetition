@@ -12,7 +12,7 @@ import RealityKit
 import UIKit
 
 class CustomARView: ARView {
-    var focusSquare: FocusEntity!
+    var focusSquare: FocusEntity?
 
     required init(frame frameRect: CGRect) {
         super.init(frame: frameRect)
@@ -37,6 +37,7 @@ class CustomARView: ARView {
         if isCreateNeeded {
             focusSquare = FocusEntity(on: self, style: .classic(color: .yellow))
         } else {
+            focusSquare?.destroy() 
             focusSquare = nil
         }
     }
