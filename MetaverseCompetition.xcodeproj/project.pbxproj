@@ -20,6 +20,7 @@
 		2618371D289E795F005092A8 /* MainViewRouting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618371C289E795F005092A8 /* MainViewRouting.swift */; };
 		2618375F28A0E49B005092A8 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618375E28A0E49B005092A8 /* State.swift */; };
 		2618376128A0E6DE005092A8 /* ViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */; };
+		26694D4A28AB6101006C532D /* SelectableEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26694D4928AB6101006C532D /* SelectableEntity.swift */; };
 		26FD271928A2852600EE6685 /* CustomARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD271828A2852600EE6685 /* CustomARView.swift */; };
 		26FD271F28A2880F00EE6685 /* FocusEntity in Frameworks */ = {isa = PBXBuildFile; productRef = 26FD271E28A2880F00EE6685 /* FocusEntity */; };
 		26FD272228A38F6C00EE6685 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD272128A38F6C00EE6685 /* DrawingView.swift */; };
@@ -47,6 +48,7 @@
 		2618371C289E795F005092A8 /* MainViewRouting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewRouting.swift; sourceTree = "<group>"; };
 		2618375E28A0E49B005092A8 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerRepresentable.swift; sourceTree = "<group>"; };
+		26694D4928AB6101006C532D /* SelectableEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableEntity.swift; sourceTree = "<group>"; };
 		26FD271828A2852600EE6685 /* CustomARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomARView.swift; sourceTree = "<group>"; };
 		26FD272128A38F6C00EE6685 /* DrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
 		26FD272328A3933500EE6685 /* DrawingViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewControllerRepresentable.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				E1635E1723D5BDFD0031A7D8 /* ARViewController.swift */,
+				26694D4928AB6101006C532D /* SelectableEntity.swift */,
 				26FD271828A2852600EE6685 /* CustomARView.swift */,
 				2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */,
 				26183706289E58FF005092A8 /* ImportModel */,
@@ -260,6 +263,7 @@
 				26183717289E5F4B005092A8 /* HandleExistModel.swift in Sources */,
 				261836F6289CFE2A005092A8 /* ConfidencePercentageString.swift in Sources */,
 				261836F1289CFD98005092A8 /* MobileNetV2.mlmodel in Sources */,
+				26694D4A28AB6101006C532D /* SelectableEntity.swift in Sources */,
 				E1635E1823D5BDFD0031A7D8 /* ARViewController.swift in Sources */,
 				261836F4289CFE0C005092A8 /* CGImagePropertyOrientation.swift in Sources */,
 				261836EB289CF90B005092A8 /* MainView.swift in Sources */,

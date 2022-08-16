@@ -55,11 +55,12 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 // model 넣어줌
                 anchorEntity.addChild(modelEntity.clone(recursive: true))
 
-                let sphereEntity = self.generateSphereEntity(position: position)
-                let textEntity = self.generateTextEntity(position: position, text: modelName)
+                let sphereEntity = self.generateSphereEntity(position: position, modelName: modelName)
+                let textEntity = self.generateTextEntity(position: position, modelName: modelName)
 
                 anchorEntity.addChild(sphereEntity)
                 anchorEntity.addChild(textEntity)
+                anchorEntity.name = "\(modelName)_anchor"
 
                 return anchorEntity
             }
@@ -75,8 +76,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 guard let self = self else { return }
 
                 self.arView.scene.addAnchor(anchorEntity)
-//                self.arView.scene.addAnchor(sphereAnchor)
-//                self.arView.scene.addAnchor(textAnchor)
             })
 
         arViewStateCancellable = mainViewVM.$arViewState
@@ -137,13 +136,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         arView.automaticallyConfigureSession = false
 
-//        let configuration = ARWorldTrackingConfiguration()
-//        configuration.sceneReconstruction = .mesh
-//        configuration.environmentTexturing = .automatic
-//        configuration.planeDetection = [.horizontal, .vertical]
-//
-//        arView.session.run(configuration)
-
         // Add tap gesture
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         arView.addGestureRecognizer(tapRecognizer)
@@ -181,25 +173,26 @@ class ARViewController: UIViewController, ARSessionDelegate {
         return model
     }
 
-    func generateSphereEntity(position: SIMD3<Float>, radius: Float = 0.01, color: UIColor = UIColor.green) -> ModelEntity {
+    func generateSphereEntity(position: SIMD3<Float>, modelName: String, radius: Float = 0.01, color: UIColor = UIColor.green) -> ModelEntity {
 
-        let sphere1 = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
+        let sphere = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
 
-        let sphere2 = ModelEntity(mesh: .generateSphere(radius: 0.04), materials: [SimpleMaterial(color: UIColor.red, roughness: 1, isMetallic: false)])
 
         // move sphere slightly up
-        sphere1.position = position
-        sphere1.position.y += radius
+        sphere.position = position
+        sphere.position.y += radius
 
-        sphere1.physicsBody?.mode = .dynamic
-        sphere2.physicsBody?.mode = .dynamic
+        sphere.physicsBody?.mode = .dynamic
+        sphere.collision = CollisionComponent(shapes: [ShapeResource.generateSphere(radius: 0.05)])
+        sphere.name = "\(modelName)_sphere"
 
-        sphere1.addChild(sphere2)
-        return sphere1
+        arView.installGestures(.all, for: sphere)
+
+        return sphere
     }
 
-    func generateExistTextEntity(position: SIMD3<Float>, text: String) -> ModelEntity {
-        let textEntity = self.generateTextModel(text: text)
+    func generateExistTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
+        let textEntity = self.generateTextModel(text: modelName)
         let raycastDistance = distance(position, self.arView.cameraTransform.translation)
 
         textEntity.scale = .one * raycastDistance
@@ -208,12 +201,13 @@ class ARViewController: UIViewController, ARSessionDelegate {
           resultWithCameraOrientation.translation = position
 
           textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+        textEntity.name = "\(modelName)_text"
 
         return textEntity
 
     }
 
-    func generateTextEntity(position: SIMD3<Float>, text: String) -> ModelEntity {
+    func generateTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
 
 //        let rayDirection = normalize(position - self.arView.cameraTransform.translation)
 
@@ -222,7 +216,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
 //        let textPositionInWorldCoordinates = position
 
         // 5. Create a 3D text to visualize the classification result
-        let textEntity = self.generateTextModel(text: text)
+        let textEntity = self.generateTextModel(text: modelName)
 
         // 6. Scale the text depending on the distance
         let raycastDistance = distance(position, self.arView.cameraTransform.translation)
@@ -237,7 +231,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
 //
 //        textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
         textEntity.position += position
-
+        textEntity.name = "\(modelName)_text"
 
         return textEntity
     }
@@ -269,6 +263,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
             print("raycast against the mesh failed")
             return
         }
+
         let position = result.worldTransform.position
         // 2. Visualize the intersection point of the ray
 
@@ -282,12 +277,31 @@ class ARViewController: UIViewController, ARSessionDelegate {
             print("DEBUG: arViewState is handleImportedModel")
         case .selectModels:
             print("DEBUG: arViewState is selectModels")
-            // 여기에 빨간색 볼이 선택되었을떄 확인하는 코드 삽입
-//            arView.hitTest(position, types: .Element)
-//            ARHitTestResult.ResultType
+            selectModel(tapLocation: tapLocation, worldMatrix: result.worldTransform)
 
 
         }
+    }
+
+    func selectModel(tapLocation: CGPoint, worldMatrix: simd_float4x4) {
+        guard let hitEntity = self.arView.entity(at: tapLocation) else {
+            return
+        }
+
+        let modelName = hitEntity.name.prefix(while: { $0 != "_" })
+        print("DEBUG: Hit this!: \(hitEntity.name)")
+        print("DEBUG: Model name: \(modelName)")
+
+        let rotation = simd_float4x4(SCNMatrix4MakeRotation( -90.0 * .pi/180, 0,1,0))
+        let transform = simd_mul(worldMatrix, rotation)
+
+
+        // 여기에서 text 좀 바꿔주자
+        arView.scene.findEntity(named: "\(modelName)_text")?.move(to: transform,
+                                                                relativeTo: arView.scene.findEntity(named: "\(modelName)_text"),
+                                                                duration: 1,
+                                                                timingFunction: .linear)
+
     }
 }
 
