@@ -20,6 +20,12 @@ extension MainView {
 
         @Published var transcript: String = ""
         @Published var isTrascriptButtonPressed: Bool = false
+        @Published var caputredImage: UIImage? {
+            willSet {
+                print("DEBUG: Set captured Image!")
+                print("DEBUG: captured Image size : \(newValue!.size)")
+            }
+        }
 
         static var possibleImportedModel: [String] = {
             let fileManager = FileManager.default
@@ -100,6 +106,10 @@ struct MainView: View {
                     .foregroundColor(Color.white)
                     .opacity(0.7)
                 }
+                Image(uiImage: viewModel.caputredImage ?? UIImage())
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: UIScreen.main.bounds.width * 0.3, alignment: .center)
             }
 
             .padding(.bottom, 40)
@@ -112,6 +122,13 @@ struct MainView: View {
 
             VStack {
                 Spacer()
+
+                Image(uiImage: viewModel.caputredImage ?? UIImage())
+                    .resizable()
+                    .scaledToFit()
+                    .frame(height: UIScreen.main.bounds.height * 0.3, alignment: .center)
+                    .border(.yellow, width: 3)
+
                 if viewModel.arViewState == .handleImportedModel  {
                     if viewModel.isPlacementEnabled {
                         // placement button
@@ -143,6 +160,14 @@ struct MainView: View {
 
                     Button("change to Exist State") {
                         viewModel.changeARViewState(to: .handleExistingModel)
+                    }
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 10))
+                    .foregroundColor(Color.white)
+                    .opacity(0.7)
+
+                    Button("change to Selecting State") {
+                        viewModel.changeARViewState(to: .selectModels)
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 10))

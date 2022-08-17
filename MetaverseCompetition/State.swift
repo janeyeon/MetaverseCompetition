@@ -13,5 +13,5 @@ enum MainViewState: Equatable {
 }
 
 enum ARViewState: Equatable {
-    case none, handleExistingModel, handleImportedModel
+    case none, handleExistingModel, handleImportedModel, selectModels
 }

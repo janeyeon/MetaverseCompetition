@@ -12,34 +12,61 @@ import RealityKit
 
 extension ARViewController {
 
-    func handleExistModel(position: SIMD3<Float>) {
-        DispatchQueue.main.async {
+    func handleExistModel(position: SIMD3<Float>) -> UIImage {
+//        DispatchQueue.main.async {
             // 3. Classify Image - set latest prediction
-            self.classifyImage(position: position)
+            return self.classifyImage(position: position)
+//        }
+    }
+
+    func takeCapture() -> UIImage {
+//        let currentLayer = UIApplication
+//                  .shared
+//                  .connectedScenes
+//                  .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+//                  .first { $0.isKeyWindow }?
+//                  .layer
+
+        let currentLayer = arView.layer
+
+        let bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { context in
+            currentLayer.render(in: context.cgContext)
         }
     }
 
     
 
-    private func classifyImage(position: SIMD3<Float>) {
+    private func classifyImage(position: SIMD3<Float>) -> UIImage {
         // get image
-        guard let pixbuff = arView.session.currentFrame?.capturedImage else {
-            fatalError()
-        }
+//        guard let pixbuff = arView.session.currentFrame?.capturedImage else {
+//            fatalError()
+//        }
+
+        let uiImage = takeCapture()
 
         do {
-            try imagePredictor.makePredictions(for: pixbuff) { [weak self] predictions in
+            try imagePredictor.makePredictions(for: uiImage) { [weak self] predictions in
                 self?.imagePredictorHandler(predictions)
-                let sphereAnchor = (self?.generateSphereAnchor(position: position))!
-                let textAnchor = (self?.generateTextAnchor(position: position, text: self!.latestPrediction))!
+                let anchorEntity = AnchorEntity(world: position)
+
+                let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
+
+                let textEntity = (self?.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
+
+                anchorEntity.addChild(sphereEntity)
+                anchorEntity.addChild(textEntity)
+
                 DispatchQueue.main.async {
-                    self?.arView.scene.addAnchor(sphereAnchor)
-                    self?.arView.scene.addAnchor(textAnchor)
+                self?.arView.scene.addAnchor(anchorEntity)
                 }
             }
         } catch {
             print("Vision was unable to make a prediction...\n\n\(error.localizedDescription)")
         }
+
+        return uiImage
     }
 
     /// Processing image classification
