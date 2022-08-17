@@ -9,7 +9,7 @@
 import Foundation
 
 enum MainViewState: Equatable {
-    case home, arView, drawing
+    case addModelState, practiceState, testState 
 }
 
 enum ARViewState: Equatable {

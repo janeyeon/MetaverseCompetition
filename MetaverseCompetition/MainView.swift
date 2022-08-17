@@ -10,7 +10,7 @@ import SwiftUI
 
 extension MainView {
     class ViewModel: ObservableObject {
-        @Published var currentState: MainViewState = .home
+        @Published var currentState: MainViewState = .addModelState
         @Published var arViewState: ARViewState = .handleExistingModel
         // 뭘 선택할건지
         @Published var modelConfirmedForPlacement: String?
@@ -66,12 +66,23 @@ struct MainView: View {
     @StateObject var viewModel: MainView.ViewModel = ViewModel()
 
     var body: some View {
+        // 항상 보여주는 화면
+//        MyARViewControllerRepresentable(mainViewVM: viewModel)
+
+        // addModelState -> classification state 에서 focus view 표시
+
+        // State, button등을 표시하는 화면
+
+        // text 창을 표시하는 화면
+
+        // popup view를 표시하는 화면
+
         switch viewModel.currentState {
-        case .home:
+        case .addModelState:
             mainView
-        case .arView:
+        case .practiceState:
             arView
-        case .drawing:
+        case .testState:
             drawingView
         }
 
@@ -90,7 +101,7 @@ struct MainView: View {
                 HStack {
                     Spacer()
                     Button("Home") {
-                        viewModel.changeMainViewState(to: .home)
+                        viewModel.changeMainViewState(to: .addModelState)
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 10))
@@ -141,7 +152,7 @@ struct MainView: View {
                 HStack {
                     // go to home
                     Button("Home") {
-                        viewModel.changeMainViewState(to: .home)
+                        viewModel.changeMainViewState(to: .addModelState)
                     }
                     .padding()
                     .background(RoundedRectangle(cornerRadius: 10))
