@@ -55,37 +55,27 @@ class ImagePredictor {
     }
 
     // How to use it?
-    func makePredictions(for pixBuff: CVPixelBuffer?, completionHandler: @escaping ImagePredictionHandler) throws {
+//    func makePredictions(for pixBuff: CVPixelBuffer?, completionHandler: @escaping ImagePredictionHandler) throws {
+    func makePredictions(for uiImage: UIImage, completionHandler: @escaping ImagePredictionHandler) throws {
 
-        let ciImage = CIImage(cvImageBuffer: pixBuff!, options: [.applyOrientationProperty: true])
-        let uiImage = UIImage(ciImage: ciImage)
+//        let ciImage = CIImage(cvImageBuffer: pixBuff!, options: [.applyOrientationProperty: true])
 
-//        let orientation = CGImagePropertyOrientation(ciImage.orientation)
+//        let uiImage = UIImage(ciImage: ciImage)
+
         let orientation = CGImagePropertyOrientation(uiImage.imageOrientation)
 
-//        guard let photoImage = photo.cgImage else {
-//            fatalError("Photo doesn't have underlying CGImage.")
-//        }
 
         let imageClassificationRequest = createImageClassificationRequest()
         predictionHandlers[imageClassificationRequest] = completionHandler
 
-//        let handler = VNImageRequestHandler(cgImage: photoImage, orientation: orientation)
-        let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation)
+        let handler = VNImageRequestHandler(data: uiImage.pngData()!, orientation: orientation)
+//        let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation)s
         let requests: [VNRequest] = [imageClassificationRequest]
 
         // start the image classification request
         try handler.perform(requests)
 
     }
-
-//    private func ciImage2cgImage(ciImage: CIImage) -> CGImage! {
-//        guard let context = CIContext(options: nil) else {
-//            return nil
-//        }
-//
-//        return context.createCGImage(ciImage, fromRect: ciImage.extent)
-//    }
 
 
     /// This completion handler methods that Vision calls when it completes the requests

@@ -12,23 +12,42 @@ import RealityKit
 
 extension ARViewController {
 
-    func handleExistModel(position: SIMD3<Float>) {
-        DispatchQueue.main.async {
+    func handleExistModel(position: SIMD3<Float>) -> UIImage {
+//        DispatchQueue.main.async {
             // 3. Classify Image - set latest prediction
-            self.classifyImage(position: position)
+            return self.classifyImage(position: position)
+//        }
+    }
+
+    func takeCapture() -> UIImage {
+//        let currentLayer = UIApplication
+//                  .shared
+//                  .connectedScenes
+//                  .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
+//                  .first { $0.isKeyWindow }?
+//                  .layer
+
+        let currentLayer = arView.layer
+
+        let bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
+        let renderer = UIGraphicsImageRenderer(bounds: bounds)
+        return renderer.image { context in
+            currentLayer.render(in: context.cgContext)
         }
     }
 
     
 
-    private func classifyImage(position: SIMD3<Float>) {
+    private func classifyImage(position: SIMD3<Float>) -> UIImage {
         // get image
-        guard let pixbuff = arView.session.currentFrame?.capturedImage else {
-            fatalError()
-        }
+//        guard let pixbuff = arView.session.currentFrame?.capturedImage else {
+//            fatalError()
+//        }
+
+        let uiImage = takeCapture()
 
         do {
-            try imagePredictor.makePredictions(for: pixbuff) { [weak self] predictions in
+            try imagePredictor.makePredictions(for: uiImage) { [weak self] predictions in
                 self?.imagePredictorHandler(predictions)
                 let anchorEntity = AnchorEntity(world: position)
 
@@ -46,6 +65,8 @@ extension ARViewController {
         } catch {
             print("Vision was unable to make a prediction...\n\n\(error.localizedDescription)")
         }
+
+        return uiImage
     }
 
     /// Processing image classification

@@ -75,7 +75,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 self.arView.scene.addAnchor(anchorEntity)
             })
 
-        // focus Entity를 생성하고 없애는 부분 
+        // focus Entity를 생성하고 없애는 부분
         arViewStateCancellable = mainViewVM.$arViewState
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] arViewState in
@@ -264,7 +264,10 @@ class ARViewController: UIViewController, ARSessionDelegate {
         case .none:
             print("DEBUG: arViewState is none")
         case .handleExistingModel:
-            handleExistModel(position: position)
+            DispatchQueue.main.async {
+                let image = self.handleExistModel(position: position)
+                self.mainViewVM.caputredImage = image
+            }
         case .handleImportedModel:
             print("DEBUG: arViewState is handleImportedModel")
         case .selectModels:
