@@ -264,10 +264,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
         case .none:
             print("DEBUG: arViewState is none")
         case .handleExistingModel:
-            DispatchQueue.main.async {
-                let image = self.handleExistModel(position: position)
-                self.mainViewVM.caputredImage = image
-            }
+            self.handleExistModel(position: position)
+
         case .handleImportedModel:
             print("DEBUG: arViewState is handleImportedModel")
         case .selectModels:
