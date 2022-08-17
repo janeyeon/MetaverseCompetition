@@ -29,10 +29,7 @@ extension ARViewController {
 
     private func classifyImage(position: SIMD3<Float>) {
 
-
         arView.snapshot(saveToHDR: true) { image in
-
-
             let resizedImage = self.cropImage(uiImage: image!)
 
             DispatchQueue.main.async {
@@ -40,18 +37,22 @@ extension ARViewController {
             }
             do {
                 try self.imagePredictor.makePredictions(for: resizedImage) { [weak self] predictions in
-                    self?.imagePredictorHandler(predictions)
-                    let anchorEntity = AnchorEntity(world: position)
+                    // 반드시 mainview의 latestPrediction을 넣어주고 밑의 부분이 실행되어야 함
+                    self?.imagePredictorHandler(predictions) {
+                        // entity를 넣어주는 부분
+                        // TODO: - 나중에 이부분을 앞쪽의 부분과 합치기 ㅇㅇ
+                        let anchorEntity = AnchorEntity(world: position)
 
-                    let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
+                        let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
 
-                    let textEntity = (self?.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
+                        let textEntity = (self?.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
 
-                    anchorEntity.addChild(sphereEntity)
-                    anchorEntity.addChild(textEntity)
+                        anchorEntity.addChild(sphereEntity)
+                        anchorEntity.addChild(textEntity)
 
-                    DispatchQueue.main.async {
-                    self?.arView.scene.addAnchor(anchorEntity)
+                        DispatchQueue.main.async {
+                            self?.arView.scene.addAnchor(anchorEntity)
+                        }
                     }
                 }
             } catch {
@@ -61,26 +62,23 @@ extension ARViewController {
     }
 
     /// Processing image classification
-    private func imagePredictorHandler(_ predictions: [ImagePredictor.Prediction]?) {
+    private func imagePredictorHandler(_ predictions: [ImagePredictor.Prediction]?, completionHandler: @escaping () -> Void ) {
         // update latestprediction label using prediction result
         guard let predictions = predictions else {
-            updatePredictionLabel("Prediction Fail")
             return
         }
 
         let formattedPrediction = formatPredictions(predictions)
-
         let predictionString = formattedPrediction.first!
-        updatePredictionLabel(predictionString)
 
-    }
-
-    /// Update ui-related variable in main thread
-    private func updatePredictionLabel(_ message: String) {
+        // Update ui-related variable in main thread
         DispatchQueue.main.async {
-            self.latestPrediction = message
+            self.latestPrediction = predictionString
+            // send completion handler result
+            completionHandler()
         }
     }
+
 
 
     /// Convert prediction label to human readable strings

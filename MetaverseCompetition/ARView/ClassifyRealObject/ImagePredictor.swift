@@ -54,13 +54,7 @@ class ImagePredictor {
         return imageClassificationRequest
     }
 
-    // How to use it?
-//    func makePredictions(for pixBuff: CVPixelBuffer?, completionHandler: @escaping ImagePredictionHandler) throws {
     func makePredictions(for uiImage: UIImage, completionHandler: @escaping ImagePredictionHandler) throws {
-
-//        let ciImage = CIImage(cvImageBuffer: pixBuff!, options: [.applyOrientationProperty: true])
-
-//        let uiImage = UIImage(ciImage: ciImage)
 
         let orientation = CGImagePropertyOrientation(uiImage.imageOrientation)
 
@@ -69,7 +63,7 @@ class ImagePredictor {
         predictionHandlers[imageClassificationRequest] = completionHandler
 
         let handler = VNImageRequestHandler(data: uiImage.pngData()!, orientation: orientation)
-//        let handler = VNImageRequestHandler(ciImage: ciImage, orientation: orientation)s
+
         let requests: [VNRequest] = [imageClassificationRequest]
 
         // start the image classification request
