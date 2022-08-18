@@ -12,6 +12,6 @@ enum MainViewState: Equatable {
     case addModelState, practiceState, testState 
 }
 
-enum ARViewState: Equatable {
+enum AddModelState: Equatable {
     case none, handleExistingModel, handleImportedModel, selectModels
 }
