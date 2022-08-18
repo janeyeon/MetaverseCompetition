@@ -9,6 +9,7 @@ import ARKit
 import Combine
 import FocusEntity
 import RealityKit
+import SceneKit
 import SwiftUI
 import Vision
 
@@ -155,7 +156,10 @@ class ARViewController: UIViewController, ARSessionDelegate {
         let lineHeight: CGFloat = 0.05
         let font = MeshResource.Font.systemFont(ofSize: lineHeight)
         let textMesh = MeshResource.generateText(text, extrusionDepth: Float(lineHeight * 0.1), font: font)
+
+
         let textMeterial = SimpleMaterial(color: UIColor.orange, isMetallic: true)
+//        let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
         let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
 
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
@@ -167,7 +171,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
     func generateSphereEntity(position: SIMD3<Float>, modelName: String, radius: Float = 0.01, color: UIColor = UIColor.green) -> ModelEntity {
 
         let sphere = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
-
 
         // move sphere slightly up
         sphere.position = position
@@ -185,7 +188,10 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
     func generateExistTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
         let textEntity = self.generateTextModel(text: modelName)
+
         let raycastDistance = distance(position, self.arView.cameraTransform.translation)
+
+        print("DEBUG: - first anchor position : \(position)")
 
         textEntity.scale = .one * raycastDistance
 
@@ -196,6 +202,44 @@ class ARViewController: UIViewController, ARSessionDelegate {
         textEntity.name = "\(modelName)_text"
 
         return textEntity
+
+    }
+
+    func generateExistTextEntityWithMaterial(position: SIMD3<Float>, modelName: String) -> ModelEntity {
+
+        let lineHeight: CGFloat = 0.05
+        let font = MeshResource.Font.systemFont(ofSize: lineHeight)
+        let textMesh = MeshResource.generateText(modelName, extrusionDepth: Float(lineHeight * 0.1), font: font)
+
+        // video material을 넣어주는 코드 
+        guard let url = Bundle.main.url(forResource: "glowing1", withExtension: ".mp4") else {
+            return ModelEntity()
+        }
+
+        let player = AVPlayer(url: url)
+        let material = VideoMaterial(avPlayer: player)
+        material.controller.audioInputMode = .spatial
+
+        let model = ModelEntity(mesh: textMesh, materials: [material])
+
+        player.play()
+
+        model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
+        model.position.y += 0.015
+        model.position.x += Float(modelName.count) * 0.005
+
+        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
+
+
+        model.scale = .one * raycastDistance
+
+        var resultWithCameraOrientation = self.arView.cameraTransform
+          resultWithCameraOrientation.translation = position
+
+        model.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+        model.name = "\(modelName)_text"
+
+        return model
 
     }
 
@@ -224,6 +268,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
 //        textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
         textEntity.position += position
         textEntity.name = "\(modelName)_text"
+//        textEntity.scale
 
         return textEntity
     }
@@ -265,35 +310,44 @@ class ARViewController: UIViewController, ARSessionDelegate {
             print("DEBUG: arViewState is none")
         case .handleExistingModel:
             self.handleExistModel(position: position)
-
         case .handleImportedModel:
             print("DEBUG: arViewState is handleImportedModel")
         case .selectModels:
             print("DEBUG: arViewState is selectModels")
-            selectModel(tapLocation: tapLocation, worldMatrix: result.worldTransform)
+            selectModel(tapLocation: tapLocation, worldMatrix: result.worldTransform, position: position)
 
         }
     }
 
-    func selectModel(tapLocation: CGPoint, worldMatrix: simd_float4x4) {
+    func selectModel(tapLocation: CGPoint, worldMatrix: simd_float4x4, position: SIMD3<Float>) {
+
         guard let hitEntity = self.arView.entity(at: tapLocation) else {
             return
         }
 
         let modelName = hitEntity.name.prefix(while: { $0 != "_" })
+
         print("DEBUG: Hit this!: \(hitEntity.name)")
         print("DEBUG: Model name: \(modelName)")
 
-        let rotation = simd_float4x4(SCNMatrix4MakeRotation( -90.0 * .pi/180, 0,1,0))
-        let transform = simd_mul(worldMatrix, rotation)
+        // 해당 text entity가 존재하는지 확인
+        guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {
+            return
+        }
 
-        // 여기에서 text 좀 바꿔주자
-        arView.scene.findEntity(named: "\(modelName)_text")?.move(to: transform,
-                                                                relativeTo: arView.scene.findEntity(named: "\(modelName)_text"),
-                                                                duration: 1,
-                                                                timingFunction: .linear)
+        print("DEBUG: - raycast position : \(position)")
+
+        // 기존의 text entity 지우고
+        arView.scene.findEntity(named: "\(modelName)_text")?.removeFromParent(preservingWorldTransform: true)
+
+        // 다시 만든다
+        let model = generateExistTextEntityWithMaterial(position: position, modelName: String(modelName))
+
+        // 그걸 기존의 anchor에 추가
+        arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
 
     }
+
 }
 
 

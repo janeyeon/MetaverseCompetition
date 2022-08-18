@@ -16,19 +16,9 @@ extension ARViewController {
         self.classifyImage(position: position)
     }
 
-    private func cropImage(uiImage: UIImage) -> UIImage {
-
-        let h = UIScreen.main.bounds.size.height / 3 * UIScreen.main.scale
-        let w = UIScreen.main.bounds.size.width / 3 * UIScreen.main.scale
-        let cgImage = uiImage.cgImage
-
-        let croppedCGImage = cgImage?.cropping(to: CGRect(x: w, y: h, width: w, height: h))
-        return UIImage(cgImage: croppedCGImage!)
-    }
-
-
     private func classifyImage(position: SIMD3<Float>) {
 
+        // TODO: - snapshot시에 생성된 text model 들은 없애고 캡쳐하는 방법 있을까?
         arView.snapshot(saveToHDR: true) { image in
             let resizedImage = self.cropImage(uiImage: image!)
 
@@ -40,7 +30,7 @@ extension ARViewController {
                     // 반드시 mainview의 latestPrediction을 넣어주고 밑의 부분이 실행되어야 함
                     self?.imagePredictorHandler(predictions) {
                         // entity를 넣어주는 부분
-                        // TODO: - 나중에 이부분을 앞쪽의 부분과 합치기 ㅇㅇ
+                        // TODO: - 나중에 이부분을 다른 model entity생성하는 부분과 합치기
                         let anchorEntity = AnchorEntity(world: position)
 
                         let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
@@ -49,6 +39,7 @@ extension ARViewController {
 
                         anchorEntity.addChild(sphereEntity)
                         anchorEntity.addChild(textEntity)
+                        anchorEntity.name = "\(self!.latestPrediction)_anchor"
 
                         DispatchQueue.main.async {
                             self?.arView.scene.addAnchor(anchorEntity)
@@ -59,6 +50,16 @@ extension ARViewController {
                 print("Vision was unable to make a prediction...\n\n\(error.localizedDescription)")
             }
         }
+    }
+
+    /// crop uiImage in the center of the screen
+    private func cropImage(uiImage: UIImage) -> UIImage {
+        let h = UIScreen.main.bounds.size.height / 3 * UIScreen.main.scale
+        let w = UIScreen.main.bounds.size.width / 3 * UIScreen.main.scale
+        let cgImage = uiImage.cgImage
+
+        let croppedCGImage = cgImage?.cropping(to: CGRect(x: w, y: h, width: w, height: h))
+        return UIImage(cgImage: croppedCGImage!)
     }
 
     /// Processing image classification
@@ -78,8 +79,6 @@ extension ARViewController {
             completionHandler()
         }
     }
-
-
 
     /// Convert prediction label to human readable strings
     private func formatPredictions(_ predictions: [ImagePredictor.Prediction]) -> [String] {
