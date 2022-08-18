@@ -10,34 +10,51 @@ import SwiftUI
 
 extension MainView {
     class ViewModel: ObservableObject {
-        @Published var currentState: MainViewState = .addModelState
-        @Published var addModelState: AddModelState = .handleExistingModel
-        @Published var transcript: String = ""
-        @Published var isTrascriptButtonPressed: Bool = false
+        @Published var mainViewState: MainViewState
+
+        let container: DIContainer
+        private var cancelBag = CancelBag()
+
+
+        init(container: DIContainer) {
+            self.container = container
+            let appState = container.appState
+
+            _mainViewState = .init(initialValue: appState.value.mainViewAppState.mainViewState)
+
+            cancelBag.collect {
+                $mainViewState.sink{
+                    appState[\.mainViewAppState.mainViewState] = $0
+                }
+
+                appState.map(\.mainViewAppState.mainViewState)
+                    .removeDuplicates()
+                    .weakAssign(to: \.mainViewState, on: self)
+            }
+
+
+        }
 
         func changeMainViewState(to state: MainViewState) {
-            currentState = state
+            container.services.mainViewService.changeMainViewState(to: state)
         }
 
-        func changeAddModelState(to state: AddModelState) {
-            addModelState = state
-        }
     }
 }
 
 
 struct MainView: View {
 
-    @StateObject var viewModel: MainView.ViewModel = ViewModel()
+    @StateObject var viewModel: MainView.ViewModel
 
     var body: some View {
         ZStack{
             // 항상 보여주는 화면
-            MyARViewControllerRepresentable(mainViewVM: viewModel)
+            MyARViewControllerRepresentable(viewModel: .init(container: viewModel.container))
 
-            switch viewModel.currentState {
+            switch viewModel.mainViewState {
             case .addModelState:
-                AddModelStateView(mainViewModel: viewModel)
+                AddModelStateView(viewModel: .init(container: viewModel.container))
             case .practiceState:
                 EmptyView()
             case .testState:

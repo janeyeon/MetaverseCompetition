@@ -9,6 +9,8 @@
 extension DIContainer {
     /// 각 view 에서 사용되는 service 들을 모은 총 집합
     struct Services {
-
+        let addModelService: AddModelService
+        let mainViewService: MainViewService
+        let drawingViewService: DrawingViewService
     }
 }

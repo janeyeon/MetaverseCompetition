@@ -13,9 +13,39 @@ extension AddModelStateView {
     class ViewModel : ObservableObject {
         // 뭘 선택할건지
         @Published var modelConfirmedForPlacement: String?
+        @Published var addModelState: AddModelState
+
         @Published var isPlacementEnabled: Bool = false
-        @Published var caputredImage: UIImage?
         @Published var selectedModel: String?
+
+        let container: DIContainer
+        private var cancelBag = CancelBag()
+
+        init(container: DIContainer) {
+            self.container = container
+            let appState = container.appState
+
+            _modelConfirmedForPlacement = .init(initialValue: appState.value.addModelAppState.modelConfirmedForPlacement)
+
+            _addModelState = .init(initialValue: appState.value.addModelAppState.addModelState)
+
+            cancelBag.collect{
+                // 관찰하기 원하는 값
+                $modelConfirmedForPlacement.sink { appState[\.addModelAppState.modelConfirmedForPlacement] = $0 }
+
+                $addModelState.sink { appState[\.addModelAppState.addModelState] = $0 }
+
+                //바꾸기 원하는 값
+                appState.map(\.addModelAppState.modelConfirmedForPlacement)
+                    .removeDuplicates()
+                    .weakAssign(to: \.modelConfirmedForPlacement, on: self)
+
+                appState.map(\.addModelAppState.addModelState)
+                    .removeDuplicates()
+                    .weakAssign(to: \.addModelState, on: self)
+
+            }
+        }
 
 
         static var possibleImportedModel: [String] = {
@@ -36,6 +66,21 @@ extension AddModelStateView {
             return fileNames
         }()
 
+        func changeAddModelState(to state: AddModelState) {
+            container.services.addModelService.changeAddModelState(to: state)
+        }
+
+
+        func modelPlacementCancelButton() {
+            container.services.addModelService.modelPlacementCancelButton()
+            resetPlacementParameters()
+        }
+
+        func modelPlacementConfirmButton() {
+            container.services.addModelService.modelPlacementConfirmButton(selectedModel: selectedModel!)
+            resetPlacementParameters()
+        }
+
         func resetPlacementParameters() {
             isPlacementEnabled = false
             selectedModel = nil
@@ -44,8 +89,7 @@ extension AddModelStateView {
 }
 
 struct AddModelStateView: View {
-    @StateObject var viewModel =  AddModelStateView.ViewModel()
-    @ObservedObject var mainViewModel: MainView.ViewModel
+    @StateObject var viewModel : ViewModel
 
     var body: some View {
         // addModelState -> classification state 에서 focus view 표시
@@ -79,11 +123,11 @@ struct AddModelStateView: View {
                 TemporalButtonView(label: "추가 하기") {
                     print("DEBUG: - press 추가하기 버튼 ")
                     // add change state button
-                    mainViewModel.changeAddModelState(to: .handleImportedModel)
+                    viewModel.changeAddModelState(to: .handleImportedModel)
                 }
                 TemporalButtonView(label: "인식 하기") {
                     print("DEBUG: - press 인식하기 버튼 ")
-                    mainViewModel.changeAddModelState(to: .handleExistingModel)
+                    viewModel.changeAddModelState(to: .handleExistingModel)
                 }
                 Spacer()
             }
@@ -94,7 +138,7 @@ struct AddModelStateView: View {
 
     var importModelView: some View {
         VStack {
-        if mainViewModel.addModelState == .handleImportedModel  {
+            if viewModel.addModelState == .handleImportedModel  {
                 if viewModel.isPlacementEnabled {
                     // placement button
                     placementButtonsView
@@ -144,8 +188,7 @@ struct AddModelStateView: View {
                 // Cancel button
                 Button(action: {
                     print("DEBUG: press cancel button")
-                    viewModel.modelConfirmedForPlacement = nil
-                    viewModel.resetPlacementParameters()
+                    viewModel.modelPlacementConfirmButton()
                 }) {
                     Image(systemName: "xmark")
                         .frame(width: 60, height: 60)
@@ -158,8 +201,7 @@ struct AddModelStateView: View {
                 // confirm button
                 Button {
                     print("DEBUG: press confirm button")
-                    viewModel.modelConfirmedForPlacement = viewModel.selectedModel
-                    viewModel.resetPlacementParameters()
+                    viewModel.modelPlacementConfirmButton()
                 } label: {
                     Image(systemName: "checkmark")
                         .frame(width: 60, height: 60)

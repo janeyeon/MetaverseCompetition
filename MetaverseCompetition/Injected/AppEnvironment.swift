@@ -24,8 +24,11 @@ struct AppEnvironment {
     ///  services를 처음으로 생성하는 장소
     private static func configuredServices(appState: Store<AppState>) -> DIContainer.Services {
         // 여기에서 각 service를 생성
+        let addModelService = RealAddModelService(appState: appState)
+        let mainViewService = RealMainViewService(appState: appState)
+        let drawingViewService = RealDrawingViewService(appState: appState)
         // Services의 init을 return한다
-        return .init()
+        return .init(addModelService: addModelService, mainViewService: mainViewService, drawingViewService: drawingViewService)
     }
 }
 
