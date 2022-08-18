@@ -16,7 +16,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
     let canvasView = PKCanvasView()
     let drawing = PKDrawing()
     let toolPicker = PKToolPicker()
-    var mainViewVM: MainView.ViewModel
+    var viewModel: DrawingViewControllerRepresentable.ViewModel?
 
     // for scanninn & recognizing
     var resultsViewController: (UIViewController & RecognizedTextDataSource)?
@@ -24,11 +24,11 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
     private var textRecognitionCancellable: AnyCancellable?
 
     // MARK: Initializer
-    init(mainViewVM: MainView.ViewModel) {
-        self.mainViewVM = mainViewVM
+    init(viewModel: DrawingViewControllerRepresentable.ViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
 
-        textRecognitionCancellable = mainViewVM.$isTrascriptButtonPressed
+        textRecognitionCancellable = viewModel.$isTrascriptButtonPressed
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] isTranscriptButtonPressed in
 
@@ -36,7 +36,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
                 // start recognizing
                 guard let capturedImage = self?.takeCapture() else { return }
                 self?.processImage(image: capturedImage)
-                mainViewVM.caputredImage = capturedImage
+
 
             })
     }
@@ -90,8 +90,7 @@ extension DrawingViewController: RecognizedTextDataSource {
         for observation in recognizedText {
             guard let candidate = observation.topCandidates(maxCandidates).first else { continue }
 
-            mainViewVM.transcript += candidate.string
-            mainViewVM.transcript += "\n"
+            viewModel!.addTranscirptString(result: candidate.string)
         }
     }
 

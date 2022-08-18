@@ -19,7 +19,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
     //MARK: - set up variables
     let imagePredictor = ImagePredictor()
     var latestPrediction: String = "hello"
-    var mainViewVM: MainView.ViewModel 
+    var viewModel: MyARViewControllerRepresentable.ViewModel?
     let BUBBLE_DEPTH: Float = 0.01 // depth of 3D text
     var arView = CustomARView(frame: .zero)
     
@@ -27,12 +27,14 @@ class ARViewController: UIViewController, ARSessionDelegate {
     private var arViewStateCancellable: AnyCancellable?
 
     // MARK: - initializer
-    init(mainViewVM: MainView.ViewModel) {
-        self.mainViewVM = mainViewVM
+    init(viewModel: MyARViewControllerRepresentable.ViewModel) {
+
         super.init(nibName: nil, bundle: nil)
 
-        cancellable = mainViewVM
-            .$modelConfirmedForPlacement
+        self.viewModel = viewModel
+
+        // modelConfirmedForPlacement값이 바뀔때 이걸 받으라고 못하나?
+        cancellable = viewModel.$modelConfirmedForPlacement
             .compactMap { modelName in modelName }
             .flatMap {
                 Publishers.Zip(
@@ -65,7 +67,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
             .receive(on: RunLoop.main)
             .sink(receiveCompletion: { [weak self] loadCompletion in
                 defer {
-                    self?.mainViewVM.modelConfirmedForPlacement = nil
+                    self?.viewModel!.modelConfirmedForPlacement = nil
                 }
                 if case let .failure(error) = loadCompletion {
                     assertionFailure("Unable to load a model due to error \(error)")
@@ -77,7 +79,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
             })
 
         // focus Entity를 생성하고 없애는 부분
-        arViewStateCancellable = mainViewVM.$arViewState
+        arViewStateCancellable = viewModel.$addModelState
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] arViewState in
                 guard let self = self else { return }
@@ -305,7 +307,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // 2. Visualize the intersection point of the ray
 
         // MARK: - 여기에서 반드시 WorldModel을 제대로 넣어주어야 함
-        switch mainViewVM.arViewState {
+        switch viewModel!.addModelState {
         case .none:
             print("DEBUG: arViewState is none")
         case .handleExistingModel:

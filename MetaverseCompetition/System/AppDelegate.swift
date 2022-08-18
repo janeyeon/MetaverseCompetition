@@ -10,6 +10,7 @@ import ARKit
 
 @main
 struct CoreMLApp: App {
+    var mainView: MainView?
     @discardableResult
     func checkIfARKitAvailable() -> Bool {
         guard ARWorldTrackingConfiguration.isSupported else {
@@ -34,11 +35,16 @@ struct CoreMLApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            MainView()
+            mainView
                 .onAppear {
                     // TODO: - Need to add Error message in here
                     checkIfARKitAvailable()
                 }
         }
+    }
+
+    init() {
+        let environment = AppEnvironment.bootstrap()
+        mainView = MainView(viewModel: .init(container: environment.container))
     }
 }

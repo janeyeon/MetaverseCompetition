@@ -22,9 +22,6 @@ extension ARViewController {
         arView.snapshot(saveToHDR: true) { image in
             let resizedImage = self.cropImage(uiImage: image!)
 
-            DispatchQueue.main.async {
-                self.mainViewVM.caputredImage = resizedImage
-            }
             do {
                 try self.imagePredictor.makePredictions(for: resizedImage) { [weak self] predictions in
                     // 반드시 mainview의 latestPrediction을 넣어주고 밑의 부분이 실행되어야 함
