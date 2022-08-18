@@ -20,6 +20,8 @@
 		2618375F28A0E49B005092A8 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618375E28A0E49B005092A8 /* State.swift */; };
 		2618376128A0E6DE005092A8 /* ViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */; };
 		26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E3408728ACB3F9000B86C6 /* WordModel.swift */; };
+		26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408B28AD36EC000B86C6 /* glowing1.mp4 */; };
+		26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408C28AD36F3000B86C6 /* glowing2.mp4 */; };
 		26FD271928A2852600EE6685 /* CustomARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD271828A2852600EE6685 /* CustomARView.swift */; };
 		26FD271F28A2880F00EE6685 /* FocusEntity in Frameworks */ = {isa = PBXBuildFile; productRef = 26FD271E28A2880F00EE6685 /* FocusEntity */; };
 		26FD272228A38F6C00EE6685 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD272128A38F6C00EE6685 /* DrawingView.swift */; };
@@ -47,6 +49,8 @@
 		2618375E28A0E49B005092A8 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerRepresentable.swift; sourceTree = "<group>"; };
 		26E3408728ACB3F9000B86C6 /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
+		26E3408B28AD36EC000B86C6 /* glowing1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing1.mp4; sourceTree = "<group>"; };
+		26E3408C28AD36F3000B86C6 /* glowing2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing2.mp4; sourceTree = "<group>"; };
 		26FD271828A2852600EE6685 /* CustomARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomARView.swift; sourceTree = "<group>"; };
 		26FD272128A38F6C00EE6685 /* DrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
 		26FD272328A3933500EE6685 /* DrawingViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewControllerRepresentable.swift; sourceTree = "<group>"; };
@@ -139,6 +143,23 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		26E3408928AD36D6000B86C6 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				26E3408A28AD36DD000B86C6 /* Text Materials */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		26E3408A28AD36DD000B86C6 /* Text Materials */ = {
+			isa = PBXGroup;
+			children = (
+				26E3408B28AD36EC000B86C6 /* glowing1.mp4 */,
+				26E3408C28AD36F3000B86C6 /* glowing2.mp4 */,
+			);
+			path = "Text Materials";
+			sourceTree = "<group>";
+		};
 		26FD272028A38F5C00EE6685 /* Drawing */ = {
 			isa = PBXGroup;
 			children = (
@@ -161,6 +182,7 @@
 		E1635E1423D5BDFD0031A7D8 /* MetaverseCompetition */ = {
 			isa = PBXGroup;
 			children = (
+				26E3408928AD36D6000B86C6 /* Resources */,
 				E1635E1523D5BDFD0031A7D8 /* AppDelegate.swift */,
 				261836EA289CF90B005092A8 /* MainView.swift */,
 				2618375E28A0E49B005092A8 /* State.swift */,
@@ -239,6 +261,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */,
+				26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */,
 				2618370F289E5AB4005092A8 /* Teapot.usdz in Resources */,
 				26183711289E5AB4005092A8 /* Shoes.usdz in Resources */,
 				26183710289E5AB4005092A8 /* Airplane.usdz in Resources */,

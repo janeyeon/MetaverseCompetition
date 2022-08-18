@@ -74,7 +74,6 @@ struct MainView: View {
         case .drawing:
             drawingView
         }
-
     }
 
 
