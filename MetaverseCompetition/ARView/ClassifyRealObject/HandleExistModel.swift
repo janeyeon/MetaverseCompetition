@@ -12,85 +12,73 @@ import RealityKit
 
 extension ARViewController {
 
-    func handleExistModel(position: SIMD3<Float>) -> UIImage {
-//        DispatchQueue.main.async {
-            // 3. Classify Image - set latest prediction
-            return self.classifyImage(position: position)
-//        }
+    func handleExistModel(position: SIMD3<Float>) {
+        self.classifyImage(position: position)
     }
 
-    func takeCapture() -> UIImage {
-//        let currentLayer = UIApplication
-//                  .shared
-//                  .connectedScenes
-//                  .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
-//                  .first { $0.isKeyWindow }?
-//                  .layer
+    private func classifyImage(position: SIMD3<Float>) {
 
-        let currentLayer = arView.layer
+        // TODO: - snapshot시에 생성된 text model 들은 없애고 캡쳐하는 방법 있을까?
+        arView.snapshot(saveToHDR: true) { image in
+            let resizedImage = self.cropImage(uiImage: image!)
 
-        let bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width)
-        let renderer = UIGraphicsImageRenderer(bounds: bounds)
-        return renderer.image { context in
-            currentLayer.render(in: context.cgContext)
-        }
-    }
-
-    
-
-    private func classifyImage(position: SIMD3<Float>) -> UIImage {
-        // get image
-//        guard let pixbuff = arView.session.currentFrame?.capturedImage else {
-//            fatalError()
-//        }
-
-        let uiImage = takeCapture()
-
-        do {
-            try imagePredictor.makePredictions(for: uiImage) { [weak self] predictions in
-                self?.imagePredictorHandler(predictions)
-                let anchorEntity = AnchorEntity(world: position)
-
-                let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
-
-                let textEntity = (self?.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
-
-                anchorEntity.addChild(sphereEntity)
-                anchorEntity.addChild(textEntity)
-
-                DispatchQueue.main.async {
-                self?.arView.scene.addAnchor(anchorEntity)
-                }
+            DispatchQueue.main.async {
+                self.mainViewVM.caputredImage = resizedImage
             }
-        } catch {
-            print("Vision was unable to make a prediction...\n\n\(error.localizedDescription)")
-        }
+            do {
+                try self.imagePredictor.makePredictions(for: resizedImage) { [weak self] predictions in
+                    // 반드시 mainview의 latestPrediction을 넣어주고 밑의 부분이 실행되어야 함
+                    self?.imagePredictorHandler(predictions) {
+                        // entity를 넣어주는 부분
+                        // TODO: - 나중에 이부분을 다른 model entity생성하는 부분과 합치기
+                        let anchorEntity = AnchorEntity(world: position)
 
-        return uiImage
+                        let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
+
+                        let textEntity = (self?.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
+
+                        anchorEntity.addChild(sphereEntity)
+                        anchorEntity.addChild(textEntity)
+                        anchorEntity.name = "\(self!.latestPrediction)_anchor"
+
+                        DispatchQueue.main.async {
+                            self?.arView.scene.addAnchor(anchorEntity)
+                        }
+                    }
+                }
+            } catch {
+                print("Vision was unable to make a prediction...\n\n\(error.localizedDescription)")
+            }
+        }
+    }
+
+    /// crop uiImage in the center of the screen
+    private func cropImage(uiImage: UIImage) -> UIImage {
+        let h = UIScreen.main.bounds.size.height / 3 * UIScreen.main.scale
+        let w = UIScreen.main.bounds.size.width / 3 * UIScreen.main.scale
+        let cgImage = uiImage.cgImage
+
+        let croppedCGImage = cgImage?.cropping(to: CGRect(x: w, y: h, width: w, height: h))
+        return UIImage(cgImage: croppedCGImage!)
     }
 
     /// Processing image classification
-    private func imagePredictorHandler(_ predictions: [ImagePredictor.Prediction]?) {
+    private func imagePredictorHandler(_ predictions: [ImagePredictor.Prediction]?, completionHandler: @escaping () -> Void ) {
         // update latestprediction label using prediction result
         guard let predictions = predictions else {
-            updatePredictionLabel("Prediction Fail")
             return
         }
 
         let formattedPrediction = formatPredictions(predictions)
-
         let predictionString = formattedPrediction.first!
-        updatePredictionLabel(predictionString)
 
-    }
-
-    /// Update ui-related variable in main thread
-    private func updatePredictionLabel(_ message: String) {
+        // Update ui-related variable in main thread
         DispatchQueue.main.async {
-            self.latestPrediction = message
+            self.latestPrediction = predictionString
+            // send completion handler result
+            completionHandler()
         }
     }
-
 
     /// Convert prediction label to human readable strings
     private func formatPredictions(_ predictions: [ImagePredictor.Prediction]) -> [String] {

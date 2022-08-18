@@ -85,7 +85,6 @@ struct MainView: View {
         case .testState:
             drawingView
         }
-
     }
 
 
