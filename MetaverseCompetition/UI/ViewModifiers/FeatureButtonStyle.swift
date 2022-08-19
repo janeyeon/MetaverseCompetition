@@ -85,3 +85,40 @@ struct TemporalButtonView: View {
         .opacity(0.7)
     }
 }
+
+
+struct ChangeStateButtonView: View {
+    var buttonLabel: String
+    var buttonIcon: Image
+
+    var body: some View {
+            HStack {
+                // text
+                Text(buttonLabel)
+                    .font(.system(size: 30, weight: .heavy))
+                    .foregroundColor(Color.black)
+
+                // icon
+                ZStack {
+                    Circle()
+                        .frame(width: 44, height: 44)
+                        .foregroundColor(Color.inside.activeColor2)
+                    // buttonIcon
+                    buttonIcon
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 25, height: 25)
+                        .foregroundColor(Color.white)
+                }
+                .frame(alignment: .center)
+                .padding(.leading)
+            }
+            .padding()
+            .padding(.horizontal)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundColor(Color.inside.activeColor1)
+            )
+        }
+
+}

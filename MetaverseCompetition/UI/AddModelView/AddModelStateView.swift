@@ -14,10 +14,12 @@ extension AddModelStateView {
         // 뭘 선택할건지
         @Published var modelConfirmedForPlacement: String?
         @Published var addModelState: AddModelState
+        @Published var wordModels: [WordModel]
+
 
         @Published var isPlacementEnabled: Bool = false
         @Published var selectedModel: String?
-        @Published var wordModels: [WordModel]
+        @Published var isPopupView: Bool = false
 
         let container: DIContainer
         private var cancelBag = CancelBag()
@@ -94,6 +96,7 @@ extension AddModelStateView {
             isPlacementEnabled = false
             selectedModel = nil
         }
+        
 
         func changeToNextState() {
             // 여기에서 초기화등 필요한 함수 진행 
@@ -118,18 +121,36 @@ struct AddModelStateView: View {
         importModelView
 
         // next state button
-        if viewModel.addModelState == .none {
+        if viewModel.addModelState == .none && viewModel.wordModels.count > 0 {
             nextStateButton
         }
         // popup view를 표시하는 화면
+        if viewModel.isPopupView {
+            popupView
+        }
     }
 
-//    var popupView: some View {
-//        
-//    }
+    var popupView: some View {
+        PopupView(confirmAction: {
+            viewModel.changeToNextState()
+        }, cancelAction: {
+            viewModel.isPopupView = false
+        }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: true, isXmarkExist: false, maxWidth: 450, content: {
+            VStack(alignment: .center, spacing: 20) {
+                Text("외울 단어들을 다 추가했나요? ")
+                Text("그럼 다같이 단어를 외우러")
+                Text("신나는 모험을 떠나볼까요?")
+            }
+            .font(.popupTextSize)
+            .foregroundColor(Color.white)
+            .padding(.vertical, 60)
+            .padding(.top, 30)
+        })
+    }
 
     var focusView: some View {
         ZStack {
+            focusBackgroundView()
             focusSquareview()
                 .frame(alignment: .center)
             Image(systemName: "plus")
@@ -137,7 +158,7 @@ struct AddModelStateView: View {
                 .foregroundColor(Color.inside.primaryColor)
                 .frame(width: 35, height: 35, alignment: .center)
             // 여기에 경고문구
-            VStack(alignment: .center) {
+            VStack(alignment: .center, spacing: .zero) {
                 Spacer()
                 Text("물체가 화면의 중앙에 오도록 해주세요!")
                     .font(.defaultTextSize)
@@ -195,22 +216,21 @@ struct AddModelStateView: View {
         }
     }
 
-//    func focusBackgroundView() -> some View {
-//        let maxWidth = UIScreen.main.bounds.width
-//        let maxHeight = UIScreen.main.bounds.height
-//        let rectWidth : CGFloat = 500
-//        let rectHeight : CGFloat = 600
-//
-//        let largeRect = UIBezierPath(rect: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
-//
-//        let smallRect = UIBezierPath(rect: CGRect(x: maxWidth / 2 - rectWidth / 2, y: maxHeight / 2 - rectHeight / 2, width: rectWidth, height: rectHeight))
-//
-//        largeRect.append(smallRect.reversing())
-//        let path = Path(largeRect.cgPath)
-//
-//        return path
-////        .background(.ultraThinMaterial, in: path)
-//    }
+    func focusBackgroundView() -> some View {
+        let maxWidth = UIScreen.main.bounds.width
+        let maxHeight = UIScreen.main.bounds.height
+        let rectWidth : CGFloat = 500
+        let rectHeight : CGFloat = 600
+
+        let largeRect = UIBezierPath(rect: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
+
+        let smallRect = UIBezierPath(rect: CGRect(x: maxWidth / 2 - rectWidth / 2, y: maxHeight / 2 - rectHeight / 2, width: rectWidth, height: rectHeight))
+
+        largeRect.append(smallRect.reversing())
+        let path = Path(largeRect.cgPath)
+
+        return path.fill(Color.inside.backgroundColor)
+    }
 
     var buttonView: some View {
         ZStack {
@@ -257,10 +277,14 @@ struct AddModelStateView: View {
     var nextStateButton: some View {
         VStack(alignment: .center) {
             Spacer()
-            TemporalButtonView(label: "학습 시작하기") {
-                // 다음 상태로 넘어가기
-                viewModel.changeToNextState()
+
+            FeatureButton {
+//                viewModel.changeToNextState()
+                viewModel.isPopupView = true
+            } label: {
+                ChangeStateButtonView(buttonLabel: "학습 시작하기", buttonIcon: Image(systemName: "arrow.right"))
             }
+            .padding(.bottom, 50)
         }
     }
 
