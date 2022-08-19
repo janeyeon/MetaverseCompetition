@@ -118,10 +118,15 @@ struct AddModelStateView: View {
         importModelView
 
         // next state button
-        nextStateButton
-
+        if viewModel.addModelState == .none {
+            nextStateButton
+        }
         // popup view를 표시하는 화면
     }
+
+//    var popupView: some View {
+//        
+//    }
 
     var focusView: some View {
         ZStack {
@@ -131,6 +136,15 @@ struct AddModelStateView: View {
                 .resizable()
                 .foregroundColor(Color.inside.primaryColor)
                 .frame(width: 35, height: 35, alignment: .center)
+            // 여기에 경고문구
+            VStack(alignment: .center) {
+                Spacer()
+                Text("물체가 화면의 중앙에 오도록 해주세요!")
+                    .font(.defaultTextSize)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 10).foregroundColor(Color.inside.darkerBackgroundColor))
+                    .padding(.bottom, 270)
+            }
         }
     }
 
@@ -176,7 +190,7 @@ struct AddModelStateView: View {
                 ])
 
             }
-            .stroke(lineWidth: 5)
+            .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round))
             .foregroundColor(Color.inside.primaryColor)
         }
     }

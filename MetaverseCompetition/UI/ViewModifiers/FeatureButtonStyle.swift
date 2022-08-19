@@ -57,7 +57,6 @@ struct FeatureButtonView: View {
                 // text
                 Text(buttonLabel)
                     .font(.defaultTextSize)
-                    .bold()
                     .foregroundColor(isSelected ? Color.inside.secondaryTextColor : Color.white)
             }
             .background(
@@ -82,7 +81,7 @@ struct TemporalButtonView: View {
                 .foregroundColor(Color.white)
         }
         .padding()
-        .background(RoundedRectangle(cornerRadius: 10)    .foregroundColor(Color.black))
+        .background(RoundedRectangle(cornerRadius: 10).foregroundColor(Color.inside.darkerBackgroundColor))
         .opacity(0.7)
     }
 }
