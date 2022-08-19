@@ -107,7 +107,9 @@ struct AddModelStateView: View {
 
     var body: some View {
         // focus view 표시
-        focusView
+        if viewModel.addModelState == .handleExistingModel {
+            focusView
+        }
 
         // State, button등을 표시하는 화면
         buttonView
@@ -123,13 +125,37 @@ struct AddModelStateView: View {
 
     var focusView: some View {
         ZStack {
-            Rectangle()
-                .fill(Color.clear).background(.ultraThinMaterial)
-                .frame(width: 50, height: 50, alignment: .center)
+            focusBackgroundView()
+            Image("focusSquare")
+                .resizable()
+                .frame(width: 500, height: 600, alignment: .center)
+            Image(systemName: "plus")
+                .resizable()
+                .foregroundColor(Color.inside.primaryColor)
+                .frame(width: 35, height: 35, alignment: .center)
+        }
+
+    }
+
+    func focusBackgroundView() -> some View {
+        let maxWidth = UIScreen.main.bounds.width
+        let maxHeight = UIScreen.main.bounds.height
+        let rectWidth : CGFloat = 500
+        let rectHeight : CGFloat = 600
+
+        let largeRect = UIBezierPath(rect: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
+
+        let smallRect = UIBezierPath(rect: CGRect(x: maxWidth / 2 - rectWidth / 2, y: maxHeight / 2 - rectHeight / 2, width: rectWidth, height: rectHeight))
+
+
+        largeRect.append(smallRect.reversing())
+        let path = Path(largeRect.cgPath)
+
+        return ZStack {
 
         }
-//        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-
+        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        .background(.ultraThinMaterial, in: path)
     }
 
     var buttonView: some View {
