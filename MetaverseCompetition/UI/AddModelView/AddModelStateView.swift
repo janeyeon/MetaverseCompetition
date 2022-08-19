@@ -17,6 +17,7 @@ extension AddModelStateView {
 
         @Published var isPlacementEnabled: Bool = false
         @Published var selectedModel: String?
+        @Published var wordModels: [WordModel]
 
         let container: DIContainer
         private var cancelBag = CancelBag()
@@ -29,11 +30,15 @@ extension AddModelStateView {
 
             _addModelState = .init(initialValue: appState.value.addModelAppState.addModelState)
 
+            _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
+
             cancelBag.collect{
                 // 관찰하기 원하는 값
                 $modelConfirmedForPlacement.sink { appState[\.addModelAppState.modelConfirmedForPlacement] = $0 }
 
                 $addModelState.sink { appState[\.addModelAppState.addModelState] = $0 }
+
+                $wordModels.sink { appState[\.mainViewAppState.wordModels] = $0 }
 
                 //바꾸기 원하는 값
                 appState.map(\.addModelAppState.modelConfirmedForPlacement)
@@ -43,6 +48,10 @@ extension AddModelStateView {
                 appState.map(\.addModelAppState.addModelState)
                     .removeDuplicates()
                     .weakAssign(to: \.addModelState, on: self)
+
+                appState.map(\.mainViewAppState.wordModels)
+                    .removeDuplicates()
+                    .weakAssign(to: \.wordModels, on: self)
 
             }
         }
@@ -85,6 +94,11 @@ extension AddModelStateView {
             isPlacementEnabled = false
             selectedModel = nil
         }
+
+        func changeToNextState() {
+            // 여기에서 초기화등 필요한 함수 진행 
+            container.services.mainViewService.changeMainViewState(to: .practiceState)
+        }
     }
 }
 
@@ -92,7 +106,8 @@ struct AddModelStateView: View {
     @StateObject var viewModel : ViewModel
 
     var body: some View {
-        // addModelState -> classification state 에서 focus view 표시
+        // focus view 표시
+        focusView
 
         // State, button등을 표시하는 화면
         buttonView
@@ -100,40 +115,111 @@ struct AddModelStateView: View {
         // import할 모델을 검색하는 화면
         importModelView
 
+        // next state button
+        nextStateButton
+
         // popup view를 표시하는 화면
+    }
+
+    var focusView: some View {
+        ZStack {
+            Rectangle()
+                .fill(Color.clear).background(.ultraThinMaterial)
+                .frame(width: 50, height: 50, alignment: .center)
+
+        }
+//        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+
     }
 
     var buttonView: some View {
         ZStack {
-            // state button
+            // status view
+            statusView
+
             // normal buttons
             featureButtons
+        }
+    }
 
-            // study button
+    var statusView: some View {
+        VStack {
+            HStack {
+                ZStack {
+                    LinearGradient(colors: [Color.inside.darkerBackgroundColor, Color.clear], startPoint: .leading, endPoint: .trailing)
+                    VStack(alignment: .leading) {
+                        Spacer()
+                        Group {
+                            Text("Yeon 친구 환영해요!")
+                                .bold()
+                            Spacer()
+                            HStack {
+                                Text("오늘 함께 외워볼 단어:")
+                                    .bold()
+                                Text("\(viewModel.wordModels.count)개")
+                                    .bold()
+                                    .foregroundColor(Color.inside.primaryColor)
+                            }
+                        }
+                        .font(.statusTextSize)
+                        .foregroundColor(Color.white)
+                        Spacer()
+                    }
+                }
+                .frame(maxWidth: 400 ,maxHeight: 200)
+                Spacer()
+            }
+            Spacer()
+        }
+
+    }
+
+    var nextStateButton: some View {
+        VStack(alignment: .center) {
+            Spacer()
+            TemporalButtonView(label: "학습 시작하기") {
+                // 다음 상태로 넘어가기
+                viewModel.changeToNextState()
+            }
         }
     }
 
     var featureButtons: some View {
         HStack {
             Spacer()
-            VStack(alignment: .trailing) {
-                TemporalButtonView(label: "다시 하기") {
-                    print("DEBUG: - press 다시하기 버튼 ")
+            VStack(alignment: .trailing, spacing: 15) {
+
+                FeatureButton {
+                    print("DEBUG: - press 홈 버튼 ")
+                    viewModel.changeAddModelState(to: .none)
+                } label: {
+                    FeatureButtonView(buttonLabel: "홈", buttonIcon: Image(systemName: "house.fill"), isSelected: viewModel.addModelState == .none)
                 }
-                TemporalButtonView(label: "추가 하기") {
+
+                FeatureButton {
+                    print("DEBUG: - press 다시하기 버튼 ")
+                } label: {
+                    FeatureButtonView(buttonLabel: "다시하기", buttonIcon: Image(systemName: "gobackward"), isSelected: false)
+                }
+
+                FeatureButton {
                     print("DEBUG: - press 추가하기 버튼 ")
                     // add change state button
                     viewModel.changeAddModelState(to: .handleImportedModel)
+                } label: {
+                    FeatureButtonView(buttonLabel: "추가 하기", buttonIcon: Image(systemName: "plus"), isSelected: viewModel.addModelState == .handleImportedModel)
                 }
-                TemporalButtonView(label: "인식 하기") {
+
+                FeatureButton {
                     print("DEBUG: - press 인식하기 버튼 ")
                     viewModel.changeAddModelState(to: .handleExistingModel)
+                } label: {
+                    FeatureButtonView(buttonLabel: "인식 하기", buttonIcon: Image(systemName: "eyes"), isSelected: viewModel.addModelState == .handleExistingModel)
                 }
                 Spacer()
             }
             .padding()
         }
-
     }
 
     var importModelView: some View {

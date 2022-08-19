@@ -5,12 +5,12 @@
 //  Created by HayeonKim on 2022/08/17.
 //  Copyright © 2022 Apple. All rights reserved.
 //
-
+import ARKit
 import Foundation
 
-struct WordModel: Identifiable {
+struct WordModel: Identifiable, Equatable {
     var word: String
-    var id = UUID().uuidString
+    var id = UUID().uuidString // 꼭 필요한가 다시 확인 
 
     // 학습 모드에서 필요한 변수들
     // 학습이 끝난 단어인가?
@@ -26,4 +26,10 @@ struct WordModel: Identifiable {
         self.word = word
     }
 
+}
+
+
+struct SelectedWordModel: Equatable {
+    var word: String
+    var rayCastResult: ARRaycastResult
 }

@@ -35,6 +35,10 @@
 		26E340AE28AE2EC5000B86C6 /* AddModelService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E340AD28AE2EC5000B86C6 /* AddModelService.swift */; };
 		26E340B028AE5D7C000B86C6 /* MainViewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E340AF28AE5D7C000B86C6 /* MainViewService.swift */; };
 		26E340B228AE6184000B86C6 /* DrawingViewService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E340B128AE6184000B86C6 /* DrawingViewService.swift */; };
+		26E340B428AF408E000B86C6 /* StudyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E340B328AF408E000B86C6 /* StudyStateView.swift */; };
+		26E340B828AF59A2000B86C6 /* GenerateTextSphereEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E340B728AF59A2000B86C6 /* GenerateTextSphereEntity.swift */; };
+		26E340BA28AF6DF6000B86C6 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 26E340B928AF6DF6000B86C6 /* Colors.xcassets */; };
+		26E340BC28AF6F1D000B86C6 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E340BB28AF6F1D000B86C6 /* Color.swift */; };
 		26FD271928A2852600EE6685 /* CustomARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD271828A2852600EE6685 /* CustomARView.swift */; };
 		26FD271F28A2880F00EE6685 /* FocusEntity in Frameworks */ = {isa = PBXBuildFile; productRef = 26FD271E28A2880F00EE6685 /* FocusEntity */; };
 		26FD272228A38F6C00EE6685 /* DrawingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26FD272128A38F6C00EE6685 /* DrawingView.swift */; };
@@ -77,6 +81,10 @@
 		26E340AD28AE2EC5000B86C6 /* AddModelService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddModelService.swift; sourceTree = "<group>"; };
 		26E340AF28AE5D7C000B86C6 /* MainViewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewService.swift; sourceTree = "<group>"; };
 		26E340B128AE6184000B86C6 /* DrawingViewService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewService.swift; sourceTree = "<group>"; };
+		26E340B328AF408E000B86C6 /* StudyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyStateView.swift; sourceTree = "<group>"; };
+		26E340B728AF59A2000B86C6 /* GenerateTextSphereEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenerateTextSphereEntity.swift; sourceTree = "<group>"; };
+		26E340B928AF6DF6000B86C6 /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
+		26E340BB28AF6F1D000B86C6 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		26FD271828A2852600EE6685 /* CustomARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomARView.swift; sourceTree = "<group>"; };
 		26FD272128A38F6C00EE6685 /* DrawingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingView.swift; sourceTree = "<group>"; };
 		26FD272328A3933500EE6685 /* DrawingViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrawingViewControllerRepresentable.swift; sourceTree = "<group>"; };
@@ -113,10 +121,6 @@
 		261836F9289D26A4005092A8 /* ARView */ = {
 			isa = PBXGroup;
 			children = (
-				E1635E1723D5BDFD0031A7D8 /* ARViewController.swift */,
-				261836F5289CFE2A005092A8 /* ConfidencePercentageString.swift */,
-				26FD271828A2852600EE6685 /* CustomARView.swift */,
-				2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */,
 				26183706289E58FF005092A8 /* ImportModel */,
 				26183707289E591E005092A8 /* ClassifyRealObject */,
 			);
@@ -143,7 +147,6 @@
 			isa = PBXGroup;
 			children = (
 				26183716289E5F4B005092A8 /* HandleExistModel.swift */,
-				261836F3289CFE0C005092A8 /* CGImagePropertyOrientation.swift */,
 				261836EE289CFC5C005092A8 /* ImagePredictor.swift */,
 			);
 			path = ClassifyRealObject;
@@ -152,8 +155,7 @@
 		26183708289E5945005092A8 /* StudyView */ = {
 			isa = PBXGroup;
 			children = (
-				26183705289E58E6005092A8 /* TextRecognizer */,
-				26FD272028A38F5C00EE6685 /* Drawing */,
+				26E340B328AF408E000B86C6 /* StudyStateView.swift */,
 			);
 			path = StudyView;
 			sourceTree = "<group>";
@@ -172,6 +174,8 @@
 		26E3408928AD36D6000B86C6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				E1635E1E23D5BDFE0031A7D8 /* Assets.xcassets */,
+				26E340B928AF6DF6000B86C6 /* Colors.xcassets */,
 				26E3408A28AD36DD000B86C6 /* Text Materials */,
 			);
 			path = Resources;
@@ -189,8 +193,11 @@
 		26E3409128AE15B0000B86C6 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				261836F3289CFE0C005092A8 /* CGImagePropertyOrientation.swift */,
+				261836F5289CFE2A005092A8 /* ConfidencePercentageString.swift */,
 				E1635E2D23D736E70031A7D8 /* SimpleExtensions.swift */,
 				26E3409228AE15D1000B86C6 /* Font.swift */,
+				26E340BB28AF6F1D000B86C6 /* Color.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -219,6 +226,7 @@
 			isa = PBXGroup;
 			children = (
 				261836EA289CF90B005092A8 /* MainView.swift */,
+				26E340B528AF409E000B86C6 /* UIKitViews */,
 				261836F9289D26A4005092A8 /* ARView */,
 				26E3409C28AE2BA7000B86C6 /* AddModelView */,
 				26183708289E5945005092A8 /* StudyView */,
@@ -279,6 +287,27 @@
 			path = ViewModifiers;
 			sourceTree = "<group>";
 		};
+		26E340B528AF409E000B86C6 /* UIKitViews */ = {
+			isa = PBXGroup;
+			children = (
+				26E340B628AF40BD000B86C6 /* ARView */,
+				26183705289E58E6005092A8 /* TextRecognizer */,
+				26FD272028A38F5C00EE6685 /* Drawing */,
+			);
+			path = UIKitViews;
+			sourceTree = "<group>";
+		};
+		26E340B628AF40BD000B86C6 /* ARView */ = {
+			isa = PBXGroup;
+			children = (
+				E1635E1723D5BDFD0031A7D8 /* ARViewController.swift */,
+				26FD271828A2852600EE6685 /* CustomARView.swift */,
+				2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */,
+				26E340B728AF59A2000B86C6 /* GenerateTextSphereEntity.swift */,
+			);
+			path = ARView;
+			sourceTree = "<group>";
+		};
 		26FD272028A38F5C00EE6685 /* Drawing */ = {
 			isa = PBXGroup;
 			children = (
@@ -309,7 +338,6 @@
 				26E3409828AE2B36000B86C6 /* UI */,
 				26E3408928AD36D6000B86C6 /* Resources */,
 				26E3409128AE15B0000B86C6 /* Extension */,
-				E1635E1E23D5BDFE0031A7D8 /* Assets.xcassets */,
 				E1635E2323D5BDFE0031A7D8 /* Info.plist */,
 				261836F0289CFD98005092A8 /* MobileNetV2.mlmodel */,
 			);
@@ -380,6 +408,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26E340BA28AF6DF6000B86C6 /* Colors.xcassets in Resources */,
 				26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */,
 				26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */,
 				2618370F289E5AB4005092A8 /* Teapot.usdz in Resources */,
@@ -402,12 +431,15 @@
 				2618375F28A0E49B005092A8 /* State.swift in Sources */,
 				26183717289E5F4B005092A8 /* HandleExistModel.swift in Sources */,
 				261836F6289CFE2A005092A8 /* ConfidencePercentageString.swift in Sources */,
+				26E340B428AF408E000B86C6 /* StudyStateView.swift in Sources */,
+				26E340BC28AF6F1D000B86C6 /* Color.swift in Sources */,
 				261836F1289CFD98005092A8 /* MobileNetV2.mlmodel in Sources */,
 				26E3409028AE130F000B86C6 /* FeatureButtonStyle.swift in Sources */,
 				26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */,
 				26E340AE28AE2EC5000B86C6 /* AddModelService.swift in Sources */,
 				26E340AA28AE2CF2000B86C6 /* ServicesContainer.swift in Sources */,
 				26E340A028AE2C2E000B86C6 /* CancelBag.swift in Sources */,
+				26E340B828AF59A2000B86C6 /* GenerateTextSphereEntity.swift in Sources */,
 				E1635E1823D5BDFD0031A7D8 /* ARViewController.swift in Sources */,
 				261836F4289CFE0C005092A8 /* CGImagePropertyOrientation.swift in Sources */,
 				261836EB289CF90B005092A8 /* MainView.swift in Sources */,

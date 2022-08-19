@@ -13,5 +13,5 @@ enum MainViewState: Equatable {
 }
 
 enum AddModelState: Equatable {
-    case none, handleExistingModel, handleImportedModel, selectModels
+    case none, handleExistingModel, handleImportedModel
 }

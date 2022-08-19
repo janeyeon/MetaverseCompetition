@@ -40,6 +40,7 @@ extension ARViewController {
 
                         DispatchQueue.main.async {
                             self?.arView.scene.addAnchor(anchorEntity)
+                            self?.viewModel?.addNewWordModel(word: self!.latestPrediction)
                         }
                     }
                 }

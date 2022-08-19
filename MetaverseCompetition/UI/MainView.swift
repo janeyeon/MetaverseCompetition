@@ -53,10 +53,13 @@ struct MainView: View {
             MyARViewControllerRepresentable(viewModel: .init(container: viewModel.container))
 
             switch viewModel.mainViewState {
+
             case .addModelState:
                 AddModelStateView(viewModel: .init(container: viewModel.container))
+
             case .practiceState:
-                EmptyView()
+                StudyStateView(viewModel: .init(container: viewModel.container))
+
             case .testState:
                 EmptyView()
             }

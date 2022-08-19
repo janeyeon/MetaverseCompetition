@@ -16,16 +16,27 @@ struct AppState {
 
     struct AddModelAppState: Equatable {
         var modelConfirmedForPlacement: String?
-        var addModelState: AddModelState = .handleExistingModel
+        var addModelState: AddModelState = .none
     }
 
     struct MainViewAppState: Equatable {
         var mainViewState: MainViewState = .addModelState
+
+        // 불러온 모든 모델들
+        var wordModels: [WordModel] = []
+
+        // study state에서 선택된 wordModel
+        var selectedModelForStudy: SelectedWordModel?
+
+        // text state에서 선택된 wordModel
+        var selectedModelForTest: SelectedWordModel?
     }
 
     struct DrawingViewAppState: Equatable {
         var transcript: String = ""
         // view에 관련된 변수지만 DrawingViewControllerRepresentable에서도 필요하므로 넣어준다
         var isTrascriptButtonPressed: Bool = false
+
+
     }
 }

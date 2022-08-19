@@ -25,6 +25,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
     
     private var cancellable: AnyCancellable?
     private var arViewStateCancellable: AnyCancellable?
+    private var selectedModelForStudyCancellable: AnyCancellable?
+    private var selectedModelForTestCancellable: AnyCancellable?
 
     // MARK: - initializer
     init(viewModel: MyARViewControllerRepresentable.ViewModel) {
@@ -42,9 +44,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     Just($0).setFailureType(to: Error.self)
                 )
             }
-            .map { [weak self] (modelEntity, modelName) -> AnchorEntity in
+            .map { [weak self] (modelEntity, modelName) -> (String, AnchorEntity) in
 
-                guard let self = self else { return AnchorEntity()}
+                guard let self = self else { return ("", AnchorEntity())}
 
                 let modelHeight = (modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!
 
@@ -62,7 +64,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 anchorEntity.addChild(textEntity)
                 anchorEntity.name = "\(modelName)_anchor"
 
-                return anchorEntity
+
+                return (modelName, anchorEntity)
             }
             .receive(on: RunLoop.main)
             .sink(receiveCompletion: { [weak self] loadCompletion in
@@ -72,10 +75,11 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 if case let .failure(error) = loadCompletion {
                     assertionFailure("Unable to load a model due to error \(error)")
                 }
-            }, receiveValue: { [weak self] anchorEntity in
+            }, receiveValue: { [weak self] (modelName, anchorEntity) in
                 guard let self = self else { return }
 
                 self.arView.scene.addAnchor(anchorEntity)
+                self.viewModel!.addNewWordModel(word: modelName)
             })
 
         // focus Entity를 생성하고 없애는 부분
@@ -90,6 +94,18 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     self.arView.setFocusSquare(isCreateNeeded: false)
                 }
 
+            })
+
+        selectedModelForStudyCancellable
+        = viewModel.$selectedModelForStudy
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] selectedModel in
+
+                guard let self = self else { return }
+                guard let selectedModel = selectedModel else { return }
+
+                // 여기에 모델이 선택되면 해야할 일을 명시해 준다
+                self.changeModelTextTexture(result: selectedModel.rayCastResult, modelName: selectedModel.word)
             })
     }
 
@@ -306,7 +322,38 @@ class ARViewController: UIViewController, ARSessionDelegate {
         let position = result.worldTransform.position
         // 2. Visualize the intersection point of the ray
 
-        // MARK: - 여기에서 반드시 WorldModel을 제대로 넣어주어야 함
+        // MARK: - State별로 구분 중요
+        switch viewModel!.mainViewState {
+        case .addModelState:
+            handleAddModelState(position: position)
+        case .practiceState:
+            handlePracticeState(tapLocation: tapLocation, result: result)
+        case .testState:
+            handleTestState(tapLocation: tapLocation, result: result)
+        }
+
+    }
+
+    /// 선택한 물체 학습창 띄우기
+    func handlePracticeState(tapLocation: CGPoint, result: ARRaycastResult) {
+        // 모델을 선택하고
+        let selectedModelName = selectedModelName(tapLocation: tapLocation)
+
+        // 그 모델을 전체 appState에서 바꿔준다
+        viewModel?.setSelectedModelForStudy(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
+
+    }
+
+    /// 선택한 물체 테스트창 띄우기
+    func handleTestState(tapLocation: CGPoint, result: ARRaycastResult) {
+        // 모델을 선택하고
+        let selectedModelName = selectedModelName(tapLocation: tapLocation)
+
+        viewModel?.setSelectedModelForTest(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
+    }
+
+    /// 있던 물체를 불러오거나 classification 진행하기
+    func handleAddModelState(position: SIMD3<Float>) {
         switch viewModel!.addModelState {
         case .none:
             print("DEBUG: arViewState is none")
@@ -314,23 +361,29 @@ class ARViewController: UIViewController, ARSessionDelegate {
             self.handleExistModel(position: position)
         case .handleImportedModel:
             print("DEBUG: arViewState is handleImportedModel")
-        case .selectModels:
-            print("DEBUG: arViewState is selectModels")
-            selectModel(tapLocation: tapLocation, worldMatrix: result.worldTransform, position: position)
-
         }
     }
 
-    func selectModel(tapLocation: CGPoint, worldMatrix: simd_float4x4, position: SIMD3<Float>) {
+    /// 선택한 모델의 이름을 return하기
+    func selectedModelName(tapLocation: CGPoint) -> String {
 
         guard let hitEntity = self.arView.entity(at: tapLocation) else {
-            return
+            return ""
         }
 
         let modelName = hitEntity.name.prefix(while: { $0 != "_" })
 
         print("DEBUG: Hit this!: \(hitEntity.name)")
         print("DEBUG: Model name: \(modelName)")
+
+        return String(modelName)
+
+    }
+
+    /// 선택한 모델의 text의 texture를 바꾸는 함수
+    func changeModelTextTexture(result: ARRaycastResult, modelName: String) {
+        let worldMatrix = result.worldTransform
+        let position = worldMatrix.position
 
         // 해당 text entity가 존재하는지 확인
         guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {
@@ -347,8 +400,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
-
     }
+
 
 }
 
