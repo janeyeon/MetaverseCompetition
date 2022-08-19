@@ -125,38 +125,78 @@ struct AddModelStateView: View {
 
     var focusView: some View {
         ZStack {
-            focusBackgroundView()
-            Image("focusSquare")
-                .resizable()
-                .frame(width: 500, height: 600, alignment: .center)
+            focusSquareview()
+                .frame(alignment: .center)
             Image(systemName: "plus")
                 .resizable()
                 .foregroundColor(Color.inside.primaryColor)
                 .frame(width: 35, height: 35, alignment: .center)
         }
-
     }
 
-    func focusBackgroundView() -> some View {
+    func focusSquareview() -> some View {
         let maxWidth = UIScreen.main.bounds.width
         let maxHeight = UIScreen.main.bounds.height
         let rectWidth : CGFloat = 500
         let rectHeight : CGFloat = 600
+        let point1 = CGPoint(x: maxWidth/2 - rectWidth/2, y: maxHeight/2 - rectHeight/2)
+        let point2 = CGPoint(x: maxWidth/2 + rectWidth/2, y: maxHeight/2 - rectHeight/2)
+        let point3 = CGPoint(x: maxWidth/2 + rectWidth/2, y: maxHeight/2 + rectHeight/2)
+        let point4 = CGPoint(x: maxWidth/2 - rectWidth/2, y: maxHeight/2 + rectHeight/2)
+        let lineLength: CGFloat = 50
 
-        let largeRect = UIBezierPath(rect: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
+        return VStack {
+            Path { path in
+                // L
+                path.addLines([
+                    CGPoint(x: point1.x, y: point1.y + lineLength),
+                    CGPoint(x: point1.x, y: point1.y),
+                    CGPoint(x: point1.x + lineLength, y: point1.y)
+                ])
 
-        let smallRect = UIBezierPath(rect: CGRect(x: maxWidth / 2 - rectWidth / 2, y: maxHeight / 2 - rectHeight / 2, width: rectWidth, height: rectHeight))
+                // _|
+                path.addLines([
+                    CGPoint(x: point2.x - lineLength, y: point2.y),
+                    CGPoint(x: point2.x, y: point2.y),
+                    CGPoint(x: point2.x, y: point2.y + lineLength)
+                ])
 
+                // ㄱ
+                path.addLines([
+                    CGPoint(x: point3.x - lineLength, y: point3.y),
+                    CGPoint(x: point3.x, y: point3.y),
+                    CGPoint(x: point3.x, y: point3.y - lineLength)
+                ])
 
-        largeRect.append(smallRect.reversing())
-        let path = Path(largeRect.cgPath)
+                // -|
+                path.addLines([
+                    CGPoint(x: point4.x, y: point4.y - lineLength),
+                    CGPoint(x: point4.x, y: point4.y),
+                    CGPoint(x: point4.x + lineLength, y: point4.y)
+                ])
 
-        return ZStack {
-
+            }
+            .stroke(lineWidth: 5)
+            .foregroundColor(Color.inside.primaryColor)
         }
-        .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        .background(.ultraThinMaterial, in: path)
     }
+
+//    func focusBackgroundView() -> some View {
+//        let maxWidth = UIScreen.main.bounds.width
+//        let maxHeight = UIScreen.main.bounds.height
+//        let rectWidth : CGFloat = 500
+//        let rectHeight : CGFloat = 600
+//
+//        let largeRect = UIBezierPath(rect: CGRect(x: 0, y: 0, width: maxWidth, height: maxHeight))
+//
+//        let smallRect = UIBezierPath(rect: CGRect(x: maxWidth / 2 - rectWidth / 2, y: maxHeight / 2 - rectHeight / 2, width: rectWidth, height: rectHeight))
+//
+//        largeRect.append(smallRect.reversing())
+//        let path = Path(largeRect.cgPath)
+//
+//        return path
+////        .background(.ultraThinMaterial, in: path)
+//    }
 
     var buttonView: some View {
         ZStack {
