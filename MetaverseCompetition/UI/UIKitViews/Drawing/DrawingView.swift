@@ -47,6 +47,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        canvasView.backgroundColor = .clear
         canvasView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(canvasView)
         NSLayoutConstraint.activate([

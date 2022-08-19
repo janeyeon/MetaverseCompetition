@@ -13,10 +13,15 @@ struct AppState {
     var addModelAppState = AddModelAppState()
     var mainViewAppState = MainViewAppState()
     var drawingViewAppState = DrawingViewAppState()
+    var studyAppState = StudyAppState()
 
     struct AddModelAppState: Equatable {
         var modelConfirmedForPlacement: String?
-        var addModelState: AddModelState = .none
+        var addModelState: AddModelState = .home
+    }
+
+    struct StudyAppState: Equatable {
+        var studyState: StudyState = .home
     }
 
     struct MainViewAppState: Equatable {

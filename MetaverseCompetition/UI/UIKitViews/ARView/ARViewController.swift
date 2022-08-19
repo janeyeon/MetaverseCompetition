@@ -355,7 +355,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
     /// 있던 물체를 불러오거나 classification 진행하기
     func handleAddModelState(position: SIMD3<Float>) {
         switch viewModel!.addModelState {
-        case .none:
+        case .home:
             print("DEBUG: arViewState is none")
         case .handleExistingModel:
             self.handleExistModel(position: position)
@@ -394,6 +394,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         // 기존의 text entity 지우고
         arView.scene.findEntity(named: "\(modelName)_text")?.removeFromParent(preservingWorldTransform: true)
+
 
         // 다시 만든다
         let model = generateExistTextEntityWithMaterial(position: position, modelName: String(modelName))

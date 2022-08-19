@@ -121,7 +121,7 @@ struct AddModelStateView: View {
         importModelView
 
         // next state button
-        if viewModel.addModelState == .none && viewModel.wordModels.count > 0 {
+        if viewModel.addModelState == .home && viewModel.wordModels.count > 0 {
             nextStateButton
         }
         // popup view를 표시하는 화면
@@ -209,7 +209,6 @@ struct AddModelStateView: View {
                     CGPoint(x: point4.x, y: point4.y),
                     CGPoint(x: point4.x + lineLength, y: point4.y)
                 ])
-
             }
             .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round))
             .foregroundColor(Color.inside.primaryColor)
@@ -243,33 +242,21 @@ struct AddModelStateView: View {
     }
 
     var statusView: some View {
-        VStack {
-            HStack {
-                ZStack {
-                    LinearGradient(colors: [Color.inside.darkerBackgroundColor, Color.clear], startPoint: .leading, endPoint: .trailing)
-                    VStack(alignment: .leading) {
-                        Spacer()
-                        Group {
-                            Text("Yeon 친구 환영해요!")
-                                .bold()
-                            Spacer()
-                            HStack {
-                                Text("오늘 함께 외워볼 단어:")
-                                    .bold()
-                                Text("\(viewModel.wordModels.count)개")
-                                    .bold()
-                                    .foregroundColor(Color.inside.primaryColor)
-                            }
-                        }
-                        .font(.statusTextSize)
-                        .foregroundColor(Color.white)
-                        Spacer()
-                    }
-                }
-                .frame(maxWidth: 400 ,maxHeight: 200)
+        StatusView {
+            Group {
+                Text("Yeon 친구 환영해요!")
+                    .bold()
                 Spacer()
+                HStack {
+                    Text("오늘 함께 외워볼 단어:")
+                        .bold()
+                    Text("\(viewModel.wordModels.count)개")
+                        .bold()
+                        .foregroundColor(Color.inside.primaryColor)
+                }
             }
-            Spacer()
+            .font(.statusTextSize)
+            .foregroundColor(Color.white)
         }
 
     }
@@ -295,9 +282,9 @@ struct AddModelStateView: View {
 
                 FeatureButton {
                     print("DEBUG: - press 홈 버튼 ")
-                    viewModel.changeAddModelState(to: .none)
+                    viewModel.changeAddModelState(to: .home)
                 } label: {
-                    FeatureButtonView(buttonLabel: "홈", buttonIcon: Image(systemName: "house.fill"), isSelected: viewModel.addModelState == .none)
+                    FeatureButtonView(buttonLabel: "홈", buttonIcon: Image(systemName: "house.fill"), isSelected: viewModel.addModelState == .home)
                 }
 
                 FeatureButton {

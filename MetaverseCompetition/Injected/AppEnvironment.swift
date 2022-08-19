@@ -27,8 +27,9 @@ struct AppEnvironment {
         let addModelService = RealAddModelService(appState: appState)
         let mainViewService = RealMainViewService(appState: appState)
         let drawingViewService = RealDrawingViewService(appState: appState)
+        let studyService = RealStudyService(appState: appState)
         // Services의 init을 return한다
-        return .init(addModelService: addModelService, mainViewService: mainViewService, drawingViewService: drawingViewService)
+        return .init(addModelService: addModelService, mainViewService: mainViewService, drawingViewService: drawingViewService, studyService: studyService)
     }
 }
 
