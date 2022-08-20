@@ -26,6 +26,7 @@ extension MyARViewControllerRepresentable {
         @Published var addModelState: AddModelState
         @Published var mainViewState: MainViewState
         @Published var selectedModelForStudy: SelectedWordModel?
+        @Published var selectedModelForStudyOldValue: SelectedWordModel?
         @Published var selectedModelForTest: SelectedWordModel?
         @Published var wordModels: [WordModel]
 
@@ -48,6 +49,8 @@ extension MyARViewControllerRepresentable {
 
             _selectedModelForStudy = .init(initialValue: appState.value.mainViewAppState.selectedModelForStudy)
 
+            _selectedModelForStudyOldValue = .init(initialValue: appState.value.mainViewAppState.selectedModelForStudyOldValue)
+
             _selectedModelForTest = .init(initialValue: appState.value.mainViewAppState.selectedModelForTest)
 
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
@@ -62,6 +65,8 @@ extension MyARViewControllerRepresentable {
                 $mainViewState.sink { appState[\.mainViewAppState.mainViewState] = $0 }
 
                 $selectedModelForStudy.sink { appState[\.mainViewAppState.selectedModelForStudy] = $0 }
+
+                $selectedModelForStudyOldValue.sink { appState[\.mainViewAppState.selectedModelForStudyOldValue] = $0 }
 
                 $wordModels.sink { appState[\.mainViewAppState.wordModels] = $0 }
 
@@ -81,6 +86,10 @@ extension MyARViewControllerRepresentable {
                     .removeDuplicates()
                     .weakAssign(to: \.selectedModelForStudy, on: self)
 
+                appState.map(\.mainViewAppState.selectedModelForStudyOldValue)
+                    .removeDuplicates()
+                    .weakAssign(to: \.selectedModelForStudyOldValue, on: self)
+
                 appState.map(\.mainViewAppState.wordModels)
                     .removeDuplicates()
                     .weakAssign(to: \.wordModels, on: self)
@@ -91,6 +100,11 @@ extension MyARViewControllerRepresentable {
             container.services.mainViewService.setSelectedModelForStudy(selectedModel: selectedModel)
         }
 
+        /// SelectedModelForStudyOldValue를 다시 nil값으로
+        func setSelectedModelForStudyOldValue() {
+            container.services.mainViewService.setSelectedModelForStudyOldValue()
+        }
+
         func setSelectedModelForTest(selectedModel: SelectedWordModel) {
             container.services.mainViewService.setSelectedModelForTest(selectedModel: selectedModel)
         }
@@ -98,6 +112,8 @@ extension MyARViewControllerRepresentable {
         func addNewWordModel(word: String) {
             container.services.mainViewService.addNewWordModel(word: word)
         }
+
+
 
     }
 }

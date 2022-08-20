@@ -12,6 +12,8 @@ protocol MainViewService {
 
     func setSelectedModelForStudy(selectedModel: SelectedWordModel?)
 
+    func setSelectedModelForStudyOldValue()
+
     func setSelectedModelForTest(selectedModel: SelectedWordModel?)
 
     func addNewWordModel(word: String)
@@ -32,7 +34,16 @@ final class RealMainViewService: MainViewService {
     }
 
     func setSelectedModelForStudy(selectedModel: SelectedWordModel?) {
+        // nil이전의 값을 넣어준다
+        if selectedModel == nil {
+            appState.value.mainViewAppState.selectedModelForStudyOldValue = appState.value.mainViewAppState.selectedModelForStudy
+        }
         appState.value.mainViewAppState.selectedModelForStudy = selectedModel
+    }
+
+    func setSelectedModelForStudyOldValue() {
+        // 다시 oldValue변수를 nil로 만들어준다
+        appState.value.mainViewAppState.selectedModelForStudyOldValue = nil
     }
 
     func setSelectedModelForTest(selectedModel: SelectedWordModel?) {

@@ -38,12 +38,13 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         let textMesh = MeshResource.generateText(text, extrusionDepth: Float(lineHeight * 0.1), font: font)
 
         let textMeterial = SimpleMaterial(color: UIColor.orange, isMetallic: true)
-        
+
         let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
 
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
         model.position.y += 0.015
         model.position.x += Float(text.count) * 0.005
+
         return model
     }
 

@@ -26,6 +26,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
     private var arViewStateCancellable: AnyCancellable?
     private var selectedModelForStudyCancellable: AnyCancellable?
     private var selectedModelForTestCancellable: AnyCancellable?
+    private var selectedModelForStudyOldValueCancellable: AnyCancellable?
 
     var generateTextSphereEntity: GenerateTextSphereEntity?
 
@@ -102,16 +103,38 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
             })
 
-        selectedModelForStudyCancellable
+        selectedModelForStudyOldValueCancellable
         = viewModel.$selectedModelForStudy
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] selectedModel in
 
                 guard let self = self else { return }
+                // nil로 바뀌면 아무것도 하지마라
                 guard let selectedModel = selectedModel else { return }
 
                 // 여기에 모델이 선택되면 해야할 일을 명시해 준다
                 self.changeModelTextTexture(result: selectedModel.rayCastResult, modelName: selectedModel.word)
+
+            })
+
+        selectedModelForStudyCancellable
+        = viewModel.$selectedModelForStudyOldValue
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] selectedModel in
+
+                guard let self = self else { return }
+
+                // nil로 바뀌면 아무것도 하지마라
+                guard let selectedModel = selectedModel else { return }
+
+                // 다 끝내고 나서 다시 nil로 바꿔줘라
+                defer {
+                    self.viewModel!.setSelectedModelForStudyOldValue()
+                }
+
+                // 얘가 선택된거라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 다시 원래대로 돌려놔야함
+                self.returnModelTextTexture(result: selectedModel.rayCastResult, modelName: selectedModel.word)
+
             })
     }
 
@@ -276,6 +299,29 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         // 다시 만든다
         let model = generateTextSphereEntity!.generateExistTextEntityWithMaterial(position: position, modelName: String(modelName))
+
+        // 그걸 기존의 anchor에 추가
+        arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
+    }
+
+    /// 선택한 모델의 text의 texture를 다시 되돌리는 함수
+    func returnModelTextTexture(result: ARRaycastResult, modelName: String) {
+
+        let worldMatrix = result.worldTransform
+        let position = worldMatrix.position
+
+        // 해당 text entity가 존재하는지 확인
+        guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {
+            return
+        }
+
+        print("DEBUG: - raycast position : \(position)")
+
+        // 기존의 text entity 지우고
+        arView.scene.findEntity(named: "\(modelName)_text")?.removeFromParent(preservingWorldTransform: true)
+
+        // 다시 만든다
+        let model = generateTextSphereEntity!.generateExistTextEntity(position: position, modelName: String(modelName))
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
