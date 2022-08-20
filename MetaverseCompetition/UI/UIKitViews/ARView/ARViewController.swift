@@ -22,11 +22,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
     let BUBBLE_DEPTH: Float = 0.01 // depth of 3D text
     var arView = CustomARView(frame: .zero)
     
-    private var cancellable: AnyCancellable?
-    private var arViewStateCancellable: AnyCancellable?
-    private var selectedModelForStudyCancellable: AnyCancellable?
-    private var selectedModelForTestCancellable: AnyCancellable?
-    private var selectedModelForStudyOldValueCancellable: AnyCancellable?
+    private var cancellableBag: [AnyCancellable] = []
+
 
     var generateTextSphereEntity: GenerateTextSphereEntity?
 
@@ -43,7 +40,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         self.classificationModel = RealClassification(arView: self.arView, generateTextSphereEntity: self.generateTextSphereEntity!, viewModel: self.viewModel!)
 
         // modelConfirmedForPlacement값이 바뀔때 이걸 받으라고 못하나?
-        cancellable = viewModel.$modelConfirmedForPlacement
+        cancellableBag.append(viewModel.$modelConfirmedForPlacement
             .compactMap { modelName in modelName }
             .flatMap {
                 Publishers.Zip(
@@ -51,9 +48,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     Just($0).setFailureType(to: Error.self)
                 )
             }
-            .map { [weak self] (modelEntity, modelName) -> (String, AnchorEntity) in
+            .map { [weak self] (modelEntity, modelName) -> (String, AnchorEntity, ARRaycastResult?) in
 
-                guard let self = self else { return ("", AnchorEntity())}
+                guard let self = self else { return ("", AnchorEntity(), nil)}
 
                 let modelHeight = (modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!
 
@@ -71,8 +68,12 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 anchorEntity.addChild(textEntity)
                 anchorEntity.name = "\(modelName)_anchor"
 
+                guard let result = self.arView.raycast(from: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2), allowing: .estimatedPlane, alignment: .any).first else {
+                    return ("", AnchorEntity(), nil)
+                }
 
-                return (modelName, anchorEntity)
+
+                return (modelName, anchorEntity, result)
             }
             .receive(on: RunLoop.main)
             .sink(receiveCompletion: { [weak self] loadCompletion in
@@ -82,29 +83,30 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 if case let .failure(error) = loadCompletion {
                     assertionFailure("Unable to load a model due to error \(error)")
                 }
-            }, receiveValue: { [weak self] (modelName, anchorEntity) in
+            }, receiveValue: { [weak self] (modelName, anchorEntity, rayCastResult) in
                 guard let self = self else { return }
 
                 self.arView.scene.addAnchor(anchorEntity)
-                self.viewModel!.addNewWordModel(word: modelName)
-            })
+                self.viewModel!.addNewWordModel(word: modelName, rayCastResult: rayCastResult!)
+            }))
 
-        // focus Entity를 생성하고 없애는 부분
-        arViewStateCancellable = viewModel.$addModelState
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { [weak self] arViewState in
-                guard let self = self else { return }
-                print("DEBUG: arviewState \(arViewState)")
-                if arViewState == .handleImportedModel {
-                    self.arView.setFocusSquare(isCreateNeeded: true)
-                } else {
-                    self.arView.setFocusSquare(isCreateNeeded: false)
-                }
+    // focus Entity를 생성하고 없애는 부분
+        cancellableBag.append(
+            viewModel.$addModelState
+                .receive(on: RunLoop.main)
+                .sink(receiveValue: { [weak self] arViewState in
+                    guard let self = self else { return }
+                    print("DEBUG: arviewState \(arViewState)")
+                    if arViewState == .handleImportedModel {
+                        self.arView.setFocusSquare(isCreateNeeded: true)
+                    } else {
+                        self.arView.setFocusSquare(isCreateNeeded: false)
+                    }
 
-            })
+                })
+        )
 
-        selectedModelForStudyOldValueCancellable
-        = viewModel.$selectedModelForStudy
+        cancellableBag.append(viewModel.$selectedModelForStudy
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] selectedModel in
 
@@ -113,12 +115,25 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 guard let selectedModel = selectedModel else { return }
 
                 // 여기에 모델이 선택되면 해야할 일을 명시해 준다
-                self.changeModelTextTexture(result: selectedModel.rayCastResult, modelName: selectedModel.word)
+                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
 
-            })
+            }))
 
-        selectedModelForStudyCancellable
-        = viewModel.$selectedModelForStudyOldValue
+        cancellableBag.append( viewModel.$selectedModelForStudy
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] selectedModel in
+
+                guard let self = self else { return }
+                // nil로 바뀌면 아무것도 하지마라
+                guard let selectedModel = selectedModel else { return }
+
+                // 여기에 모델이 선택되면 해야할 일을 명시해 준다
+                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+
+            }))
+
+
+        cancellableBag.append(viewModel.$selectedModelForStudyOldValue
             .receive(on: RunLoop.main)
             .sink(receiveValue: { [weak self] selectedModel in
 
@@ -133,9 +148,30 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 }
 
                 // 얘가 선택된거라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 다시 원래대로 돌려놔야함
-                self.returnModelTextTexture(result: selectedModel.rayCastResult, modelName: selectedModel.word)
+                self.returnModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
 
-            })
+            }))
+
+
+        // test state들어갈때 anchorEntities초기화
+        cancellableBag.append(
+            viewModel.$mainViewState
+                .sink(receiveValue: { [weak self] mainViewState in
+
+                    guard let self = self else { return }
+
+                    // mainView가 test state일때만 실행
+                    if mainViewState == .testState {
+                        let anchors:[AnchorEntity] =  self.arView.scene.anchors.map { $0.anchor as! AnchorEntity }
+                        self.viewModel?.setAnchorEntities(anchorEntities: anchors)
+                        print("DEBUG: all anchors \(anchors)")
+
+                        // 모든 text entity를 지우자
+                        self.changeAllTextEntities()
+                    }
+                })
+        )
+
     }
 
     required init?(coder: NSCoder) {
@@ -143,7 +179,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
     }
 
     deinit {
-        cancellable?.cancel()
+        cancellableBag.map { $0.cancel() }
     }
 
     override func viewDidLoad() {
@@ -200,6 +236,31 @@ class ARViewController: UIViewController, ARSessionDelegate {
     override var prefersStatusBarHidden: Bool { true }
 
 
+    // MARK: - 모든 text entity를 ?으로 바꾸는 부분
+    func changeAllTextEntities() {
+
+        // 우선 모든 단어 이름들을 가져온다
+//        let words = viewModel!.wordModels.map { $0.word }
+        for wordModel in viewModel!.wordModels {
+            // text entity를 지운다
+            arView.scene.findEntity(named: "\(wordModel.word)_text")?.removeFromParent(preservingWorldTransform: true)
+
+            // 기존에 있던 rayCastResult에서 position을
+            let position = wordModel.rayTracingResult.worldTransform.position
+
+            // 같은 자리에 ?를 넣는다
+            let model = generateTextSphereEntity!.generateExistTextEntity(position: position, modelName: "?")
+
+            // 그리고 기존의 anchor에 추가
+            arView.scene.findEntity(named: "\(wordModel.word)_anchor")?.addChild(model)
+
+        }
+    }
+
+    func changeModelTextToQuestionMark() {
+
+    }
+
 
     // MARK: - Handle gestures
     @objc
@@ -234,6 +295,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
             return
         }
 
+        let position = arView.scene.findEntity(named: "\(selectedModelName)_text")?.position
+
+
         // 그 모델을 전체 appState에서 바꿔준다
         viewModel?.setSelectedModelForStudy(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
 
@@ -245,6 +309,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
         guard let selectedModelName = selectedModelName(tapLocation: tapLocation) else {
             return
         }
+
+        let position = arView.scene.findEntity(named: "\(selectedModelName)_text")?.position
 
         viewModel?.setSelectedModelForTest(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
     }
@@ -273,7 +339,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         print("DEBUG: Hit this!: \(hitEntity.name)")
         print("DEBUG: Model name: \(modelName)")
 
-        guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {
+        guard let _ = arView.scene.findEntity(named: "\(modelName)_sphere") else {
             return nil
         }
 
@@ -282,9 +348,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
     }
 
     /// 선택한 모델의 text의 texture를 바꾸는 함수
-    func changeModelTextTexture(result: ARRaycastResult, modelName: String) {
-        let worldMatrix = result.worldTransform
-        let position = worldMatrix.position
+    func changeModelTextTexture(rayCastResult: ARRaycastResult, modelName: String) {
+
+        let position = rayCastResult.worldTransform.position
 
         // 해당 text entity가 존재하는지 확인
         guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {
@@ -305,10 +371,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
     }
 
     /// 선택한 모델의 text의 texture를 다시 되돌리는 함수
-    func returnModelTextTexture(result: ARRaycastResult, modelName: String) {
+    func returnModelTextTexture(rayCastResult: ARRaycastResult, modelName: String) {
 
-        let worldMatrix = result.worldTransform
-        let position = worldMatrix.position
+        let position = rayCastResult.worldTransform.position
 
         // 해당 text entity가 존재하는지 확인
         guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {

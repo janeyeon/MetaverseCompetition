@@ -22,8 +22,12 @@ struct WordModel: Identifiable, Equatable, Hashable {
     // 이 단어를 맞추기까지 몇개나 걸렸는가
     var count: Int = 0
 
-    init(word: String) {
+    // position 넣을까 말까
+    var rayTracingResult: ARRaycastResult
+
+    init(word: String, rayTracingResult: ARRaycastResult) {
         self.word = word
+        self.rayTracingResult = rayTracingResult
     }
 
 }
@@ -32,6 +36,7 @@ struct WordModel: Identifiable, Equatable, Hashable {
 struct SelectedWordModel: Equatable {
     var word: String
     var rayCastResult: ARRaycastResult
+//    var position: SIMD3<Float>
     var isRight: Bool = false
 
     init(word: String, rayCastResult: ARRaycastResult) {

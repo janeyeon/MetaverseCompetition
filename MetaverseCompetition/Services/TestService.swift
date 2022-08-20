@@ -7,9 +7,12 @@
 //
 
 import Foundation
+import RealityKit
 
 protocol TestService {
     func changeTestState(to state: TestState)
+
+    func setAnchorEntities(anchorEntities: [AnchorEntity])
 }
 
 
@@ -23,4 +26,9 @@ final class RealTestService: TestService {
     func changeTestState(to state: TestState) {
         appState.value.testAppState.testState = state
     }
+
+    func setAnchorEntities(anchorEntities: [AnchorEntity]) {
+        appState.value.testAppState.anchorEntities = anchorEntities
+    }
+
 }

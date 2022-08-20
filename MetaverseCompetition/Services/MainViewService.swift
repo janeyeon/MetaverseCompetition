@@ -5,6 +5,7 @@
 //  Created by HayeonKim on 2022/08/18.
 //  Copyright © 2022 Apple. All rights reserved.
 //
+import ARKit
 import Foundation
 
 protocol MainViewService {
@@ -12,7 +13,7 @@ protocol MainViewService {
 
     // ------- for add model state view --------
 
-    func addNewWordModel(word: String)
+    func addNewWordModel(word: String, rayCastResult: ARRaycastResult)
 
     // ------- for study state view --------
 
@@ -58,8 +59,8 @@ final class RealMainViewService: MainViewService {
         appState.value.mainViewAppState.selectedModelForTest = selectedModel
     }
 
-    func addNewWordModel(word: String) {
-        appState.value.mainViewAppState.wordModels.append(WordModel(word: word))
+    func addNewWordModel(word: String, rayCastResult: ARRaycastResult) {
+        appState.value.mainViewAppState.wordModels.append(WordModel(word: word, rayTracingResult: rayCastResult))
         print("DEBUG: addModel: \(word)")
         print("DEBUG: total wordModels: \(appState.value.mainViewAppState.wordModels.map { $0.word } )")
     }

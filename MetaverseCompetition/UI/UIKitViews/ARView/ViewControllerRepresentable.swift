@@ -6,7 +6,9 @@
 //  Copyright © 2022 Apple. All rights reserved.
 //
 
+import ARKit
 import SwiftUI
+import RealityKit
 
 struct MyARViewControllerRepresentable: UIViewControllerRepresentable {
     @StateObject var viewModel: MyARViewControllerRepresentable.ViewModel
@@ -29,6 +31,7 @@ extension MyARViewControllerRepresentable {
         @Published var selectedModelForStudyOldValue: SelectedWordModel?
         @Published var selectedModelForTest: SelectedWordModel?
         @Published var wordModels: [WordModel]
+        @Published var anchorEntities: [AnchorEntity]
 
 
         let container: DIContainer
@@ -53,6 +56,8 @@ extension MyARViewControllerRepresentable {
             _selectedModelForTest = .init(initialValue: appState.value.mainViewAppState.selectedModelForTest)
 
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
+
+            _anchorEntities = .init(initialValue: appState.value.testAppState.anchorEntities)
 
 
             cancelBag.collect{
@@ -80,6 +85,10 @@ extension MyARViewControllerRepresentable {
                 appState.map(\.mainViewAppState.wordModels)
                     .removeDuplicates()
                     .weakAssign(to: \.wordModels, on: self)
+
+                appState.map(\.testAppState.anchorEntities)
+                    .removeDuplicates()
+                    .weakAssign(to: \.anchorEntities, on: self)
             }
         }
 
@@ -96,8 +105,12 @@ extension MyARViewControllerRepresentable {
             container.services.mainViewService.setSelectedModelForTest(selectedModel: selectedModel)
         }
 
-        func addNewWordModel(word: String) {
-            container.services.mainViewService.addNewWordModel(word: word)
+        func addNewWordModel(word: String, rayCastResult: ARRaycastResult) {
+            container.services.mainViewService.addNewWordModel(word: word, rayCastResult: rayCastResult)
+        }
+
+        func setAnchorEntities(anchorEntities: [AnchorEntity]) {
+            container.services.testService.setAnchorEntities(anchorEntities: anchorEntities)
         }
 
 

@@ -70,6 +70,7 @@ extension TestStateView {
                 appState.map(\.drawingViewAppState.isTranscriptionFinished)
                     .removeDuplicates()
                     .weakAssign(to: \.isTranscriptionFinished, on: self)
+
             }
         }
 

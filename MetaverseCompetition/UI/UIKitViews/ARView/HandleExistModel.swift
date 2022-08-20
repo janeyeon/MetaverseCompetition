@@ -44,7 +44,7 @@ class RealClassification: Classification {
             do {
                 try self.imagePredictor.makePredictions(for: resizedImage) { [weak self] predictions in
                     // 반드시 mainview의 latestPrediction을 넣어주고 밑의 부분이 실행되어야 함
-                    self?.imagePredictorHandler(predictions) {
+                    self?.imagePredictorHandler(predictions) { [self] in
                         // entity를 넣어주는 부분
                         // TODO: - 나중에 이부분을 다른 model entity생성하는 부분과 합치기
                         let anchorEntity = AnchorEntity(world: position)
@@ -57,9 +57,13 @@ class RealClassification: Classification {
                         anchorEntity.addChild(textEntity)
                         anchorEntity.name = "\(self!.latestPrediction)_anchor"
 
+                        guard let result = self?.arView.raycast(from: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2), allowing: .estimatedPlane, alignment: .any).first else {
+                            return
+                        }
+
                         DispatchQueue.main.async {
                             self?.arView.scene.addAnchor(anchorEntity)
-                            self?.viewModel.addNewWordModel(word: self!.latestPrediction)
+                            self?.viewModel.addNewWordModel(word: self!.latestPrediction, rayCastResult: result)
                         }
                     }
                 }

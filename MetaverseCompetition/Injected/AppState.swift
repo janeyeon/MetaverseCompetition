@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RealityKit
 
 
 /// 우리가 관찰해야하는 변수들을 담고 있는 State 의 모음
@@ -29,6 +30,8 @@ struct AppState {
 
     struct TestAppState: Equatable {
         var testState: TestState = .home
+
+        var anchorEntities: [AnchorEntity] = []
     }
 
     struct MainViewAppState: Equatable {
