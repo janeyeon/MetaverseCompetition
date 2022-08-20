@@ -8,7 +8,7 @@
 import ARKit
 import Foundation
 
-struct WordModel: Identifiable, Equatable {
+struct WordModel: Identifiable, Equatable, Hashable {
     var word: String
     var id = UUID().uuidString // 꼭 필요한가 다시 확인 
 

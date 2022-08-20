@@ -142,7 +142,49 @@ struct TestStateView: View {
             if viewModel.isTranscriptionFinished {
                 transcriptionPopupView
             }
+
+            // 최종 popup view를 표시하는 화면
+            if viewModel.isMemorizedFinishedCount == viewModel.wordModels.count && !viewModel.isTranscriptionFinished {
+                finalPopupView
+            }
         }
+    }
+
+    var finalPopupView: some View {
+        PopupView(confirmAction: {
+            //MARK: 다시 초기화해서 처음으로 돌아가기
+            print("finish!")
+        }, cancelAction: {
+            //MARK: 다시 초기화해서 처음으로 돌아가기
+            print("finish!")
+        }, confirmText: "다시 처음으로 돌아가기", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
+            VStack(alignment: .center, spacing: 20) {
+                Text("오늘 yeon친구와 함께 배운 단어는")
+                VStack {
+                    ForEach(viewModel.wordModels, id: \.self) { wordModel in
+                        VStack {
+                            HStack {
+                                Spacer()
+                                Text(wordModel.word)
+                                Spacer()
+                                Text("\(wordModel.count) 회")
+                            }
+                            Divider()
+                        }
+                    }
+
+                    Text("총 외운단어: \(viewModel.wordModels.count)개")
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 20).foregroundColor(Color.inside.backgroundColor))
+                .padding(.horizontal)
+                .padding(.top, 20)
+            }
+            .font(.popupTextSize)
+            .foregroundColor(Color.white)
+            .padding(.vertical, 60)
+            .padding(.top, 30)
+        })
     }
 
     var transcriptionPopupView: some View {
