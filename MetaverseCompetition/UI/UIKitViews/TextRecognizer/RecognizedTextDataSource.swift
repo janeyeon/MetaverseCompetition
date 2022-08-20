@@ -12,5 +12,5 @@ import Vision
 protocol RecognizedTextDataSource: AnyObject {
     func addRecognizedText(recognizedText: [VNRecognizedTextObservation])
     func processImage(image: UIImage)
-    func takeCapture() -> UIImage
+    func takeCapture() -> UIImage?
 }

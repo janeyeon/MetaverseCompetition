@@ -10,15 +10,21 @@ import Foundation
 protocol MainViewService {
     func changeMainViewState(to state: MainViewState)
 
+    // ------- for add model state view --------
+
+    func addNewWordModel(word: String)
+
+    // ------- for study state view --------
+
     func setSelectedModelForStudy(selectedModel: SelectedWordModel?)
 
     func setSelectedModelForStudyOldValue()
 
-    func setSelectedModelForTest(selectedModel: SelectedWordModel?)
-
-    func addNewWordModel(word: String)
-
     func checkWorldModelIsStudyFinished(word: String)
+
+    // ------- for test state view --------
+
+    func setSelectedModelForTest(selectedModel: SelectedWordModel?)
 }
 
 

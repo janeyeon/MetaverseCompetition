@@ -10,6 +10,7 @@ import Foundation
 
 protocol StudyService {
     func changeStudyState(to state: StudyState)
+
 }
 
 
@@ -23,4 +24,5 @@ final class RealStudyService: StudyService {
     func changeStudyState(to state: StudyState) {
         appState.value.studyAppState.studyState = state
     }
+
 }

@@ -31,7 +31,6 @@ extension MyARViewControllerRepresentable {
         @Published var wordModels: [WordModel]
 
 
-
         let container: DIContainer
         private var cancelBag = CancelBag()
 

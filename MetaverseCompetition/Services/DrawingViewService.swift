@@ -10,6 +10,7 @@ import Foundation
 
 protocol DrawingViewService {
     func addTranscirptString(result: String)
+    func pressTrascriptionButton()
 }
 
 
@@ -22,9 +23,13 @@ final class RealDrawingViewService: DrawingViewService {
     }
 
     func addTranscirptString(result: String) {
-        appState.value.drawingViewAppState.transcript += result
-        appState.value.drawingViewAppState.transcript += "\n"
+        appState.value.drawingViewAppState.transcriptionResult += result
+        appState.value.drawingViewAppState.transcriptionResult += "\n"
+    }
 
+    /// transcription 시작
+    func pressTrascriptionButton() {
+        appState.value.drawingViewAppState.isTrascriptButtonPressed.toggle()
     }
 
 }

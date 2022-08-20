@@ -66,7 +66,6 @@ extension StudyStateView {
 
             container.services.mainViewService.checkWorldModelIsStudyFinished(word: selectedModel.word)
 
-
             // 다시 selectedModelForStudy nil로 만들어줌
             container.services.mainViewService.setSelectedModelForStudy(selectedModel: nil)
         }

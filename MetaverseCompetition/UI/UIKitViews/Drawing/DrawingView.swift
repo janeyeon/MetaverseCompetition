@@ -35,8 +35,10 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
                 print("DEBUG: isTranscriptButtonPressed \(isTranscriptButtonPressed)")
                 // start recognizing
                 guard let capturedImage = self?.takeCapture() else { return }
-                self?.processImage(image: capturedImage)
 
+                viewModel.setCaptureImage(image: capturedImage)
+
+                self?.processImage(image: capturedImage)
 
             })
     }
@@ -109,19 +111,16 @@ extension DrawingViewController: RecognizedTextDataSource {
         }
     }
 
-    func takeCapture() -> UIImage {
-        let currentLayer = UIApplication
-                  .shared
-                  .connectedScenes
-                  .flatMap { ($0 as? UIWindowScene)?.windows ?? [] }
-                  .first { $0.isKeyWindow }?
-                  .layer
+    func takeCapture() -> UIImage? {
 
-        let bounds = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.width / 3)
-        let renderer = UIGraphicsImageRenderer(bounds: bounds)
-        return renderer.image { context in
-            currentLayer!.render(in: context.cgContext)
-        }
+        canvasView.backgroundColor = UIColor.white
+        UIGraphicsBeginImageContextWithOptions(canvasView.bounds.size, canvasView.isOpaque, 0)
+                defer { UIGraphicsEndImageContext() }
+        canvasView.drawHierarchy(in: canvasView.bounds, afterScreenUpdates: true)
+
+        canvasView.backgroundColor = UIColor.clear
+                return UIGraphicsGetImageFromCurrentImageContext() 
+
     }
 
 }
