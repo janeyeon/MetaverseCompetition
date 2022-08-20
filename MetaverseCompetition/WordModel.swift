@@ -18,7 +18,7 @@ struct WordModel: Identifiable, Equatable {
 
     // test 모드에서 필요한 변수들
     // 다 외웠는가?
-    var isMemorized: Bool = false
+    var isMemorizedFinished: Bool = false
     // 이 단어를 맞추기까지 몇개나 걸렸는가
     var count: Int = 0
 

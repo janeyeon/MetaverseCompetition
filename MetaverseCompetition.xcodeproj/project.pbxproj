@@ -19,6 +19,8 @@
 		26183717289E5F4B005092A8 /* HandleExistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26183716289E5F4B005092A8 /* HandleExistModel.swift */; };
 		2618375F28A0E49B005092A8 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618375E28A0E49B005092A8 /* State.swift */; };
 		2618376128A0E6DE005092A8 /* ViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */; };
+		261B369728B0BF0A00DDDD72 /* TestStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B369628B0BF0A00DDDD72 /* TestStateView.swift */; };
+		261B369928B0C13A00DDDD72 /* TestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B369828B0C13A00DDDD72 /* TestService.swift */; };
 		26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E3408728ACB3F9000B86C6 /* WordModel.swift */; };
 		26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408B28AD36EC000B86C6 /* glowing1.mp4 */; };
 		26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408C28AD36F3000B86C6 /* glowing2.mp4 */; };
@@ -68,6 +70,8 @@
 		26183716289E5F4B005092A8 /* HandleExistModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandleExistModel.swift; sourceTree = "<group>"; };
 		2618375E28A0E49B005092A8 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerRepresentable.swift; sourceTree = "<group>"; };
+		261B369628B0BF0A00DDDD72 /* TestStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStateView.swift; sourceTree = "<group>"; };
+		261B369828B0C13A00DDDD72 /* TestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestService.swift; sourceTree = "<group>"; };
 		26E3408728ACB3F9000B86C6 /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
 		26E3408B28AD36EC000B86C6 /* glowing1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing1.mp4; sourceTree = "<group>"; };
 		26E3408C28AD36F3000B86C6 /* glowing2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing2.mp4; sourceTree = "<group>"; };
@@ -224,6 +228,7 @@
 				26E340AF28AE5D7C000B86C6 /* MainViewService.swift */,
 				26E340B128AE6184000B86C6 /* DrawingViewService.swift */,
 				26E340C728AFC492000B86C6 /* StudyService.swift */,
+				261B369828B0C13A00DDDD72 /* TestService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -281,6 +286,7 @@
 		26E3409D28AE2BDB000B86C6 /* TestView */ = {
 			isa = PBXGroup;
 			children = (
+				261B369628B0BF0A00DDDD72 /* TestStateView.swift */,
 			);
 			path = TestView;
 			sourceTree = "<group>";
@@ -446,6 +452,7 @@
 				26E340BC28AF6F1D000B86C6 /* Color.swift in Sources */,
 				261836F1289CFD98005092A8 /* MobileNetV2.mlmodel in Sources */,
 				26E3409028AE130F000B86C6 /* FeatureButtonStyle.swift in Sources */,
+				261B369728B0BF0A00DDDD72 /* TestStateView.swift in Sources */,
 				26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */,
 				26E340AE28AE2EC5000B86C6 /* AddModelService.swift in Sources */,
 				26E340AA28AE2CF2000B86C6 /* ServicesContainer.swift in Sources */,
@@ -458,6 +465,7 @@
 				26E340A428AE2C62000B86C6 /* Publisher+weak assign.swift in Sources */,
 				261836EF289CFC5C005092A8 /* ImagePredictor.swift in Sources */,
 				26FD272428A3933500EE6685 /* DrawingViewControllerRepresentable.swift in Sources */,
+				261B369928B0C13A00DDDD72 /* TestService.swift in Sources */,
 				26FD272828A53A8C00EE6685 /* RecognizedTextDataSource.swift in Sources */,
 				26E340A828AE2CA3000B86C6 /* DependencyInjector.swift in Sources */,
 				2618376128A0E6DE005092A8 /* ViewControllerRepresentable.swift in Sources */,

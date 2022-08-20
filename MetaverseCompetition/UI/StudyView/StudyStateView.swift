@@ -11,9 +11,9 @@ import SwiftUI
 extension StudyStateView {
     class ViewModel: ObservableObject {
         @Published var studyState: StudyState
-
         @Published var selectedModelForStudy: SelectedWordModel?
         @Published var wordModels: [WordModel]
+        @Published var isPopupView = false
 
         var isStudyFinishedCount: Int {
             return wordModels.filter { $0.isStudyFinished == true }.count
@@ -75,24 +75,55 @@ extension StudyStateView {
         func pressXmarkButton() {
             container.services.mainViewService.setSelectedModelForStudy(selectedModel: nil)
         }
+
+        func changeToNextState() {
+            // 여기에서 초기화등 필요한 함수 진행
+            container.services.mainViewService.changeMainViewState(to: .testState)
+        }
     }
 }
 
 struct StudyStateView: View {
     @StateObject var viewModel : ViewModel
-    let text = "Banana"
 
     var body: some View {
-        // State, button등을 표시하는 화면
-        buttonView
+        ZStack {
+            // State, button등을 표시하는 화면
+            buttonView
 
-        // drawing view를 표시하는 화면
-        if viewModel.selectedModelForStudy != nil {
-            studyView()
+            // drawing view를 표시하는 화면
+            if viewModel.selectedModelForStudy != nil {
+                studyView()
+            }
+
+            // next state view를 표시하는 화면
+            if viewModel.isStudyFinishedCount == viewModel.wordModels.count {
+                nextStateButton
+            }
+
+            // popup view를 표시하는 화면
+            if viewModel.isPopupView {
+                popupView
+            }
         }
-        // next state view를 표시하는 화면
+    }
 
-        // popup view를 표시하는 화면
+    var popupView: some View {
+        PopupView(confirmAction: {
+            viewModel.changeToNextState()
+        }, cancelAction: {
+            viewModel.isPopupView = false
+        }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
+            VStack(alignment: .center, spacing: 20) {
+                Text("모든 단어들을 다 외웠나요?")
+                Text("그럼 잘 외웠는지")
+                Text("다같이 확인해볼까요?")
+            }
+            .font(.popupTextSize)
+            .foregroundColor(Color.white)
+            .padding(.vertical, 60)
+            .padding(.top, 30)
+        })
     }
 
     func studyView() -> some View {
@@ -140,12 +171,11 @@ struct StudyStateView: View {
 
     var drawingViewButtons: some View {
         VStack {
-            FeatureButton {
-                print("hello")
-            } label: {
-                FeatureButtonView(buttonLabel: "다시하기", buttonIcon: Image(systemName: "gobackward"), isSelected: false)
-            }
-
+//            FeatureButton {
+//                print("hello")
+//            } label: {
+//                FeatureButtonView(buttonLabel: "다시하기", buttonIcon: Image(systemName: "gobackward"), isSelected: false)
+//            }
 
             FeatureButton {
                 viewModel.pressIsStudyFinishedButton()
@@ -163,7 +193,7 @@ struct StudyStateView: View {
             lines()
 
             Text(viewModel.selectedModelForStudy!.word)
-                .font(.system(size: CGFloat(1200 / viewModel.selectedModelForStudy!.word.count), weight: .heavy))
+                .font(.system(size: min(CGFloat(1200 / viewModel.selectedModelForStudy!.word.count), CGFloat(150)), weight: .heavy))
                 .foregroundColor(Color.inside.textBackgroundColor)
 
             DrawingViewControllerRepresentable(viewModel: .init(container: viewModel.container))
@@ -271,6 +301,18 @@ struct StudyStateView: View {
                 Spacer()
             }
             .padding()
+        }
+    }
+
+    var nextStateButton: some View {
+        VStack(alignment: .center) {
+            Spacer()
+            FeatureButton {
+                viewModel.isPopupView = true
+            } label: {
+                ChangeStateButtonView(buttonLabel: "테스트 시작하기", buttonIcon: Image(systemName: "arrow.right"))
+            }
+            .padding(.bottom, 50)
         }
     }
 

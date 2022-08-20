@@ -14,6 +14,7 @@ struct AppState {
     var mainViewAppState = MainViewAppState()
     var drawingViewAppState = DrawingViewAppState()
     var studyAppState = StudyAppState()
+    var testAppState = TestAppState()
 
     struct AddModelAppState: Equatable {
         var modelConfirmedForPlacement: String?
@@ -22,6 +23,10 @@ struct AppState {
 
     struct StudyAppState: Equatable {
         var studyState: StudyState = .home
+    }
+
+    struct TestAppState: Equatable {
+        var testState: TestState = .home
     }
 
     struct MainViewAppState: Equatable {
@@ -33,7 +38,7 @@ struct AppState {
         // study state에서 선택된 wordModel
         var selectedModelForStudy: SelectedWordModel?
 
-        // selectedModelForStudy를 다시 nil로 바꿀때 이전의 값을 넣어주는 함수 
+        // selectedModelForStudy를 다시 nil로 바꿀때 이전의 값을 넣어주는 함수
         var selectedModelForStudyOldValue: SelectedWordModel?
 
         // text state에서 선택된 wordModel
@@ -44,7 +49,5 @@ struct AppState {
         var transcript: String = ""
         // view에 관련된 변수지만 DrawingViewControllerRepresentable에서도 필요하므로 넣어준다
         var isTrascriptButtonPressed: Bool = false
-
-
     }
 }

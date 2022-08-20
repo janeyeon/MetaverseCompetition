@@ -19,3 +19,7 @@ enum AddModelState: Equatable {
 enum StudyState: Equatable {
     case home, previousState
 }
+
+enum TestState: Equatable {
+    case home, finish
+}

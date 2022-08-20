@@ -56,13 +56,12 @@ struct MainView: View {
 
             case .addModelState:
                 AddModelStateView(viewModel: .init(container: viewModel.container))
-//                StudyStateView(viewModel: .init(container: viewModel.container))
 
             case .practiceState:
                 StudyStateView(viewModel: .init(container: viewModel.container))
 
             case .testState:
-                EmptyView()
+                TestStateView(viewModel: .init(container: viewModel.container))
             }
         }
     }
