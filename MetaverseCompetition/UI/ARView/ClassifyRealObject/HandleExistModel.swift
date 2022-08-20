@@ -10,7 +10,26 @@ import ARKit
 import Vision
 import RealityKit
 
-extension ARViewController {
+protocol Classification {
+    func handleExistModel(position: SIMD3<Float>)
+}
+
+class RealClassification: Classification {
+
+    let imagePredictor = ImagePredictor()
+    var latestPrediction: String = "hello"
+
+    var arView: CustomARView
+
+    var generateTextSphereEntity: GenerateTextSphereEntity
+
+    var viewModel: MyARViewControllerRepresentable.ViewModel
+
+    init(arView: CustomARView, generateTextSphereEntity: GenerateTextSphereEntity, viewModel: MyARViewControllerRepresentable.ViewModel) {
+        self.arView = arView
+        self.generateTextSphereEntity = generateTextSphereEntity
+        self.viewModel = viewModel
+    }
 
     func handleExistModel(position: SIMD3<Float>) {
         self.classifyImage(position: position)
@@ -19,7 +38,7 @@ extension ARViewController {
     private func classifyImage(position: SIMD3<Float>) {
 
         // TODO: - snapshot시에 생성된 text model 들은 없애고 캡쳐하는 방법 있을까?
-        arView.snapshot(saveToHDR: true) { image in
+        self.arView.snapshot(saveToHDR: true) { image in
             let resizedImage = self.cropImage(uiImage: image!)
 
             do {
@@ -30,9 +49,9 @@ extension ARViewController {
                         // TODO: - 나중에 이부분을 다른 model entity생성하는 부분과 합치기
                         let anchorEntity = AnchorEntity(world: position)
 
-                        let sphereEntity = (self?.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
+                        let sphereEntity = (self?.generateTextSphereEntity.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
 
-                        let textEntity = (self?.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
+                        let textEntity = (self?.generateTextSphereEntity.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
 
                         anchorEntity.addChild(sphereEntity)
                         anchorEntity.addChild(textEntity)
@@ -40,7 +59,7 @@ extension ARViewController {
 
                         DispatchQueue.main.async {
                             self?.arView.scene.addAnchor(anchorEntity)
-                            self?.viewModel?.addNewWordModel(word: self!.latestPrediction)
+                            self?.viewModel.addNewWordModel(word: self!.latestPrediction)
                         }
                     }
                 }

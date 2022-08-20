@@ -17,8 +17,7 @@ import Vision
 class ARViewController: UIViewController, ARSessionDelegate {
 
     //MARK: - set up variables
-    let imagePredictor = ImagePredictor()
-    var latestPrediction: String = "hello"
+
     var viewModel: MyARViewControllerRepresentable.ViewModel?
     let BUBBLE_DEPTH: Float = 0.01 // depth of 3D text
     var arView = CustomARView(frame: .zero)
@@ -28,12 +27,19 @@ class ARViewController: UIViewController, ARSessionDelegate {
     private var selectedModelForStudyCancellable: AnyCancellable?
     private var selectedModelForTestCancellable: AnyCancellable?
 
+    var generateTextSphereEntity: GenerateTextSphereEntity?
+
+    var classificationModel: Classification?
+
     // MARK: - initializer
     init(viewModel: MyARViewControllerRepresentable.ViewModel) {
 
         super.init(nibName: nil, bundle: nil)
 
         self.viewModel = viewModel
+
+        self.generateTextSphereEntity = RealGenerateTextSphereEntity(arView: self.arView)
+        self.classificationModel = RealClassification(arView: self.arView, generateTextSphereEntity: self.generateTextSphereEntity!, viewModel: self.viewModel!)
 
         // modelConfirmedForPlacement값이 바뀔때 이걸 받으라고 못하나?
         cancellable = viewModel.$modelConfirmedForPlacement
@@ -57,8 +63,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 // model 넣어줌
                 anchorEntity.addChild(modelEntity.clone(recursive: true))
 
-                let sphereEntity = self.generateSphereEntity(position: position, modelName: modelName)
-                let textEntity = self.generateTextEntity(position: position, modelName: modelName)
+                let sphereEntity = self.generateTextSphereEntity!.generateSphereEntity(position: position, modelName: modelName)
+                let textEntity = self.generateTextSphereEntity!.generateTextEntity(position: position, modelName: modelName)
 
                 anchorEntity.addChild(sphereEntity)
                 anchorEntity.addChild(textEntity)
@@ -170,143 +176,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
     // MARK: - Statue Bar
     override var prefersStatusBarHidden: Bool { true }
 
-    func generateTextModel(text: String) -> ModelEntity {
-        let lineHeight: CGFloat = 0.05
-        let font = MeshResource.Font.systemFont(ofSize: lineHeight)
-        let textMesh = MeshResource.generateText(text, extrusionDepth: Float(lineHeight * 0.1), font: font)
 
-
-        let textMeterial = SimpleMaterial(color: UIColor.orange, isMetallic: true)
-//        let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
-        let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
-
-        model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
-        model.position.y += 0.015
-        model.position.x += Float(text.count) * 0.005
-        return model
-    }
-
-    func generateSphereEntity(position: SIMD3<Float>, modelName: String, radius: Float = 0.01, color: UIColor = UIColor.green) -> ModelEntity {
-
-        let sphere = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
-
-        // move sphere slightly up
-        sphere.position = position
-        sphere.position.y += radius
-
-        sphere.physicsBody?.mode = .dynamic
-        sphere.collision = CollisionComponent(shapes: [ShapeResource.generateSphere(radius: 0.05)])
-        sphere.name = "\(modelName)_sphere"
-
-        // 맘대로 움직일 수 있음, 다만 anchor위치는 안변하는듯?
-//        arView.installGestures(.all, for: sphere)
-
-        return sphere
-    }
-
-    func generateExistTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
-        let textEntity = self.generateTextModel(text: modelName)
-
-        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
-
-        print("DEBUG: - first anchor position : \(position)")
-
-        textEntity.scale = .one * raycastDistance
-
-        var resultWithCameraOrientation = self.arView.cameraTransform
-          resultWithCameraOrientation.translation = position
-
-          textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
-        textEntity.name = "\(modelName)_text"
-
-        return textEntity
-
-    }
-
-    func generateExistTextEntityWithMaterial(position: SIMD3<Float>, modelName: String) -> ModelEntity {
-
-        let lineHeight: CGFloat = 0.05
-        let font = MeshResource.Font.systemFont(ofSize: lineHeight)
-        let textMesh = MeshResource.generateText(modelName, extrusionDepth: Float(lineHeight * 0.1), font: font)
-
-        // video material을 넣어주는 코드 
-        guard let url = Bundle.main.url(forResource: "glowing1", withExtension: ".mp4") else {
-            return ModelEntity()
-        }
-
-        let player = AVPlayer(url: url)
-        let material = VideoMaterial(avPlayer: player)
-        material.controller.audioInputMode = .spatial
-
-        let model = ModelEntity(mesh: textMesh, materials: [material])
-
-        player.play()
-
-        model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
-        model.position.y += 0.015
-        model.position.x += Float(modelName.count) * 0.005
-
-        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
-
-
-        model.scale = .one * raycastDistance
-
-        var resultWithCameraOrientation = self.arView.cameraTransform
-          resultWithCameraOrientation.translation = position
-
-        model.orientation = simd_quatf(resultWithCameraOrientation.matrix)
-        model.name = "\(modelName)_text"
-
-        return model
-
-    }
-
-    func generateTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
-
-//        let rayDirection = normalize(position - self.arView.cameraTransform.translation)
-
-//        let textPositionInWorldCoordinates = position - (rayDirection * 0.1)
-
-//        let textPositionInWorldCoordinates = position
-
-        // 5. Create a 3D text to visualize the classification result
-        let textEntity = self.generateTextModel(text: modelName)
-
-        // 6. Scale the text depending on the distance
-        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
-
-        textEntity.scale = .one * raycastDistance * 2
-
-
-//        // 7. Place the text facing the camera
-//        var resultWithCameraOrientation = self.arView.cameraTransform
-////
-//        resultWithCameraOrientation.translation = position
-//
-//        textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
-        textEntity.position += position
-        textEntity.name = "\(modelName)_text"
-//        textEntity.scale
-
-        return textEntity
-    }
-
-    private func getCamVector() -> (position: SIMD3<Float>, direciton: SIMD3<Float>) {
-
-        let cameraTransform = arView.cameraTransform
-
-        let camDir = cameraTransform.matrix.columns.2
-        return (cameraTransform.translation, -[camDir.x, camDir.y, camDir.z])
-    }
-
-//    private func camRayCast() -> ARRaycastResult {
-//        let (camPos, camDir) = getCamVector()
-//
-//        let rcQuery = ARRaycastQuery(origin: camPos, direction: camDir, allowing: arView.focusSquare.allowedRaycast, alignment: .any)
-//
-//        let results = arView.session.raycast(rcQuery)
-//        return results.first!
-//    }
 
     // MARK: - Handle gestures
     @objc
@@ -337,7 +207,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
     /// 선택한 물체 학습창 띄우기
     func handlePracticeState(tapLocation: CGPoint, result: ARRaycastResult) {
         // 모델을 선택하고
-        let selectedModelName = selectedModelName(tapLocation: tapLocation)
+        guard let selectedModelName = selectedModelName(tapLocation: tapLocation) else {
+            return
+        }
 
         // 그 모델을 전체 appState에서 바꿔준다
         viewModel?.setSelectedModelForStudy(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
@@ -347,7 +219,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
     /// 선택한 물체 테스트창 띄우기
     func handleTestState(tapLocation: CGPoint, result: ARRaycastResult) {
         // 모델을 선택하고
-        let selectedModelName = selectedModelName(tapLocation: tapLocation)
+        guard let selectedModelName = selectedModelName(tapLocation: tapLocation) else {
+            return
+        }
 
         viewModel?.setSelectedModelForTest(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
     }
@@ -358,23 +232,27 @@ class ARViewController: UIViewController, ARSessionDelegate {
         case .home:
             print("DEBUG: arViewState is none")
         case .handleExistingModel:
-            self.handleExistModel(position: position)
+            self.classificationModel!.handleExistModel(position: position)
         case .handleImportedModel:
             print("DEBUG: arViewState is handleImportedModel")
         }
     }
 
     /// 선택한 모델의 이름을 return하기
-    func selectedModelName(tapLocation: CGPoint) -> String {
+    func selectedModelName(tapLocation: CGPoint) -> String? {
 
         guard let hitEntity = self.arView.entity(at: tapLocation) else {
-            return ""
+            return nil
         }
 
         let modelName = hitEntity.name.prefix(while: { $0 != "_" })
 
         print("DEBUG: Hit this!: \(hitEntity.name)")
         print("DEBUG: Model name: \(modelName)")
+
+        guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {
+            return nil
+        }
 
         return String(modelName)
 
@@ -397,7 +275,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
 
         // 다시 만든다
-        let model = generateExistTextEntityWithMaterial(position: position, modelName: String(modelName))
+        let model = generateTextSphereEntity!.generateExistTextEntityWithMaterial(position: position, modelName: String(modelName))
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
