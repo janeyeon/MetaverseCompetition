@@ -70,6 +70,11 @@ extension StudyStateView {
             // 다시 selectedModelForStudy nil로 만들어줌
             container.services.mainViewService.setSelectedModelForStudy(selectedModel: nil)
         }
+
+        /// selectedModelForStudy를 nil로 만들어주는곳
+        func pressXmarkButton() {
+            container.services.mainViewService.setSelectedModelForStudy(selectedModel: nil)
+        }
     }
 }
 
@@ -97,7 +102,6 @@ struct StudyStateView: View {
                 // background
                 Rectangle()
                     .foregroundColor(Color.inside.backgroundColor)
-                    .frame(width: UIScreen.main.bounds.width, height: 500, alignment: .bottom)
 
                 HStack {
                     Spacer()
@@ -107,7 +111,29 @@ struct StudyStateView: View {
                     drawingViewButtons
                     Spacer()
                 }
+
+                xmarkButton
             }
+            .frame(width: UIScreen.main.bounds.width, height: 500, alignment: .bottom)
+        }
+
+
+    }
+
+    var xmarkButton: some View {
+        HStack {
+            VStack {
+                FeatureButton {
+                    viewModel.pressXmarkButton()
+                } label: {
+                    Image(systemName: "xmark")
+                        .resizable()
+                        .frame(width: 30, height: 30)
+                        .padding()
+                }
+                Spacer()
+            }
+            Spacer()
         }
 
     }
@@ -182,8 +208,6 @@ struct StudyStateView: View {
             }
         }
     }
-
-
 
     var buttonView: some View {
         ZStack {
