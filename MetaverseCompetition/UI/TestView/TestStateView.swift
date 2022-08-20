@@ -7,6 +7,7 @@
 //
 
 import SwiftUI
+import Combine
 
 extension TestStateView {
     class ViewModel: ObservableObject {
@@ -17,6 +18,7 @@ extension TestStateView {
         @Published var transcriptionResult: String
 
         @Published var capturedImage: UIImage
+        @Published var isTranscriptionFinished: Bool
 
         var isMemorizedFinishedCount: Int {
             return wordModels.filter { $0.isMemorizedFinished == true }.count
@@ -24,6 +26,7 @@ extension TestStateView {
 
         let container: DIContainer
         private var cancelBag = CancelBag()
+
 
         init(container: DIContainer) {
             self.container = container
@@ -39,6 +42,9 @@ extension TestStateView {
 
             _capturedImage = .init(initialValue: appState.value.drawingViewAppState.capturedImage)
 
+            _isTranscriptionFinished = .init(initialValue: appState.value.drawingViewAppState.isTranscriptionFinished)
+
+
             cancelBag.collect {
                 $testState.sink { appState[\.testAppState.testState] = $0 }
 
@@ -52,6 +58,10 @@ extension TestStateView {
 
                 $capturedImage.sink{
                     appState[\.drawingViewAppState.capturedImage] = $0
+                }
+
+                $isTranscriptionFinished.sink{
+                    appState[\.drawingViewAppState.isTranscriptionFinished] = $0
                 }
 
                 appState.map(\.testAppState.testState)
@@ -73,6 +83,10 @@ extension TestStateView {
                 appState.map(\.drawingViewAppState.capturedImage)
                     .removeDuplicates()
                     .weakAssign(to: \.capturedImage, on: self)
+
+                appState.map(\.drawingViewAppState.isTranscriptionFinished)
+                    .removeDuplicates()
+                    .weakAssign(to: \.isTranscriptionFinished, on: self)
             }
         }
 
@@ -102,6 +116,11 @@ extension TestStateView {
         /// selectedModelForTest를 nil로 만들어주는곳
         func pressXmarkButton() {
             container.services.mainViewService.setSelectedModelForTest(selectedModel: nil)
+        }
+
+        /// transcirptionPopupView 의 값을 정해줌
+        func settranscriptionPopupView(to value: Bool) {
+            container.services.drawingViewService.setisTranscriptionFinished(to: value)
         }
 
     }
@@ -137,10 +156,35 @@ struct TestStateView: View {
 //            }
 
             // popup view를 표시하는 화면
-//            if viewModel.isPopupView {
-//                popupView
-//            }
+            if viewModel.isTranscriptionFinished {
+                transcriptionPopupView
+            }
         }
+    }
+
+    var transcriptionPopupView: some View {
+        PopupView(confirmAction: {
+            // 선택한 단어가 맞는지 틀린지에 따라 바꿔주기
+//            viewModel.isPopupView = false
+            viewModel.settranscriptionPopupView(to: false)
+        }, cancelAction: {
+            viewModel.settranscriptionPopupView(to: false)
+        }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
+            VStack(alignment: .center, spacing: 20) {
+                Text("정답:")
+                Text(viewModel.selectedModelForTest!.word)
+                    .font(.system(size: 100, weight: .heavy))
+                    .foregroundColor(Color.inside.primaryColor)
+                Text("내가 쓴 답:")
+                Text(viewModel.transcriptionResult)
+                    .font(.system(size: 100, weight: .heavy))
+                    .foregroundColor(Color.inside.accentColor)
+            }
+            .font(.popupTextSize)
+            .foregroundColor(Color.white)
+            .padding(.vertical, 60)
+            .padding(.top, 30)
+        })
     }
 
     func studyView() -> some View {
@@ -189,10 +233,6 @@ struct TestStateView: View {
         ZStack {
             // lines
             lines()
-
-            Text(viewModel.selectedModelForTest!.word)
-                .font(.system(size: min(CGFloat(1200 / viewModel.selectedModelForTest!.word.count), CGFloat(150)), weight: .heavy))
-                .foregroundColor(Color.inside.textBackgroundColor)
 
             DrawingViewControllerRepresentable(viewModel: .init(container: viewModel.container))
 

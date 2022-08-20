@@ -51,6 +51,7 @@ struct AppState {
         var transcriptionResult: String = ""
         // view에 관련된 변수지만 DrawingViewControllerRepresentable에서도 필요하므로 넣어준다
         var isTrascriptButtonPressed: Bool = false
+        var isTranscriptionFinished: Bool = false
 
         var capturedImage: UIImage = UIImage()
     }

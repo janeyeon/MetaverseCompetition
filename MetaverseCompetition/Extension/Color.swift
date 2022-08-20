@@ -18,5 +18,6 @@ extension Color {
         static let darkerBackgroundColor = Color("DarkerBackgroundColor")
 
         static let textBackgroundColor = Color("TextBackgroundColor")
+        static let accentColor = Color("accentColor")
     }
 }

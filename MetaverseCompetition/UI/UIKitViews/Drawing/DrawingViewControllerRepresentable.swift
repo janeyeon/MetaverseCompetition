@@ -27,6 +27,8 @@ extension DrawingViewControllerRepresentable{
         @Published var transcript: String
         @Published var isTrascriptButtonPressed: Bool
         @Published var capturedImage: UIImage
+        @Published var isTranscriptionFinished: Bool
+
 
         let container: DIContainer
         private var cancelBag = CancelBag()
@@ -38,6 +40,8 @@ extension DrawingViewControllerRepresentable{
             _transcript = .init(initialValue: appState.value.drawingViewAppState.transcriptionResult)
             _isTrascriptButtonPressed = .init(initialValue: appState.value.drawingViewAppState.isTrascriptButtonPressed)
             _capturedImage = .init(initialValue: appState.value.drawingViewAppState.capturedImage)
+
+            _isTranscriptionFinished = .init(initialValue: appState.value.drawingViewAppState.isTranscriptionFinished)
 
             cancelBag.collect{
                 $transcript.sink{
@@ -52,6 +56,12 @@ extension DrawingViewControllerRepresentable{
                     appState[\.drawingViewAppState.capturedImage] = $0
                 }
 
+                $isTranscriptionFinished.sink{
+                    appState[\.drawingViewAppState.isTranscriptionFinished] = $0
+                }
+
+
+
                 appState.map(\.drawingViewAppState.transcriptionResult)
                     .removeDuplicates()
                     .weakAssign(to: \.transcript, on: self)
@@ -63,15 +73,26 @@ extension DrawingViewControllerRepresentable{
                 appState.map(\.drawingViewAppState.capturedImage)
                     .removeDuplicates()
                     .weakAssign(to: \.capturedImage, on: self)
+
+                appState.map(\.drawingViewAppState.isTranscriptionFinished)
+                    .removeDuplicates()
+                    .weakAssign(to: \.isTranscriptionFinished, on: self)
+
+
             }
         }
 
-        func addTranscirptString(result: String) {
-            container.services.drawingViewService.addTranscirptString(result: result)
+        func setTranscirptString(result: String) {
+            container.services.drawingViewService.setTranscirptString(result: result)
         }
 
         func setCaptureImage(image: UIImage) {
             capturedImage = image
         }
+
+        func changeisTranscriptionFinished() {
+            container.services.drawingViewService.setisTranscriptionFinished(to: true)
+        }
+
     }
 }

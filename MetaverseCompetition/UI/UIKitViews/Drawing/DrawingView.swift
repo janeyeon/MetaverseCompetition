@@ -21,7 +21,11 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
     // for scanninn & recognizing
     var resultsViewController: (UIViewController & RecognizedTextDataSource)?
     var textRecognitionRequest = VNRecognizeTextRequest()
+
     private var textRecognitionCancellable: AnyCancellable?
+
+    private var isTranscriptionFinishedCancellable: AnyCancellable?
+
 
     // MARK: Initializer
     init(viewModel: DrawingViewControllerRepresentable.ViewModel) {
@@ -41,6 +45,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
                 self?.processImage(image: capturedImage)
 
             })
+
     }
 
     required init?(coder: NSCoder) {
@@ -75,6 +80,8 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
                     DispatchQueue.main.async {
                         print("DEBUG: text \(requestResults)")
                         self?.addRecognizedText(recognizedText: requestResults)
+
+                        self?.viewModel!.changeisTranscriptionFinished()
                     }
                 }
             }
@@ -93,7 +100,7 @@ extension DrawingViewController: RecognizedTextDataSource {
         for observation in recognizedText {
             guard let candidate = observation.topCandidates(maxCandidates).first else { continue }
 
-            viewModel!.addTranscirptString(result: candidate.string)
+            viewModel!.setTranscirptString(result: candidate.string)
         }
     }
 
@@ -106,6 +113,9 @@ extension DrawingViewController: RecognizedTextDataSource {
         let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
         do {
             try handler.perform([textRecognitionRequest])
+
+            // 여기에 isTranscriptionFinished = true
+            // 
         } catch {
             print(error)
         }
