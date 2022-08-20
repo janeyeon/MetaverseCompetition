@@ -24,10 +24,13 @@ struct DrawingViewControllerRepresentable: UIViewControllerRepresentable {
 
 extension DrawingViewControllerRepresentable{
     class ViewModel: ObservableObject {
-        @Published var transcript: String
+        @Published var transcriptionResult: String
         @Published var isTrascriptButtonPressed: Bool
         @Published var capturedImage: UIImage
+
         @Published var isTranscriptionFinished: Bool
+        @Published var selectedModelForTest: SelectedWordModel?
+
 
 
         let container: DIContainer
@@ -37,34 +40,20 @@ extension DrawingViewControllerRepresentable{
             self.container = container
             let appState = container.appState
 
-            _transcript = .init(initialValue: appState.value.drawingViewAppState.transcriptionResult)
+            _transcriptionResult = .init(initialValue: appState.value.drawingViewAppState.transcriptionResult)
             _isTrascriptButtonPressed = .init(initialValue: appState.value.drawingViewAppState.isTrascriptButtonPressed)
             _capturedImage = .init(initialValue: appState.value.drawingViewAppState.capturedImage)
 
             _isTranscriptionFinished = .init(initialValue: appState.value.drawingViewAppState.isTranscriptionFinished)
 
+            _selectedModelForTest = .init(initialValue: appState.value.mainViewAppState.selectedModelForTest)
+
+
             cancelBag.collect{
-                $transcript.sink{
-                    appState[\.drawingViewAppState.transcriptionResult] = $0
-                }
-
-                $isTrascriptButtonPressed.sink{
-                    appState[\.drawingViewAppState.isTrascriptButtonPressed] = $0
-                }
-
-                $capturedImage.sink{
-                    appState[\.drawingViewAppState.capturedImage] = $0
-                }
-
-                $isTranscriptionFinished.sink{
-                    appState[\.drawingViewAppState.isTranscriptionFinished] = $0
-                }
-
-
 
                 appState.map(\.drawingViewAppState.transcriptionResult)
                     .removeDuplicates()
-                    .weakAssign(to: \.transcript, on: self)
+                    .weakAssign(to: \.transcriptionResult, on: self)
 
                 appState.map(\.drawingViewAppState.isTrascriptButtonPressed)
                     .removeDuplicates()
@@ -77,6 +66,10 @@ extension DrawingViewControllerRepresentable{
                 appState.map(\.drawingViewAppState.isTranscriptionFinished)
                     .removeDuplicates()
                     .weakAssign(to: \.isTranscriptionFinished, on: self)
+
+                appState.map(\.mainViewAppState.selectedModelForTest)
+                    .removeDuplicates()
+                    .weakAssign(to: \.selectedModelForTest, on: self)
 
 
             }
@@ -92,6 +85,30 @@ extension DrawingViewControllerRepresentable{
 
         func changeisTranscriptionFinished() {
             container.services.drawingViewService.setisTranscriptionFinished(to: true)
+        }
+
+        func judgingResult() {
+            // 여기에서 두개의 결과를 채점한다
+            let answer = selectedModelForTest!.word
+            let myAnswer = transcriptionResult
+
+            // 둘다 띄어쓰기를 없애준다
+            var noSpaceAnswer = answer.removeWhitespace()
+            var noSpaceMyAnswer = myAnswer.removeWhitespace()
+
+            // 둘다 대문자를 없애준다
+            noSpaceAnswer = noSpaceAnswer.lowercased()
+            noSpaceMyAnswer = noSpaceMyAnswer.lowercased()
+
+            // 만약 맞으면 selectedModelForTest의 isRight의 값을 true 로 바꾸어준다
+            if noSpaceAnswer == noSpaceMyAnswer {
+                container.services.mainViewService.isMemorizedFinished(word: answer)
+            }
+
+            // MARK: - count값을 1씩 증가
+
+
+
         }
 
     }

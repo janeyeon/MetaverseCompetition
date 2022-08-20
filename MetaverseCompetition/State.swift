@@ -21,5 +21,5 @@ enum StudyState: Equatable {
 }
 
 enum TestState: Equatable {
-    case home, finish
+    case home, previousState, finish
 }

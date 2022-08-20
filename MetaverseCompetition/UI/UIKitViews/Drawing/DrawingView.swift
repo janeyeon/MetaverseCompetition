@@ -24,7 +24,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
     private var textRecognitionCancellable: AnyCancellable?
 
-    private var isTranscriptionFinishedCancellable: AnyCancellable?
+//    private var isTranscriptionFinishedCancellable: AnyCancellable?
 
 
     // MARK: Initializer
@@ -79,8 +79,13 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
                 if let requestResults = request.results as? [VNRecognizedTextObservation] {
                     DispatchQueue.main.async {
                         print("DEBUG: text \(requestResults)")
+                        // 알맞은 결과를 transcriptionResult에 넣어준다
                         self?.addRecognizedText(recognizedText: requestResults)
+                        
+                        // 여기에서 채점을 진행한다
+                        self?.viewModel!.judgingResult()
 
+                        // 채점이 끝났음을 확인한다
                         self?.viewModel!.changeisTranscriptionFinished()
                     }
                 }
@@ -95,6 +100,7 @@ class DrawingViewController: UIViewController, PKCanvasViewDelegate, PKToolPicke
 
 
 extension DrawingViewController: RecognizedTextDataSource {
+
     func addRecognizedText(recognizedText: [VNRecognizedTextObservation]) {
         let maxCandidates = 1
         for observation in recognizedText {

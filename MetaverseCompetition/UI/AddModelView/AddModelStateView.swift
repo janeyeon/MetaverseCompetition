@@ -35,12 +35,6 @@ extension AddModelStateView {
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
 
             cancelBag.collect{
-                // 관찰하기 원하는 값
-                $modelConfirmedForPlacement.sink { appState[\.addModelAppState.modelConfirmedForPlacement] = $0 }
-
-                $addModelState.sink { appState[\.addModelAppState.addModelState] = $0 }
-
-                $wordModels.sink { appState[\.mainViewAppState.wordModels] = $0 }
 
                 //바꾸기 원하는 값
                 appState.map(\.addModelAppState.modelConfirmedForPlacement)

@@ -32,4 +32,10 @@ struct WordModel: Identifiable, Equatable {
 struct SelectedWordModel: Equatable {
     var word: String
     var rayCastResult: ARRaycastResult
+    var isRight: Bool = false
+
+    init(word: String, rayCastResult: ARRaycastResult) {
+        self.word = word
+        self.rayCastResult = rayCastResult
+    }
 }

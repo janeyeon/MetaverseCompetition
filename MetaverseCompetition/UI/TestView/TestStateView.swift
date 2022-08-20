@@ -46,23 +46,6 @@ extension TestStateView {
 
 
             cancelBag.collect {
-                $testState.sink { appState[\.testAppState.testState] = $0 }
-
-                $selectedModelForTest.sink { appState[\.mainViewAppState.selectedModelForTest] = $0 }
-
-                $wordModels.sink { appState[\.mainViewAppState.wordModels] = $0 }
-
-                $transcriptionResult.sink {
-                    appState[\.drawingViewAppState.transcriptionResult] = $0
-                }
-
-                $capturedImage.sink{
-                    appState[\.drawingViewAppState.capturedImage] = $0
-                }
-
-                $isTranscriptionFinished.sink{
-                    appState[\.drawingViewAppState.isTranscriptionFinished] = $0
-                }
 
                 appState.map(\.testAppState.testState)
                     .removeDuplicates()
@@ -163,28 +146,56 @@ struct TestStateView: View {
     }
 
     var transcriptionPopupView: some View {
-        PopupView(confirmAction: {
-            // 선택한 단어가 맞는지 틀린지에 따라 바꿔주기
-//            viewModel.isPopupView = false
-            viewModel.settranscriptionPopupView(to: false)
-        }, cancelAction: {
-            viewModel.settranscriptionPopupView(to: false)
-        }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
-            VStack(alignment: .center, spacing: 20) {
-                Text("정답:")
-                Text(viewModel.selectedModelForTest!.word)
-                    .font(.system(size: 100, weight: .heavy))
-                    .foregroundColor(Color.inside.primaryColor)
-                Text("내가 쓴 답:")
-                Text(viewModel.transcriptionResult)
-                    .font(.system(size: 100, weight: .heavy))
-                    .foregroundColor(Color.inside.accentColor)
+        ZStack {
+            if viewModel.selectedModelForTest?.isRight == true {
+                // 맞았을 때의 뷰
+                PopupView(confirmAction: {
+                    // 선택한 단어가 맞는지 틀린지에 따라 바꿔주기
+        //            viewModel.isPopupView = false
+                    viewModel.settranscriptionPopupView(to: false)
+                }, cancelAction: {
+                    viewModel.settranscriptionPopupView(to: false)
+                }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
+                    VStack(alignment: .center, spacing: 20) {
+                        Text("잘했어요!!")
+                            .font(.system(size: 50, weight: .heavy))
+                        Text("정답:")
+                        Text(viewModel.selectedModelForTest!.word)
+                            .font(.system(size: 100, weight: .heavy))
+                            .foregroundColor(Color.inside.primaryColor)
+                    }
+                    .font(.popupTextSize)
+                    .foregroundColor(Color.white)
+                    .padding(.vertical, 60)
+                    .padding(.top, 30)
+                })
+            } else {
+                // 틀렸을 때의 뷰
+                PopupView(confirmAction: {
+                    // 선택한 단어가 맞는지 틀린지에 따라 바꿔주기
+        //            viewModel.isPopupView = false
+                    viewModel.settranscriptionPopupView(to: false)
+                }, cancelAction: {
+                    viewModel.settranscriptionPopupView(to: false)
+                }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
+                    VStack(alignment: .center, spacing: 20) {
+                        Text("정답:")
+                        Text(viewModel.selectedModelForTest!.word)
+                            .font(.system(size: 100, weight: .heavy))
+                            .foregroundColor(Color.inside.primaryColor)
+                        Text("내가 쓴 답:")
+                        Text(viewModel.transcriptionResult)
+                            .font(.system(size: 100, weight: .heavy))
+                            .foregroundColor(Color.inside.accentColor)
+                    }
+                    .font(.popupTextSize)
+                    .foregroundColor(Color.white)
+                    .padding(.vertical, 60)
+                    .padding(.top, 30)
+                })
             }
-            .font(.popupTextSize)
-            .foregroundColor(Color.white)
-            .padding(.vertical, 60)
-            .padding(.top, 30)
-        })
+        }
+
     }
 
     func studyView() -> some View {
@@ -339,9 +350,9 @@ struct TestStateView: View {
                 }
 
                 FeatureButton {
-                    viewModel.changeTestState(to: .home)
+                    viewModel.changeTestState(to: .previousState)
                 } label: {
-                    FeatureButtonView(buttonLabel: "돌아 가기", buttonIcon: Image(systemName: "arrowshape.turn.up.left.fill"), isSelected: viewModel.testState == .home)
+                    FeatureButtonView(buttonLabel: "돌아 가기", buttonIcon: Image(systemName: "arrowshape.turn.up.left.fill"), isSelected: viewModel.testState == .previousState)
                 }
                 Spacer()
             }

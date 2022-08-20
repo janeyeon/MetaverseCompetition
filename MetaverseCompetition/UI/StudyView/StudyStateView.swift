@@ -31,10 +31,6 @@ extension StudyStateView {
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
 
             cancelBag.collect{
-                $studyState.sink { appState[\.studyAppState.studyState] = $0 }
-
-                $selectedModelForStudy.sink { appState[\.mainViewAppState.selectedModelForStudy] = $0 }
-                $wordModels.sink { appState[\.mainViewAppState.wordModels] = $0 }
 
                 appState.map(\.studyAppState.studyState)
                     .removeDuplicates()
@@ -64,7 +60,7 @@ extension StudyStateView {
                 return
             }
 
-            container.services.mainViewService.checkWorldModelIsStudyFinished(word: selectedModel.word)
+            container.services.mainViewService.checkWordModelIsStudyFinished(word: selectedModel.word)
 
             // 다시 selectedModelForStudy nil로 만들어줌
             container.services.mainViewService.setSelectedModelForStudy(selectedModel: nil)

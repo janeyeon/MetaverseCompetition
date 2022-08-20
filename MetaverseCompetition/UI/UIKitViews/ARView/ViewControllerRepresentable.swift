@@ -57,18 +57,6 @@ extension MyARViewControllerRepresentable {
 
             cancelBag.collect{
 
-                $modelConfirmedForPlacement.sink{ appState[\.addModelAppState.modelConfirmedForPlacement] = $0 }
-
-                $addModelState.sink { appState[\.addModelAppState.addModelState] = $0 }
-
-                $mainViewState.sink { appState[\.mainViewAppState.mainViewState] = $0 }
-
-                $selectedModelForStudy.sink { appState[\.mainViewAppState.selectedModelForStudy] = $0 }
-
-                $selectedModelForStudyOldValue.sink { appState[\.mainViewAppState.selectedModelForStudyOldValue] = $0 }
-
-                $wordModels.sink { appState[\.mainViewAppState.wordModels] = $0 }
-
                 appState.map(\.addModelAppState.modelConfirmedForPlacement)
                     .removeDuplicates()
                     .weakAssign(to: \.modelConfirmedForPlacement, on: self)

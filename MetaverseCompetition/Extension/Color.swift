@@ -16,7 +16,6 @@ extension Color {
         static let activeColor2 = Color("ActiveColor2")
         static let secondaryTextColor = Color("SecondaryTextColor")
         static let darkerBackgroundColor = Color("DarkerBackgroundColor")
-
         static let textBackgroundColor = Color("TextBackgroundColor")
         static let accentColor = Color("accentColor")
     }

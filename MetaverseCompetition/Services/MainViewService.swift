@@ -20,11 +20,13 @@ protocol MainViewService {
 
     func setSelectedModelForStudyOldValue()
 
-    func checkWorldModelIsStudyFinished(word: String)
+    func checkWordModelIsStudyFinished(word: String)
 
     // ------- for test state view --------
 
     func setSelectedModelForTest(selectedModel: SelectedWordModel?)
+
+    func isMemorizedFinished(word: String)
 }
 
 
@@ -63,7 +65,7 @@ final class RealMainViewService: MainViewService {
     }
 
     /// wordmodels에 있는 이름을 가진 model의 isStudyFinished를 true로 바꿔준다
-    func checkWorldModelIsStudyFinished(word: String) {
+    func checkWordModelIsStudyFinished(word: String) {
 
         for index in  0..<appState.value.mainViewAppState.wordModels.count {
 
@@ -72,8 +74,20 @@ final class RealMainViewService: MainViewService {
             }
 
         }
+    }
 
+    func isMemorizedFinished(word: String) {
+        // 선택한 모델의 isRight을 바꿔줌
+        appState.value.mainViewAppState.selectedModelForTest?.isRight = true
 
+        // wordModels에서도 isMemorizedFinished를 true로 바꿔줌
+        for index in  0..<appState.value.mainViewAppState.wordModels.count {
+
+            if appState.value.mainViewAppState.wordModels[index].word == word {
+                appState.value.mainViewAppState.wordModels[index].isMemorizedFinished = true
+            }
+
+        }
     }
 
 }
