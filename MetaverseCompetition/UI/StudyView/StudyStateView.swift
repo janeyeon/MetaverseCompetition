@@ -65,9 +65,9 @@ struct StudyStateView: View {
         buttonView
 
         // drawing view를 표시하는 화면
-//        if viewModel.selectedModelForStudy != nil {
+        if viewModel.selectedModelForStudy != nil {
             studyView()
-//        }
+        }
         // next state view를 표시하는 화면
 
         // popup view를 표시하는 화면
@@ -119,8 +119,8 @@ struct StudyStateView: View {
             // lines
             lines()
 
-            Text(text)
-                .font(.system(size: CGFloat(900 / text.count), weight: .heavy))
+            Text(viewModel.selectedModelForStudy!.word)
+                .font(.system(size: CGFloat(1200 / viewModel.selectedModelForStudy!.word.count), weight: .heavy))
                 .foregroundColor(Color.inside.textBackgroundColor)
 
             DrawingViewControllerRepresentable(viewModel: .init(container: viewModel.container))

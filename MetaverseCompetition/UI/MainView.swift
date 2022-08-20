@@ -55,8 +55,8 @@ struct MainView: View {
             switch viewModel.mainViewState {
 
             case .addModelState:
-//                AddModelStateView(viewModel: .init(container: viewModel.container))
-                StudyStateView(viewModel: .init(container: viewModel.container))
+                AddModelStateView(viewModel: .init(container: viewModel.container))
+//                StudyStateView(viewModel: .init(container: viewModel.container))
 
             case .practiceState:
                 StudyStateView(viewModel: .init(container: viewModel.container))
