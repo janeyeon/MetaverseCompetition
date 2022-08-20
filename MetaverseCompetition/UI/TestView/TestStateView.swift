@@ -84,7 +84,7 @@ extension TestStateView {
                 return
             }
 
-//            container.services.mainViewService.checkWorldModelIsStudyFinished(word: selectedModel.word)
+            container.services.mainViewService.isMemorizedFinished(word: selectedModel.word)
 
 
             // 다시 selectedModelForTest nil로 만들어줌
@@ -134,20 +134,15 @@ struct TestStateView: View {
 //            }
 
 
-            // next state view를 표시하는 화면
-//            if viewModel.isStudyFinishedCount == viewModel.wordModels.count {
-//                nextStateButton
-//            }
-
             // popup view를 표시하는 화면
             if viewModel.isTranscriptionFinished {
                 transcriptionPopupView
             }
 
-            // 최종 popup view를 표시하는 화면
-            if viewModel.isMemorizedFinishedCount == viewModel.wordModels.count && !viewModel.isTranscriptionFinished {
-                finalPopupView
-            }
+//            // 최종 popup view를 표시하는 화면
+//            if viewModel.isMemorizedFinishedCount == viewModel.wordModels.count && !viewModel.isTranscriptionFinished {
+//                finalPopupView
+//            }
         }
     }
 
@@ -193,9 +188,14 @@ struct TestStateView: View {
             if viewModel.selectedModelForTest?.isRight == true {
                 // 맞았을 때의 뷰
                 PopupView(confirmAction: {
-                    // 선택한 단어가 맞는지 틀린지에 따라 바꿔주기
-        //            viewModel.isPopupView = false
+                    // 선택한 단어가 맞으면
+
+                    // 맞았을때의 행동 넣어주기
+                    viewModel.pressIsMemorizedFinishedButton()
+
+                    // 팝업창 없애기
                     viewModel.settranscriptionPopupView(to: false)
+
                 }, cancelAction: {
                     viewModel.settranscriptionPopupView(to: false)
                 }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {

@@ -30,6 +30,7 @@ extension MyARViewControllerRepresentable {
         @Published var selectedModelForStudy: SelectedWordModel?
         @Published var selectedModelForStudyOldValue: SelectedWordModel?
         @Published var selectedModelForTest: SelectedWordModel?
+        @Published var selectedModelForTestOldValue: SelectedWordModel?
         @Published var wordModels: [WordModel]
         @Published var anchorEntities: [AnchorEntity]
 
@@ -54,6 +55,8 @@ extension MyARViewControllerRepresentable {
             _selectedModelForStudyOldValue = .init(initialValue: appState.value.mainViewAppState.selectedModelForStudyOldValue)
 
             _selectedModelForTest = .init(initialValue: appState.value.mainViewAppState.selectedModelForTest)
+
+            _selectedModelForTestOldValue = .init(initialValue: appState.value.mainViewAppState.selectedModelForTestOldValue)
 
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
 
@@ -82,9 +85,14 @@ extension MyARViewControllerRepresentable {
                     .removeDuplicates()
                     .weakAssign(to: \.selectedModelForStudyOldValue, on: self)
 
+                appState.map(\.mainViewAppState.selectedModelForTestOldValue)
+                    .removeDuplicates()
+                    .weakAssign(to: \.selectedModelForTestOldValue, on: self)
+
                 appState.map(\.mainViewAppState.wordModels)
                     .removeDuplicates()
                     .weakAssign(to: \.wordModels, on: self)
+
 
                 appState.map(\.testAppState.anchorEntities)
                     .removeDuplicates()
@@ -99,6 +107,10 @@ extension MyARViewControllerRepresentable {
         /// SelectedModelForStudyOldValue를 다시 nil값으로
         func setSelectedModelForStudyOldValue() {
             container.services.mainViewService.setSelectedModelForStudyOldValue()
+        }
+
+        func setSelectedModelForTestOldValue() {
+            container.services.mainViewService.setSelectedModelForTestOldValue()
         }
 
         func setSelectedModelForTest(selectedModel: SelectedWordModel) {

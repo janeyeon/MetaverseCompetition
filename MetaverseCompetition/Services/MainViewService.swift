@@ -27,7 +27,11 @@ protocol MainViewService {
 
     func setSelectedModelForTest(selectedModel: SelectedWordModel?)
 
+    func setSelectedModelForTestOldValue()
+
     func isMemorizedFinished(word: String)
+
+//    func checkWordModelIsTestFinished(word: String)
 }
 
 
@@ -56,7 +60,18 @@ final class RealMainViewService: MainViewService {
     }
 
     func setSelectedModelForTest(selectedModel: SelectedWordModel?) {
+
+        // nil이전의 값을 넣어준다
+        if selectedModel == nil {
+            appState.value.mainViewAppState.selectedModelForTestOldValue = appState.value.mainViewAppState.selectedModelForTest
+        }
+
         appState.value.mainViewAppState.selectedModelForTest = selectedModel
+    }
+
+    func setSelectedModelForTestOldValue() {
+        // 다시 oldValue변수를 nil로 만들어준다
+        appState.value.mainViewAppState.selectedModelForTestOldValue = nil
     }
 
     func addNewWordModel(word: String, rayCastResult: ARRaycastResult) {
@@ -76,6 +91,8 @@ final class RealMainViewService: MainViewService {
 
         }
     }
+
+
 
     func isMemorizedFinished(word: String) {
         // 선택한 모델의 isRight을 바꿔줌

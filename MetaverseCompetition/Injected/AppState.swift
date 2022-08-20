@@ -46,6 +46,8 @@ struct AppState {
         // selectedModelForStudy를 다시 nil로 바꿀때 이전의 값을 넣어주는 함수
         var selectedModelForStudyOldValue: SelectedWordModel?
 
+        var selectedModelForTestOldValue: SelectedWordModel?
+
         // text state에서 선택된 wordModel
         var selectedModelForTest: SelectedWordModel?
     }

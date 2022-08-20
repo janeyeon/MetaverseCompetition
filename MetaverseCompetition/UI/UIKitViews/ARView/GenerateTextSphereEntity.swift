@@ -21,6 +21,8 @@ protocol GenerateTextSphereEntity {
 
     func generateExistTextEntityWithMaterial(position: SIMD3<Float>, modelName: String) -> ModelEntity
 
+    func generateQuestionMark(position: SIMD3<Float>, modelName: String) -> ModelEntity
+
 }
 
 
@@ -86,6 +88,24 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
 
         return textEntity
 
+    }
+
+    func generateQuestionMark(position: SIMD3<Float>, modelName: String) -> ModelEntity {
+        let textEntity = self.generateTextModel(text: "?")
+
+        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
+
+        print("DEBUG: - first anchor position : \(position)")
+
+        textEntity.scale = .one * raycastDistance
+
+        var resultWithCameraOrientation = self.arView.cameraTransform
+          resultWithCameraOrientation.translation = position
+
+          textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+        textEntity.name = "\(modelName)_text"
+
+        return textEntity
     }
 
     func generateExistTextEntityWithMaterial(position: SIMD3<Float>, modelName: String) -> ModelEntity {

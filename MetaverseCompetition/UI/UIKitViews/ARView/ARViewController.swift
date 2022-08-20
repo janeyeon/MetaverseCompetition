@@ -106,18 +106,18 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 })
         )
 
-        cancellableBag.append(viewModel.$selectedModelForStudy
-            .receive(on: RunLoop.main)
-            .sink(receiveValue: { [weak self] selectedModel in
-
-                guard let self = self else { return }
-                // nil로 바뀌면 아무것도 하지마라
-                guard let selectedModel = selectedModel else { return }
-
-                // 여기에 모델이 선택되면 해야할 일을 명시해 준다
-                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
-
-            }))
+//        cancellableBag.append(viewModel.$selectedModelForStudy
+//            .receive(on: RunLoop.main)
+//            .sink(receiveValue: { [weak self] selectedModel in
+//
+//                guard let self = self else { return }
+//                // nil로 바뀌면 아무것도 하지마라
+//                guard let selectedModel = selectedModel else { return }
+//
+//                // 여기에 모델이 선택되면 해야할 일을 명시해 준다
+//                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+//
+//            }))
 
         cancellableBag.append( viewModel.$selectedModelForStudy
             .receive(on: RunLoop.main)
@@ -171,6 +171,26 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     }
                 })
         )
+
+        // test가 끝나고 맞았다면
+        cancellableBag.append(viewModel.$selectedModelForTestOldValue
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] selectedModel in
+
+                guard let self = self else { return }
+
+                // nil로 바뀌면 아무것도 하지마라
+                guard let selectedModel = selectedModel else { return }
+
+                // 다 끝내고 나서 다시 nil로 바꿔줘라
+                defer {
+                    self.viewModel!.setSelectedModelForTestOldValue()
+                }
+
+                // 얘가 선택된거라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 다시 원래대로 돌려놔야함
+                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+
+            }))
 
     }
 
@@ -249,7 +269,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
             let position = wordModel.rayTracingResult.worldTransform.position
 
             // 같은 자리에 ?를 넣는다
-            let model = generateTextSphereEntity!.generateExistTextEntity(position: position, modelName: "?")
+            let model = generateTextSphereEntity!.generateQuestionMark(position: position, modelName: wordModel.word)
 
             // 그리고 기존의 anchor에 추가
             arView.scene.findEntity(named: "\(wordModel.word)_anchor")?.addChild(model)
