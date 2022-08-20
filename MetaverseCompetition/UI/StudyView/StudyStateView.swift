@@ -15,6 +15,10 @@ extension StudyStateView {
         @Published var selectedModelForStudy: SelectedWordModel?
         @Published var wordModels: [WordModel]
 
+        var isStudyFinishedCount: Int {
+            return wordModels.filter { $0.isStudyFinished == true }.count
+        }
+
         let container: DIContainer
         private var cancelBag = CancelBag()
 
@@ -52,6 +56,19 @@ extension StudyStateView {
 
         func changeStudyState(to state: StudyState) {
             container.services.studyService.changeStudyState(to: state)
+        }
+
+        func pressIsStudyFinishedButton() {
+            // selectedModelForStudy에 해당하는 wordModel의 변수값을 true로 바꿔줌
+            guard let selectedModel = selectedModelForStudy else {
+                return
+            }
+
+            container.services.mainViewService.checkWorldModelIsStudyFinished(word: selectedModel.word)
+
+
+            // 다시 selectedModelForStudy nil로 만들어줌
+            container.services.mainViewService.setSelectedModelForStudy(selectedModel: nil)
         }
     }
 }
@@ -105,7 +122,7 @@ struct StudyStateView: View {
 
 
             FeatureButton {
-                print("hello")
+                viewModel.pressIsStudyFinishedButton()
             } label: {
                 FeatureButtonView(buttonLabel: "다 외웠어요!", buttonIcon: Image(systemName: "checkmark"), isSelected: false)
             }
@@ -194,7 +211,7 @@ struct StudyStateView: View {
                 HStack {
                     Text("학습을 끝낸 단어:")
                         .bold()
-                    Text("\(viewModel.wordModels.count)개")
+                    Text("\(viewModel.isStudyFinishedCount)개")
                         .bold()
                         .foregroundColor(Color.inside.primaryColor)
                 }

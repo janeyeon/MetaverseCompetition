@@ -152,7 +152,6 @@
 		26183707289E591E005092A8 /* ClassifyRealObject */ = {
 			isa = PBXGroup;
 			children = (
-				26183716289E5F4B005092A8 /* HandleExistModel.swift */,
 				261836EE289CFC5C005092A8 /* ImagePredictor.swift */,
 			);
 			path = ClassifyRealObject;
@@ -313,6 +312,7 @@
 				26FD271828A2852600EE6685 /* CustomARView.swift */,
 				2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */,
 				26E340B728AF59A2000B86C6 /* GenerateTextSphereEntity.swift */,
+				26183716289E5F4B005092A8 /* HandleExistModel.swift */,
 			);
 			path = ARView;
 			sourceTree = "<group>";

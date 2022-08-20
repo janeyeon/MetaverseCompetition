@@ -29,6 +29,8 @@ extension MyARViewControllerRepresentable {
         @Published var selectedModelForTest: SelectedWordModel?
         @Published var wordModels: [WordModel]
 
+
+
         let container: DIContainer
         private var cancelBag = CancelBag()
 
@@ -96,5 +98,6 @@ extension MyARViewControllerRepresentable {
         func addNewWordModel(word: String) {
             container.services.mainViewService.addNewWordModel(word: word)
         }
+
     }
 }
