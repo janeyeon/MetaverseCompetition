@@ -127,5 +127,18 @@ extension MyARViewControllerRepresentable {
 
 
 
+        func addAnimation(anchorEntity: AnchorEntity) {
+            // animation 추가
+            for entity in anchorEntity.children {
+                print("DEBUG: -  anchorEntity.children  \(entity.name)")
+                print("DEBUG: -  anchorEntity.children's animations  \(entity.availableAnimations.map { $0.name })")
+                for animation in entity.availableAnimations {
+                    entity.playAnimation(animation.repeat())
+                }
+            }
+
+
+        }
+
     }
 }

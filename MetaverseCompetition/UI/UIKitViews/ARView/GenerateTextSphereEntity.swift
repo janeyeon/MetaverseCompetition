@@ -13,9 +13,9 @@ import UIKit
 import SwiftUI
 
 protocol GenerateTextSphereEntity {
-    func generateSphereEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float?) -> ModelEntity
+    func generateSphereEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float?) -> Entity
 
-    func generateTextEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float?) -> ModelEntity
+    func generateTextEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float?) -> Entity
 
 }
 
@@ -56,34 +56,6 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
             model = ModelEntity(mesh: textMesh, materials: [textMaterial])
         }
 
-        // 설마 설마 animation이 되려나? 제발 돼라 이눔시키! 
-//        typealias SampledAnimationType = SampledAnimation<Float>
-//        let frameArray: [Float] = [1.0, 2.0, 3.0]
-//        let interval = TimeInterval(1.0)
-//        let sampleAnim = SampledAnimationType.init(
-//            frames: frameArray,
-//            name: "sampledAnim1",
-//            frameInterval: Float(interval),
-//            isAdditive: true,
-//            bindTarget: .transform,
-//            blendLayer: 100,
-//            repeatMode: .autoReverse,
-//            fillMode: .backwards,
-//            trimStart: 1.0,
-//            trimEnd: 10.0,
-//            trimDuration: 9.0,
-//            offset: 2.0,
-//            delay: 1.0,
-//            speed: 2.0)
-//
-//        do {
-//            let animResource = try AnimationResource.generate(with: sampleAnim)
-//            model.playAnimation(animResource)
-//
-//        } catch {
-//            print("fail to generate animation")
-//        }
-
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
         model.position.y += 0.015
         model.position.x += Float(text.count) * 0.005
@@ -102,7 +74,7 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         return  (importedModel.visualBounds(relativeTo: nil).max.y - importedModel.visualBounds(relativeTo: nil).min.y)
     }
 
-    func generateSphereEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float? = nil) -> ModelEntity {
+    func generateSphereEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float? = nil) -> Entity {
 
         // 얘는 거의 이거 고정
         let radius: Float = 0.01
@@ -126,11 +98,14 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         sphere.collision = CollisionComponent(shapes: [ShapeResource.generateSphere(radius: 0.05)])
         sphere.name = "\(modelName)_sphere"
 
-        return sphere
+        let entity = Entity()
+        entity.addChild(sphere)
+
+        return entity
     }
 
 
-    func generateTextEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float? = nil) -> ModelEntity {
+    func generateTextEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float? = nil) -> Entity {
 
         // model Entity가 존재하는지 확인 -> Imported 모델인지 확인
         let realModelHeight = modelHeight ?? checkIfImportedModelExist(modelName: modelName) ?? 0
@@ -184,7 +159,39 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         }
 
         textEntity.name = "\(modelName)_text"
-        return textEntity
+
+        let entity = Entity()
+        entity.addChild(textEntity)
+
+
+        // 설마 설마 animation이 되려나? 제발 돼라 이눔시키!
+        typealias SampledAnimationType = SampledAnimation<Float>
+        let frameArray: [Float] = [1.0, 2.0, 3.0]
+        let interval = TimeInterval(1.0)
+        let sampleAnim = SampledAnimationType.init(
+            frames: frameArray,
+            name: "sampledAnim1",
+            frameInterval: Float(interval),
+            isAdditive: true,
+            bindTarget: .transform,
+            blendLayer: 100,
+            repeatMode: .autoReverse,
+            fillMode: .backwards,
+            trimStart: 1.0,
+            trimEnd: 10.0,
+            trimDuration: 9.0,
+            offset: 2.0,
+            delay: 1.0,
+            speed: 2.0)
+
+        do {
+            let animResource = try AnimationResource.generate(with: sampleAnim)
+            entity.playAnimation(animResource)
+
+        } catch {
+            print("fail to generate animation")
+        }
+        return entity
     }
 
 
