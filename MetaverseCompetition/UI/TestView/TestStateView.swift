@@ -166,16 +166,20 @@ struct TestStateView: View {
                                 Text(wordModel.word)
                                 Spacer()
                                 Text("\(wordModel.count) 회")
+                                    .foregroundColor(Color.inside.primaryColor)
                             }
                             Divider()
                         }
                     }
-
-                    Text("총 외운단어: \(viewModel.wordModels.count)개")
+                    HStack {
+                        Text("총 외운단어: ")
+                        Text("\(viewModel.wordModels.count)개")
+                            .foregroundColor(Color.inside.primaryColor)
+                    }
                 }
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 20).foregroundColor(Color.inside.backgroundColor))
-                .padding(.horizontal)
+                .padding()
                 .padding(.top, 20)
             }
             .font(.popupTextSize)
