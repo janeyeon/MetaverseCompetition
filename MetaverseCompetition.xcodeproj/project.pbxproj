@@ -22,6 +22,8 @@
 		261B369728B0BF0A00DDDD72 /* TestStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B369628B0BF0A00DDDD72 /* TestStateView.swift */; };
 		261B369928B0C13A00DDDD72 /* TestService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B369828B0C13A00DDDD72 /* TestService.swift */; };
 		261B369B28B0F3DC00DDDD72 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B369A28B0F3DC00DDDD72 /* String.swift */; };
+		261B36A928B1FE6A00DDDD72 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B36A828B1FE6A00DDDD72 /* SplashView.swift */; };
+		261B36AC28B1FEFE00DDDD72 /* LottieUI in Frameworks */ = {isa = PBXBuildFile; productRef = 261B36AB28B1FEFE00DDDD72 /* LottieUI */; };
 		26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E3408728ACB3F9000B86C6 /* WordModel.swift */; };
 		26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408B28AD36EC000B86C6 /* glowing1.mp4 */; };
 		26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408C28AD36F3000B86C6 /* glowing2.mp4 */; };
@@ -74,6 +76,7 @@
 		261B369628B0BF0A00DDDD72 /* TestStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestStateView.swift; sourceTree = "<group>"; };
 		261B369828B0C13A00DDDD72 /* TestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestService.swift; sourceTree = "<group>"; };
 		261B369A28B0F3DC00DDDD72 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		261B36A828B1FE6A00DDDD72 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
 		26E3408728ACB3F9000B86C6 /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
 		26E3408B28AD36EC000B86C6 /* glowing1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing1.mp4; sourceTree = "<group>"; };
 		26E3408C28AD36F3000B86C6 /* glowing2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing2.mp4; sourceTree = "<group>"; };
@@ -116,6 +119,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				26FD271F28A2880F00EE6685 /* FocusEntity in Frameworks */,
+				261B36AC28B1FEFE00DDDD72 /* LottieUI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +244,7 @@
 			isa = PBXGroup;
 			children = (
 				261836EA289CF90B005092A8 /* MainView.swift */,
+				261B36A828B1FE6A00DDDD72 /* SplashView.swift */,
 				26E340B528AF409E000B86C6 /* UIKitViews */,
 				261836F9289D26A4005092A8 /* ARView */,
 				26E3409C28AE2BA7000B86C6 /* AddModelView */,
@@ -380,6 +385,7 @@
 			name = MetaverseCompetition;
 			packageProductDependencies = (
 				26FD271E28A2880F00EE6685 /* FocusEntity */,
+				261B36AB28B1FEFE00DDDD72 /* LottieUI */,
 			);
 			productName = MeshingSample;
 			productReference = 261836F2289CFDBD005092A8 /* Scene Semantics.app */;
@@ -411,6 +417,7 @@
 			mainGroup = E1635E0923D5BDFD0031A7D8;
 			packageReferences = (
 				26FD271D28A2880F00EE6685 /* XCRemoteSwiftPackageReference "FocusEntity" */,
+				261B36AA28B1FEFE00DDDD72 /* XCRemoteSwiftPackageReference "LottieUI" */,
 			);
 			productRefGroup = E1635E0923D5BDFD0031A7D8;
 			projectDirPath = "";
@@ -453,6 +460,7 @@
 				26E340CA28AFC6ED000B86C6 /* StatusView.swift in Sources */,
 				261836F6289CFE2A005092A8 /* ConfidencePercentageString.swift in Sources */,
 				26E340B428AF408E000B86C6 /* StudyStateView.swift in Sources */,
+				261B36A928B1FE6A00DDDD72 /* SplashView.swift in Sources */,
 				26E340BC28AF6F1D000B86C6 /* Color.swift in Sources */,
 				261836F1289CFD98005092A8 /* MobileNetV2.mlmodel in Sources */,
 				26E3409028AE130F000B86C6 /* FeatureButtonStyle.swift in Sources */,
@@ -671,6 +679,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		261B36AA28B1FEFE00DDDD72 /* XCRemoteSwiftPackageReference "LottieUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jasudev/LottieUI";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		26FD271D28A2880F00EE6685 /* XCRemoteSwiftPackageReference "FocusEntity" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/maxxfrazer/FocusEntity";
@@ -682,6 +698,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		261B36AB28B1FEFE00DDDD72 /* LottieUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 261B36AA28B1FEFE00DDDD72 /* XCRemoteSwiftPackageReference "LottieUI" */;
+			productName = LottieUI;
+		};
 		26FD271E28A2880F00EE6685 /* FocusEntity */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 26FD271D28A2880F00EE6685 /* XCRemoteSwiftPackageReference "FocusEntity" */;
