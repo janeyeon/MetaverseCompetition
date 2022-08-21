@@ -31,7 +31,8 @@ protocol MainViewService {
 
     func isMemorizedFinished(word: String)
 
-//    func checkWordModelIsTestFinished(word: String)
+    func increaseCount(word: String)
+
 }
 
 
@@ -89,6 +90,15 @@ final class RealMainViewService: MainViewService {
                 appState.value.mainViewAppState.wordModels[index].isStudyFinished = true
             }
 
+        }
+    }
+
+    /// 단어에 해당하는 count를 하나씩 늘린다
+    func increaseCount(word: String) {
+        for index in 0..<appState.value.mainViewAppState.wordModels.count {
+            if word == appState.value.mainViewAppState.wordModels[index].word {
+                appState.value.mainViewAppState.wordModels[index].count += 1
+            }
         }
     }
 

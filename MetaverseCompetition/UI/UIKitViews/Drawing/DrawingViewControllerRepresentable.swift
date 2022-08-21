@@ -106,7 +106,7 @@ extension DrawingViewControllerRepresentable{
             }
 
             // MARK: - count값을 1씩 증가
-
+            container.services.mainViewService.increaseCount(word: selectedModelForTest!.word)
 
 
         }

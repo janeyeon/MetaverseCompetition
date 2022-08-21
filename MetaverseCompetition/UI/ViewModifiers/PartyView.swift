@@ -19,7 +19,6 @@ struct PartyView: View {
         ZStack {
             ForEach(0...1, id: \.self) { index in
                 LottieView(state: state)
-                    .blendMode(.screen)
                     .scaleEffect(CGFloat.random(in: 0.7...1.0))
             }
         }
