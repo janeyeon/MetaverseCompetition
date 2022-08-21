@@ -14,6 +14,7 @@ extension StudyStateView {
         @Published var selectedModelForStudy: SelectedWordModel?
         @Published var wordModels: [WordModel]
         @Published var isPopupView = false
+        @Published var isHeartView = false
 
         var isStudyFinishedCount: Int {
             return wordModels.filter { $0.isStudyFinished == true }.count
@@ -64,6 +65,8 @@ extension StudyStateView {
 
             // 다시 selectedModelForStudy nil로 만들어줌
             container.services.mainViewService.setSelectedModelForStudy(selectedModel: nil)
+
+            isHeartView = true
         }
 
         /// selectedModelForStudy를 nil로 만들어주는곳
@@ -86,10 +89,19 @@ struct StudyStateView: View {
             // State, button등을 표시하는 화면
             buttonView
 
+            if viewModel.isHeartView {
+                HeartView()
+            }
+
             // drawing view를 표시하는 화면
             if viewModel.selectedModelForStudy != nil {
                 studyView()
+                    .onAppear {
+                        viewModel.isHeartView = false
+                    }
             }
+
+
 
             // next state view를 표시하는 화면
             if viewModel.isStudyFinishedCount == viewModel.wordModels.count {
@@ -201,7 +213,6 @@ struct StudyStateView: View {
     func lines() -> some View {
         GeometryReader { geometry in
             let width = geometry.size.width
-            let height = geometry.size.height
 
             let paddingSize: CGFloat = 2
 

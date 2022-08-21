@@ -81,6 +81,8 @@ struct MainView: View {
                     case .testState:
                         TestStateView(viewModel: .init(container: viewModel.container))
                     }
+
+//                    PartyView()
                 }
             } else {
                 // splash 화면 켜지기

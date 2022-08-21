@@ -186,32 +186,37 @@ struct TestStateView: View {
     var transcriptionPopupView: some View {
         ZStack {
             if viewModel.selectedModelForTest?.isRight == true {
-                // 맞았을 때의 뷰
-                PopupView(confirmAction: {
-                    // 선택한 단어가 맞으면
+                ZStack {
+                    // 맞았을 때의 뷰
+                    PopupView(confirmAction: {
+                        // 선택한 단어가 맞으면
 
-                    // 맞았을때의 행동 넣어주기
-                    viewModel.pressIsMemorizedFinishedButton()
+                        // 맞았을때의 행동 넣어주기
+                        viewModel.pressIsMemorizedFinishedButton()
 
-                    // 팝업창 없애기
-                    viewModel.settranscriptionPopupView(to: false)
+                        // 팝업창 없애기
+                        viewModel.settranscriptionPopupView(to: false)
 
-                }, cancelAction: {
-                    viewModel.settranscriptionPopupView(to: false)
-                }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
-                    VStack(alignment: .center, spacing: 20) {
-                        Text("잘했어요!!")
-                            .font(.system(size: 50, weight: .heavy))
-                        Text("정답:")
-                        Text(viewModel.selectedModelForTest!.word)
-                            .font(.system(size: 100, weight: .heavy))
-                            .foregroundColor(Color.inside.primaryColor)
-                    }
-                    .font(.popupTextSize)
-                    .foregroundColor(Color.white)
-                    .padding(.vertical, 60)
-                    .padding(.top, 30)
-                })
+                    }, cancelAction: {
+                        viewModel.settranscriptionPopupView(to: false)
+                    }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, partyBackground: true, content: {
+                        VStack(alignment: .center, spacing: 20) {
+                            Text("잘했어요!!")
+                                .font(.system(size: 50, weight: .heavy))
+                            Text("정답:")
+                            Text(viewModel.selectedModelForTest!.word)
+                                .font(.system(size: 100, weight: .heavy))
+                                .foregroundColor(Color.inside.primaryColor)
+                        }
+                        .font(.popupTextSize)
+                        .foregroundColor(Color.white)
+                        .padding(.vertical, 60)
+                        .padding(.top, 30)
+                    })
+
+
+                }
+
             } else {
                 // 틀렸을 때의 뷰
                 PopupView(confirmAction: {

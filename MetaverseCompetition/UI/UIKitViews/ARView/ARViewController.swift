@@ -60,7 +60,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 // 이름인자를 안넣어줌 ㅋㅋ
                 modelEntity.name = "\(modelName)_model"
 
-                var position = modelEntity.position
+                let position = modelEntity.position
 
                 let anchorEntity = AnchorEntity(plane: .any)
                 // model 넣어줌
@@ -127,7 +127,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 self.selectText(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
             }))
 
-// test 가 select되면 할 필요가 없다 
+// test 가 select되면 할 필요가 없다
 //        cancellableBag.append( viewModel.$selectedModelForTest
 //            .receive(on: RunLoop.main)
 //            .sink(receiveValue: { [weak self] selectedModel in
@@ -205,9 +205,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
         fatalError("init(coder:) is not supported")
     }
 
-    deinit {
-        cancellableBag.map { $0.cancel() }
-    }
+//    deinit {
+//        cancellableBag.map { $0.cancel() }
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -320,9 +320,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
             return
         }
 
-        let position = arView.scene.findEntity(named: "\(selectedModelName)_text")?.position
-
-
         // 그 모델을 전체 appState에서 바꿔준다
         viewModel?.setSelectedModelForStudy(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
 
@@ -334,8 +331,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
         guard let selectedModelName = selectedModelName(tapLocation: tapLocation) else {
             return
         }
-
-        let position = arView.scene.findEntity(named: "\(selectedModelName)_text")?.position
 
         viewModel?.setSelectedModelForTest(selectedModel: SelectedWordModel(word: selectedModelName, rayCastResult: result))
     }
@@ -435,6 +430,17 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
+
+        let orbitAnim = OrbitAnimation(name: "orbit")
+        do {
+            let animResource = try AnimationResource.generate(with: orbitAnim)
+            DispatchQueue.main.async {
+                self.arView.scene.findEntity(named: "\(modelName)_coin")?.playAnimation(animResource)
+            }
+
+        } catch {
+            print("fail to generate animation")
+        }
 
 //        // texture바꾸기
 //        arView.scene.findEntity(named: "\(modelName)_text")?.parameters[OrbitAnimation.repeatingForever(OrbitAnimation())]

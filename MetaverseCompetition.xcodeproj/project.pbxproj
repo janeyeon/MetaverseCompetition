@@ -33,6 +33,9 @@
 		261B36BA28B2085300DDDD72 /* tv.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36B328B2085300DDDD72 /* tv.usdz */; };
 		261B36BC28B2087A00DDDD72 /* toy.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36BB28B2087A00DDDD72 /* toy.usdz */; };
 		261B36BE28B2091300DDDD72 /* slide.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36BD28B2091300DDDD72 /* slide.usdz */; };
+		261B36C028B2571100DDDD72 /* latte.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36BF28B2571100DDDD72 /* latte.usdz */; };
+		261B36C228B2618A00DDDD72 /* myCoin.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36C128B2618A00DDDD72 /* myCoin.usdz */; };
+		261B36C428B2720000DDDD72 /* PartyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B36C328B2720000DDDD72 /* PartyView.swift */; };
 		26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E3408728ACB3F9000B86C6 /* WordModel.swift */; };
 		26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408B28AD36EC000B86C6 /* glowing1.mp4 */; };
 		26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408C28AD36F3000B86C6 /* glowing2.mp4 */; };
@@ -95,6 +98,10 @@
 		261B36B328B2085300DDDD72 /* tv.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = tv.usdz; sourceTree = "<group>"; };
 		261B36BB28B2087A00DDDD72 /* toy.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = toy.usdz; sourceTree = "<group>"; };
 		261B36BD28B2091300DDDD72 /* slide.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = slide.usdz; sourceTree = "<group>"; };
+		261B36BF28B2571100DDDD72 /* latte.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = latte.usdz; sourceTree = "<group>"; };
+		261B36C128B2618A00DDDD72 /* myCoin.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = myCoin.usdz; sourceTree = "<group>"; };
+		261B36C328B2720000DDDD72 /* PartyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PartyView.swift; sourceTree = "<group>"; };
+		261B36C728B27A1E00DDDD72 /* newTexture.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = newTexture.mp4; sourceTree = "<group>"; };
 		26E3408728ACB3F9000B86C6 /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
 		26E3408B28AD36EC000B86C6 /* glowing1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing1.mp4; sourceTree = "<group>"; };
 		26E3408C28AD36F3000B86C6 /* glowing2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing2.mp4; sourceTree = "<group>"; };
@@ -187,6 +194,7 @@
 		26183709289E5AB4005092A8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				261B36BF28B2571100DDDD72 /* latte.usdz */,
 				261B36BB28B2087A00DDDD72 /* toy.usdz */,
 				261B36AD28B2085000DDDD72 /* chair.usdz */,
 				261B36BD28B2091300DDDD72 /* slide.usdz */,
@@ -210,6 +218,7 @@
 				26183709289E5AB4005092A8 /* Models */,
 				E1635E1E23D5BDFE0031A7D8 /* Assets.xcassets */,
 				26E340B928AF6DF6000B86C6 /* Colors.xcassets */,
+				261B36C128B2618A00DDDD72 /* myCoin.usdz */,
 				26E3408A28AD36DD000B86C6 /* Text Materials */,
 			);
 			path = Resources;
@@ -220,6 +229,7 @@
 			children = (
 				26E3408B28AD36EC000B86C6 /* glowing1.mp4 */,
 				26E3408C28AD36F3000B86C6 /* glowing2.mp4 */,
+				261B36C728B27A1E00DDDD72 /* newTexture.mp4 */,
 			);
 			path = "Text Materials";
 			sourceTree = "<group>";
@@ -324,6 +334,7 @@
 				26E3408F28AE130F000B86C6 /* FeatureButtonStyle.swift */,
 				26E340C528AFB097000B86C6 /* PopupView.swift */,
 				26E340C928AFC6ED000B86C6 /* StatusView.swift */,
+				261B36C328B2720000DDDD72 /* PartyView.swift */,
 			);
 			path = ViewModifiers;
 			sourceTree = "<group>";
@@ -458,12 +469,14 @@
 				261B36BC28B2087A00DDDD72 /* toy.usdz in Resources */,
 				261B36B728B2085300DDDD72 /* guitar.usdz in Resources */,
 				2618370F289E5AB4005092A8 /* teapot.usdz in Resources */,
+				261B36C228B2618A00DDDD72 /* myCoin.usdz in Resources */,
 				261B36BA28B2085300DDDD72 /* tv.usdz in Resources */,
 				261B36B828B2085300DDDD72 /* gramophone.usdz in Resources */,
 				26183711289E5AB4005092A8 /* shoes.usdz in Resources */,
 				261B36BE28B2091300DDDD72 /* slide.usdz in Resources */,
 				261B36B528B2085300DDDD72 /* vase.usdz in Resources */,
 				261B36B428B2085300DDDD72 /* chair.usdz in Resources */,
+				261B36C028B2571100DDDD72 /* latte.usdz in Resources */,
 				261B36B928B2085300DDDD72 /* wateringcan.usdz in Resources */,
 				26183710289E5AB4005092A8 /* airplane.usdz in Resources */,
 				261B36B628B2085300DDDD72 /* cup.usdz in Resources */,
@@ -495,6 +508,7 @@
 				261B369728B0BF0A00DDDD72 /* TestStateView.swift in Sources */,
 				26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */,
 				26E340AE28AE2EC5000B86C6 /* AddModelService.swift in Sources */,
+				261B36C428B2720000DDDD72 /* PartyView.swift in Sources */,
 				26E340AA28AE2CF2000B86C6 /* ServicesContainer.swift in Sources */,
 				26E340A028AE2C2E000B86C6 /* CancelBag.swift in Sources */,
 				26E340B828AF59A2000B86C6 /* GenerateTextSphereEntity.swift in Sources */,

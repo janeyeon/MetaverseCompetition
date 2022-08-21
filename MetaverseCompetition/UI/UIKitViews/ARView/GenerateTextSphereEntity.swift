@@ -47,6 +47,7 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
             let player = AVPlayer(url: url)
             let textMaterial = VideoMaterial(avPlayer: player)
             textMaterial.controller.audioInputMode = .spatial
+//            textMaterial.controller.
             model = ModelEntity(mesh: textMesh, materials: [textMaterial])
             player.play()
 
@@ -61,6 +62,19 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         model.position.x += Float(text.count) * 0.005
 
         return model
+    }
+
+    func generateCoinEntity(position: SIMD3<Float>, modelName: String) -> Entity? {
+        do {
+            let coinEntity = try Entity.load(named: "myCoin", in: nil)
+
+            coinEntity.position.y += 0.06
+            coinEntity.name = "\(modelName)_coin"
+            return coinEntity
+
+        } catch {
+            return nil
+        }
     }
 
     ///  imported Model의 존재유무를 확인하여 크기를 return 한다
@@ -121,6 +135,7 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         realPosition.y += realModelHeight
 
         var textEntity: ModelEntity
+//        var coinEntity: Entity?
 
         switch textModelState {
         case .add:
@@ -133,7 +148,10 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
 
         case .finished:
             // 파란색
+            // 여기에서 coin Entity도 같이 생성!
+
             textEntity = self.generateTextModel(text: modelName, color: UIColor.blue)
+//            coinEntity = self.generateCoinEntity(position: realPosition, modelName: modelName)
 
         case .selected:
             // 커스텀 텍스쳐
@@ -164,38 +182,66 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         entity.addChild(textEntity)
 
 
-        // 설마 설마 animation이 되려나? 제발 돼라 이눔시키!
-        typealias SampledAnimationType = SampledAnimation<Float>
-        let frameArray: [Float] = [1.0, 2.0, 3.0]
-        let interval = TimeInterval(1.0)
-        let sampleAnim = SampledAnimationType.init(
-            frames: frameArray,
-            name: "sampledAnim1",
-            frameInterval: Float(interval),
-            isAdditive: true,
-            bindTarget: .transform,
-            blendLayer: 100,
-            repeatMode: .autoReverse,
-            fillMode: .backwards,
-            trimStart: 1.0,
-            trimEnd: 10.0,
-            trimDuration: 9.0,
-            offset: 2.0,
-            delay: 1.0,
-            speed: 2.0)
 
-        do {
-            let animResource = try AnimationResource.generate(with: sampleAnim)
-            entity.playAnimation(animResource)
-
-        } catch {
-            print("fail to generate animation")
-        }
         return entity
     }
 
 
 }
+
+
+//        // coin이 있으면 return
+//        if let coinEntity = coinEntity as? Entity {
+//
+//            if realModelHeight != 0 {
+//                // imported 모델일 경우
+//                coinEntity.position += realPosition
+//            } else {
+//                // classification일 경우
+//                var resultWithCameraOrientation = self.arView.cameraTransform
+//                  resultWithCameraOrientation.translation = realPosition
+//
+//                coinEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+//            }
+
+//            // 설마 설마 animation이 되려나? 제발 돼라 이눔시키!
+//            typealias SampledAnimationType = SampledAnimation<Float>
+//            let frameArray: [Float] = [1.0, 2.0, 3.0]
+//            let interval = TimeInterval(1.0)
+//            let sampleAnim = SampledAnimationType.init(
+//                frames: frameArray,
+//                name: "sampledAnim1",
+//                frameInterval: Float(interval),
+//                isAdditive: true,
+//                bindTarget: .transform,
+//                blendLayer: 100,
+//                repeatMode: .autoReverse,
+//                fillMode: .backwards,
+//                trimStart: 1.0,
+//                trimEnd: 10.0,
+//                trimDuration: 9.0,
+//                offset: 2.0,
+//                delay: 1.0,
+//                speed: 2.0)
+//
+//            let orbitAnim = OrbitAnimation(name: "orbit")
+//
+//            entity.addChild(coinEntity)
+//
+//
+//            do {
+//                let animResource = try AnimationResource.generate(with: orbitAnim)
+//                coinEntity.bindableValues
+////                DispatchQueue.main.async {
+////                    coinEntity.playAnimation(animResource)
+////                }
+//
+//            } catch {
+//                print("fail to generate animation")
+//            }
+//        }
+
+
 
 //
 //    private func getCamVector() -> (position: SIMD3<Float>, direciton: SIMD3<Float>) {

@@ -18,6 +18,7 @@ struct PopupView<Content: View>: View {
     let isCancelButtonExist: Bool
     let isXmarkExist: Bool
     let maxWidth: CGFloat
+    var partyBackground: Bool = false
 
     let content: () -> Content
 
@@ -28,6 +29,11 @@ struct PopupView<Content: View>: View {
                 .fill(Color.inside.backgroundColor)
                 .background(.ultraThinMaterial)
                 .frame(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+
+            if partyBackground {
+                // 폭죽 효과
+                PartyView()
+            }
 
             HStack {
                 Spacer()

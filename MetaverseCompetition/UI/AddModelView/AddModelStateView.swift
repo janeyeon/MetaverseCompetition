@@ -65,7 +65,9 @@ extension AddModelStateView {
             var fileNames: [String] = []
             for file in files where file.hasSuffix("usdz"){
                 let modelName = file.replacingOccurrences(of: ".usdz", with: "")
-                fileNames.append(modelName)
+                if modelName != "myCoin" {
+                    fileNames.append(modelName)
+                }
             }
             assert(!fileNames.isEmpty)
             return fileNames
