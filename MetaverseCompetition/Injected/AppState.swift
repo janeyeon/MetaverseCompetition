@@ -22,6 +22,8 @@ struct AppState {
     struct AddModelAppState: Equatable {
         var modelConfirmedForPlacement: String?
         var addModelState: AddModelState = .home
+        var capturedImage: SelectedCapturedImage?
+        var isClassificationRight: Bool = false
     }
 
     struct StudyAppState: Equatable {

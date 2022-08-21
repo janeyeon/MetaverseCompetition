@@ -7,12 +7,16 @@
 //
 
 import Foundation
+import UIKit
 
 protocol AddModelService {
     func changeAddModelState(to state: AddModelState)
     func modelPlacementConfirmButton(selectedModel: String)
     func modelPlacementCancelButton()
+    func setCapturedImage(capturedImage: SelectedCapturedImage?)
+    func setisClassificationRight(to value: Bool)
 }
+
 
 
 final class RealAddModelService: AddModelService {
@@ -34,5 +38,13 @@ final class RealAddModelService: AddModelService {
 
     func modelPlacementConfirmButton(selectedModel: String) {
         appState.value.addModelAppState.modelConfirmedForPlacement = selectedModel
+    }
+
+    func setCapturedImage(capturedImage: SelectedCapturedImage?) {
+        appState.value.addModelAppState.capturedImage = capturedImage
+    }
+
+    func setisClassificationRight(to value: Bool) {
+        appState.value.addModelAppState.isClassificationRight = value
     }
 }

@@ -15,11 +15,13 @@ extension AddModelStateView {
         @Published var modelConfirmedForPlacement: String?
         @Published var addModelState: AddModelState
         @Published var wordModels: [WordModel]
-
+        @Published var capturedImage: SelectedCapturedImage?
 
         @Published var isPlacementEnabled: Bool = false
         @Published var selectedModel: String?
         @Published var isPopupView: Bool = false
+        @Published var isClassificationPopupView: Bool = false
+
 
         let container: DIContainer
         private var cancelBag = CancelBag()
@@ -33,6 +35,8 @@ extension AddModelStateView {
             _addModelState = .init(initialValue: appState.value.addModelAppState.addModelState)
 
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
+
+            _capturedImage = .init(initialValue: appState.value.addModelAppState.capturedImage)
 
             cancelBag.collect{
 
@@ -48,6 +52,10 @@ extension AddModelStateView {
                 appState.map(\.mainViewAppState.wordModels)
                     .removeDuplicates()
                     .weakAssign(to: \.wordModels, on: self)
+
+                appState.map(\.addModelAppState.capturedImage)
+                    .removeDuplicates()
+                    .weakAssign(to: \.capturedImage, on: self)
 
             }
         }
@@ -98,6 +106,11 @@ extension AddModelStateView {
             // 여기에서 초기화등 필요한 함수 진행 
             container.services.mainViewService.changeMainViewState(to: .practiceState)
         }
+
+        /// classification이 맞았을 경우
+        func setisClassificationRight(to value: Bool) {
+            container.services.addModelService.setisClassificationRight(to: value)
+        }
     }
 }
 
@@ -143,6 +156,26 @@ struct AddModelStateView: View {
             .padding(.top, 30)
         })
     }
+
+//    var classificationPopupView: some View {
+//        PopupView(confirmAction: {
+//            // classification이 맞았음
+//            viewModel.changeToNextState()
+//        }, cancelAction: {
+//            // classification이 틀렸음
+//            viewModel.isPopupView = false
+//        }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: true, isXmarkExist: false, maxWidth: 450, content: {
+//            VStack(alignment: .center, spacing: 20) {
+//                Text("외울 단어들을 다 추가했나요? ")
+//                Text("그럼 다같이 단어를 외우러")
+//                Text("신나는 모험을 떠나볼까요?")
+//            }
+//            .font(.popupTextSize)
+//            .foregroundColor(Color.white)
+//            .padding(.vertical, 60)
+//            .padding(.top, 30)
+//        })
+//    }
 
     var focusView: some View {
         ZStack {

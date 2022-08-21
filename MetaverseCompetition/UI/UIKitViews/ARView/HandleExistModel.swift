@@ -46,6 +46,12 @@ class RealClassification: Classification {
                     // 반드시 mainview의 latestPrediction을 넣어주고 밑의 부분이 실행되어야 함
                     self?.imagePredictorHandler(predictions) { [self] in
                         // entity를 넣어주는 부분
+
+//                        // capturedImage넣어주기
+//                        self?.viewModel.setCapturedImage(capturedImage:  SelectedCapturedImage(capturedImage: resizedImage, position: position))
+
+
+                        // 나중에 넣어서 엮어주기
                         // TODO: - 나중에 이부분을 다른 model entity생성하는 부분과 합치기
                         let anchorEntity = AnchorEntity(world: position)
 
@@ -76,11 +82,17 @@ class RealClassification: Classification {
 
     /// crop uiImage in the center of the screen
     private func cropImage(uiImage: UIImage) -> UIImage {
-        let h = UIScreen.main.bounds.size.height / 3 * UIScreen.main.scale
-        let w = UIScreen.main.bounds.size.width / 3 * UIScreen.main.scale
+//        let h = UIScreen.main.bounds.size.height / 3 * UIScreen.main.scale
+//        let w = UIScreen.main.bounds.size.width / 3 * UIScreen.main.scale
+
+        let maxWidth = UIScreen.main.bounds.width
+        let maxHeight = UIScreen.main.bounds.height
+        let rectWidth : CGFloat = 500
+        let rectHeight : CGFloat = 600
+
         let cgImage = uiImage.cgImage
 
-        let croppedCGImage = cgImage?.cropping(to: CGRect(x: w, y: h, width: w, height: h))
+        let croppedCGImage = cgImage?.cropping(to: CGRect(x: maxWidth / 2 - rectWidth / 2, y: maxHeight / 2 - rectHeight / 2, width: rectWidth, height: rectHeight))
         return UIImage(cgImage: croppedCGImage!)
     }
 

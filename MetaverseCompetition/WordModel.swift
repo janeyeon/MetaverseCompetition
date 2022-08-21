@@ -7,6 +7,7 @@
 //
 import ARKit
 import Foundation
+import UIKit
 
 struct WordModel: Identifiable, Equatable, Hashable {
     var word: String
@@ -43,4 +44,10 @@ struct SelectedWordModel: Equatable {
         self.word = word
         self.rayCastResult = rayCastResult
     }
+}
+
+/// classification을 위해 캡쳐한 이미지
+struct SelectedCapturedImage: Equatable {
+    var capturedImage: UIImage
+    var position: SIMD3<Float>
 }

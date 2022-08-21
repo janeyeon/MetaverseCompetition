@@ -26,6 +26,7 @@ extension MyARViewControllerRepresentable {
     class ViewModel: ObservableObject {
         @Published var modelConfirmedForPlacement: String?
         @Published var addModelState: AddModelState
+        @Published var capturedImage: SelectedCapturedImage?
         @Published var mainViewState: MainViewState
         @Published var selectedModelForStudy: SelectedWordModel?
         @Published var selectedModelForStudyOldValue: SelectedWordModel?
@@ -44,6 +45,8 @@ extension MyARViewControllerRepresentable {
 
             // addModel의 변수들
             _modelConfirmedForPlacement = .init(initialValue: appState.value.addModelAppState.modelConfirmedForPlacement)
+
+            _capturedImage = .init(initialValue: appState.value.addModelAppState.capturedImage)
 
             _addModelState = .init(initialValue: appState.value.addModelAppState.addModelState)
 
@@ -72,6 +75,10 @@ extension MyARViewControllerRepresentable {
                 appState.map(\.addModelAppState.addModelState)
                     .removeDuplicates()
                     .weakAssign(to: \.addModelState, on: self)
+
+                appState.map(\.addModelAppState.capturedImage)
+                    .removeDuplicates()
+                    .weakAssign(to: \.capturedImage, on: self)
 
                 appState.map(\.mainViewAppState.mainViewState)
                     .removeDuplicates()
@@ -123,6 +130,10 @@ extension MyARViewControllerRepresentable {
 
         func setAnchorEntities(anchorEntities: [AnchorEntity]) {
             container.services.testService.setAnchorEntities(anchorEntities: anchorEntities)
+        }
+
+        func setCapturedImage(capturedImage: SelectedCapturedImage?) {
+            container.services.addModelService.setCapturedImage(capturedImage: capturedImage)
         }
 
 
