@@ -12,10 +12,10 @@
 		261836F1289CFD98005092A8 /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 261836F0289CFD98005092A8 /* MobileNetV2.mlmodel */; };
 		261836F4289CFE0C005092A8 /* CGImagePropertyOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261836F3289CFE0C005092A8 /* CGImagePropertyOrientation.swift */; };
 		261836F6289CFE2A005092A8 /* ConfidencePercentageString.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261836F5289CFE2A005092A8 /* ConfidencePercentageString.swift */; };
-		2618370E289E5AB4005092A8 /* Robot.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370A289E5AB4005092A8 /* Robot.usdz */; };
-		2618370F289E5AB4005092A8 /* Teapot.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370B289E5AB4005092A8 /* Teapot.usdz */; };
-		26183710289E5AB4005092A8 /* Airplane.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370C289E5AB4005092A8 /* Airplane.usdz */; };
-		26183711289E5AB4005092A8 /* Shoes.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370D289E5AB4005092A8 /* Shoes.usdz */; };
+		2618370E289E5AB4005092A8 /* robot.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370A289E5AB4005092A8 /* robot.usdz */; };
+		2618370F289E5AB4005092A8 /* teapot.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370B289E5AB4005092A8 /* teapot.usdz */; };
+		26183710289E5AB4005092A8 /* airplane.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370C289E5AB4005092A8 /* airplane.usdz */; };
+		26183711289E5AB4005092A8 /* shoes.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 2618370D289E5AB4005092A8 /* shoes.usdz */; };
 		26183717289E5F4B005092A8 /* HandleExistModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26183716289E5F4B005092A8 /* HandleExistModel.swift */; };
 		2618375F28A0E49B005092A8 /* State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618375E28A0E49B005092A8 /* State.swift */; };
 		2618376128A0E6DE005092A8 /* ViewControllerRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */; };
@@ -24,6 +24,15 @@
 		261B369B28B0F3DC00DDDD72 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B369A28B0F3DC00DDDD72 /* String.swift */; };
 		261B36A928B1FE6A00DDDD72 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261B36A828B1FE6A00DDDD72 /* SplashView.swift */; };
 		261B36AC28B1FEFE00DDDD72 /* LottieUI in Frameworks */ = {isa = PBXBuildFile; productRef = 261B36AB28B1FEFE00DDDD72 /* LottieUI */; };
+		261B36B428B2085300DDDD72 /* chair.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36AD28B2085000DDDD72 /* chair.usdz */; };
+		261B36B528B2085300DDDD72 /* vase.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36AE28B2085000DDDD72 /* vase.usdz */; };
+		261B36B628B2085300DDDD72 /* cup.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36AF28B2085100DDDD72 /* cup.usdz */; };
+		261B36B728B2085300DDDD72 /* guitar.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36B028B2085100DDDD72 /* guitar.usdz */; };
+		261B36B828B2085300DDDD72 /* gramophone.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36B128B2085200DDDD72 /* gramophone.usdz */; };
+		261B36B928B2085300DDDD72 /* wateringcan.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36B228B2085300DDDD72 /* wateringcan.usdz */; };
+		261B36BA28B2085300DDDD72 /* tv.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36B328B2085300DDDD72 /* tv.usdz */; };
+		261B36BC28B2087A00DDDD72 /* toy.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36BB28B2087A00DDDD72 /* toy.usdz */; };
+		261B36BE28B2091300DDDD72 /* slide.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 261B36BD28B2091300DDDD72 /* slide.usdz */; };
 		26E3408828ACB3F9000B86C6 /* WordModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E3408728ACB3F9000B86C6 /* WordModel.swift */; };
 		26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408B28AD36EC000B86C6 /* glowing1.mp4 */; };
 		26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 26E3408C28AD36F3000B86C6 /* glowing2.mp4 */; };
@@ -66,10 +75,10 @@
 		261836F2289CFDBD005092A8 /* Scene Semantics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Scene Semantics.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		261836F3289CFE0C005092A8 /* CGImagePropertyOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImagePropertyOrientation.swift; sourceTree = "<group>"; };
 		261836F5289CFE2A005092A8 /* ConfidencePercentageString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidencePercentageString.swift; sourceTree = "<group>"; };
-		2618370A289E5AB4005092A8 /* Robot.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Robot.usdz; sourceTree = "<group>"; };
-		2618370B289E5AB4005092A8 /* Teapot.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Teapot.usdz; sourceTree = "<group>"; };
-		2618370C289E5AB4005092A8 /* Airplane.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Airplane.usdz; sourceTree = "<group>"; };
-		2618370D289E5AB4005092A8 /* Shoes.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = Shoes.usdz; sourceTree = "<group>"; };
+		2618370A289E5AB4005092A8 /* robot.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robot.usdz; sourceTree = "<group>"; };
+		2618370B289E5AB4005092A8 /* teapot.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = teapot.usdz; sourceTree = "<group>"; };
+		2618370C289E5AB4005092A8 /* airplane.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = airplane.usdz; sourceTree = "<group>"; };
+		2618370D289E5AB4005092A8 /* shoes.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = shoes.usdz; sourceTree = "<group>"; };
 		26183716289E5F4B005092A8 /* HandleExistModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HandleExistModel.swift; sourceTree = "<group>"; };
 		2618375E28A0E49B005092A8 /* State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = State.swift; sourceTree = "<group>"; };
 		2618376028A0E6DE005092A8 /* ViewControllerRepresentable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerRepresentable.swift; sourceTree = "<group>"; };
@@ -77,6 +86,15 @@
 		261B369828B0C13A00DDDD72 /* TestService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestService.swift; sourceTree = "<group>"; };
 		261B369A28B0F3DC00DDDD72 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		261B36A828B1FE6A00DDDD72 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		261B36AD28B2085000DDDD72 /* chair.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = chair.usdz; sourceTree = "<group>"; };
+		261B36AE28B2085000DDDD72 /* vase.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = vase.usdz; sourceTree = "<group>"; };
+		261B36AF28B2085100DDDD72 /* cup.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = cup.usdz; sourceTree = "<group>"; };
+		261B36B028B2085100DDDD72 /* guitar.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = guitar.usdz; sourceTree = "<group>"; };
+		261B36B128B2085200DDDD72 /* gramophone.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = gramophone.usdz; sourceTree = "<group>"; };
+		261B36B228B2085300DDDD72 /* wateringcan.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = wateringcan.usdz; sourceTree = "<group>"; };
+		261B36B328B2085300DDDD72 /* tv.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = tv.usdz; sourceTree = "<group>"; };
+		261B36BB28B2087A00DDDD72 /* toy.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = toy.usdz; sourceTree = "<group>"; };
+		261B36BD28B2091300DDDD72 /* slide.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = slide.usdz; sourceTree = "<group>"; };
 		26E3408728ACB3F9000B86C6 /* WordModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordModel.swift; sourceTree = "<group>"; };
 		26E3408B28AD36EC000B86C6 /* glowing1.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing1.mp4; sourceTree = "<group>"; };
 		26E3408C28AD36F3000B86C6 /* glowing2.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = glowing2.mp4; sourceTree = "<group>"; };
@@ -137,7 +155,6 @@
 		261836F9289D26A4005092A8 /* ARView */ = {
 			isa = PBXGroup;
 			children = (
-				26183706289E58FF005092A8 /* ImportModel */,
 				26183707289E591E005092A8 /* ClassifyRealObject */,
 			);
 			path = ARView;
@@ -149,14 +166,6 @@
 				26FD272728A53A8C00EE6685 /* RecognizedTextDataSource.swift */,
 			);
 			path = TextRecognizer;
-			sourceTree = "<group>";
-		};
-		26183706289E58FF005092A8 /* ImportModel */ = {
-			isa = PBXGroup;
-			children = (
-				26183709289E5AB4005092A8 /* Models */,
-			);
-			path = ImportModel;
 			sourceTree = "<group>";
 		};
 		26183707289E591E005092A8 /* ClassifyRealObject */ = {
@@ -178,10 +187,19 @@
 		26183709289E5AB4005092A8 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				2618370A289E5AB4005092A8 /* Robot.usdz */,
-				2618370B289E5AB4005092A8 /* Teapot.usdz */,
-				2618370C289E5AB4005092A8 /* Airplane.usdz */,
-				2618370D289E5AB4005092A8 /* Shoes.usdz */,
+				261B36BB28B2087A00DDDD72 /* toy.usdz */,
+				261B36AD28B2085000DDDD72 /* chair.usdz */,
+				261B36BD28B2091300DDDD72 /* slide.usdz */,
+				261B36AF28B2085100DDDD72 /* cup.usdz */,
+				261B36B128B2085200DDDD72 /* gramophone.usdz */,
+				261B36B028B2085100DDDD72 /* guitar.usdz */,
+				261B36B328B2085300DDDD72 /* tv.usdz */,
+				261B36AE28B2085000DDDD72 /* vase.usdz */,
+				261B36B228B2085300DDDD72 /* wateringcan.usdz */,
+				2618370A289E5AB4005092A8 /* robot.usdz */,
+				2618370B289E5AB4005092A8 /* teapot.usdz */,
+				2618370C289E5AB4005092A8 /* airplane.usdz */,
+				2618370D289E5AB4005092A8 /* shoes.usdz */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -189,6 +207,7 @@
 		26E3408928AD36D6000B86C6 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				26183709289E5AB4005092A8 /* Models */,
 				E1635E1E23D5BDFE0031A7D8 /* Assets.xcassets */,
 				26E340B928AF6DF6000B86C6 /* Colors.xcassets */,
 				26E3408A28AD36DD000B86C6 /* Text Materials */,
@@ -436,12 +455,21 @@
 				26E340BA28AF6DF6000B86C6 /* Colors.xcassets in Resources */,
 				26E3408E28AD3DBB000B86C6 /* glowing2.mp4 in Resources */,
 				26E3408D28AD3DB7000B86C6 /* glowing1.mp4 in Resources */,
-				2618370F289E5AB4005092A8 /* Teapot.usdz in Resources */,
-				26183711289E5AB4005092A8 /* Shoes.usdz in Resources */,
-				26183710289E5AB4005092A8 /* Airplane.usdz in Resources */,
+				261B36BC28B2087A00DDDD72 /* toy.usdz in Resources */,
+				261B36B728B2085300DDDD72 /* guitar.usdz in Resources */,
+				2618370F289E5AB4005092A8 /* teapot.usdz in Resources */,
+				261B36BA28B2085300DDDD72 /* tv.usdz in Resources */,
+				261B36B828B2085300DDDD72 /* gramophone.usdz in Resources */,
+				26183711289E5AB4005092A8 /* shoes.usdz in Resources */,
+				261B36BE28B2091300DDDD72 /* slide.usdz in Resources */,
+				261B36B528B2085300DDDD72 /* vase.usdz in Resources */,
+				261B36B428B2085300DDDD72 /* chair.usdz in Resources */,
+				261B36B928B2085300DDDD72 /* wateringcan.usdz in Resources */,
+				26183710289E5AB4005092A8 /* airplane.usdz in Resources */,
+				261B36B628B2085300DDDD72 /* cup.usdz in Resources */,
 				E1635E1F23D5BDFE0031A7D8 /* Assets.xcassets in Resources */,
 				717F7FEF23F054DC00208378 /* README.md in Resources */,
-				2618370E289E5AB4005092A8 /* Robot.usdz in Resources */,
+				2618370E289E5AB4005092A8 /* robot.usdz in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
