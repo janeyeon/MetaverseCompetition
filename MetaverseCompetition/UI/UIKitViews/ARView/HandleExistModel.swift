@@ -49,9 +49,9 @@ class RealClassification: Classification {
                         // TODO: - 나중에 이부분을 다른 model entity생성하는 부분과 합치기
                         let anchorEntity = AnchorEntity(world: position)
 
-                        let sphereEntity = (self?.generateTextSphereEntity.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction))!
+                        let sphereEntity = (self?.generateTextSphereEntity.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction, textModelState: .add, modelHeight: nil))!
 
-                        let textEntity = (self?.generateTextSphereEntity.generateExistTextEntity(position: position, modelName: self!.latestPrediction))!
+                        let textEntity = (self?.generateTextSphereEntity.generateTextEntity(position: position, modelName: self!.latestPrediction, textModelState: .add, modelHeight: nil))!
 
                         anchorEntity.addChild(sphereEntity)
                         anchorEntity.addChild(textEntity)

@@ -13,15 +13,9 @@ import UIKit
 import SwiftUI
 
 protocol GenerateTextSphereEntity {
-    func generateSphereEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity
+    func generateSphereEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float?) -> ModelEntity
 
-    func generateExistTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity
-
-    func generateTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity
-
-    func generateExistTextEntityWithMaterial(position: SIMD3<Float>, modelName: String) -> ModelEntity
-
-    func generateQuestionMark(position: SIMD3<Float>, modelName: String) -> ModelEntity
+    func generateTextEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float?) -> ModelEntity
 
 }
 
@@ -34,14 +28,32 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         self.arView = arView
     }
 
-    func generateTextModel(text: String) -> ModelEntity {
+    func generateTextModel(text: String, color: UIColor, customMaterial: Bool = false) -> ModelEntity {
         let lineHeight: CGFloat = 0.05
         let font = MeshResource.Font.systemFont(ofSize: lineHeight)
         let textMesh = MeshResource.generateText(text, extrusionDepth: Float(lineHeight * 0.1), font: font)
 
-        let textMeterial = SimpleMaterial(color: UIColor.orange, isMetallic: true)
+        var model: ModelEntity
 
-        let model = ModelEntity(mesh: textMesh, materials: [textMeterial])
+        if customMaterial {
+            // video material을 넣어준다
+
+            // video material을 넣어주는 코드
+            guard let url = Bundle.main.url(forResource: "glowing1", withExtension: ".mp4") else {
+                return ModelEntity()
+            }
+
+            let player = AVPlayer(url: url)
+            let textMaterial = VideoMaterial(avPlayer: player)
+            textMaterial.controller.audioInputMode = .spatial
+            model = ModelEntity(mesh: textMesh, materials: [textMaterial])
+            player.play()
+
+        } else {
+            // 주어진 mateiral이 없는경우
+            let textMaterial = SimpleMaterial(color: color, isMetallic: true)
+            model = ModelEntity(mesh: textMesh, materials: [textMaterial])
+        }
 
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
         model.position.y += 0.015
@@ -50,142 +62,118 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         return model
     }
 
-    func generateSphereEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
+    ///  imported Model의 존재유무를 확인하여 크기를 return 한다
+    func checkIfImportedModelExist(modelName: String) -> Float? {
 
+        guard let importedModel = arView.scene.findEntity(named: "\(modelName)_model") as? ModelEntity else {
+            // 없다는 소리
+            return nil
+        }
+
+        guard let maxY = importedModel.model?.mesh.bounds.max.y else {
+            return nil
+        }
+
+        guard let minY = importedModel.model?.mesh.bounds.min.y else {
+            return nil
+        }
+
+        return (maxY - minY) / 100
+    }
+
+    func generateSphereEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float? = nil) -> ModelEntity {
+
+        // 얘는 거의 이거 고정
         let radius: Float = 0.01
         let color: UIColor = UIColor.green
+
+        var realPosition = position
+
+        // model Entity가 존재하는지 확인 -> Imported 모델인지 확인
+        let realModelHeight = modelHeight ?? checkIfImportedModelExist(modelName: modelName) ?? 0
+
+        // realModelHeight이 있다면 modelHeight의 높이만큼 더해줌
+        realPosition.y += realModelHeight
 
         let sphere = ModelEntity(mesh: .generateSphere(radius: radius), materials: [SimpleMaterial(color: color, isMetallic: false)])
 
         // move sphere slightly up
-        sphere.position = position
+        sphere.position = realPosition
         sphere.position.y += radius
 
         sphere.physicsBody?.mode = .dynamic
         sphere.collision = CollisionComponent(shapes: [ShapeResource.generateSphere(radius: 0.05)])
         sphere.name = "\(modelName)_sphere"
 
-        // 맘대로 움직일 수 있음, 다만 anchor위치는 안변하는듯?
-//        arView.installGestures(.all, for: sphere)
-
         return sphere
     }
 
-    func generateExistTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
-        let textEntity = self.generateTextModel(text: modelName)
 
-        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
+    func generateTextEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float? = nil) -> ModelEntity {
 
-        print("DEBUG: - first anchor position : \(position)")
+        // model Entity가 존재하는지 확인 -> Imported 모델인지 확인
+        let realModelHeight = modelHeight ?? checkIfImportedModelExist(modelName: modelName) ?? 0
 
-        textEntity.scale = .one * raycastDistance
+        // 그냥 일반적인 포지션
+        // 근데 imported model일 경우는 position 이 0
+        var realPosition = realModelHeight != 0 ?  SIMD3<Float>(0, 0, 0) : position
 
-        var resultWithCameraOrientation = self.arView.cameraTransform
-          resultWithCameraOrientation.translation = position
 
-          textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
-        textEntity.name = "\(modelName)_text"
+        print("DEBUG: textModelState - \(textModelState), realModelHeight  - \(realModelHeight), position - \(position)")
 
-        return textEntity
+        // realModelHeight이 있다면 modelHeight의 높이만큼 더해줌
+        realPosition.y += realModelHeight
 
-    }
+        var textEntity: ModelEntity
 
-    func generateQuestionMark(position: SIMD3<Float>, modelName: String) -> ModelEntity {
-        let textEntity = self.generateTextModel(text: "?")
+        switch textModelState {
+        case .add:
+            // 모델을 새로 더해줄때
+            textEntity = self.generateTextModel(text: modelName, color: UIColor.yellow)
 
-        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
+        case .questionMark:
+            // 물음표
+            textEntity = self.generateTextModel(text: "?", color: UIColor.red)
 
-        print("DEBUG: - first anchor position : \(position)")
+        case .finished:
+            // 파란색
+            textEntity = self.generateTextModel(text: modelName, color: UIColor.blue)
 
-        textEntity.scale = .one * raycastDistance
-
-        var resultWithCameraOrientation = self.arView.cameraTransform
-          resultWithCameraOrientation.translation = position
-
-          textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
-        textEntity.name = "\(modelName)_text"
-
-        return textEntity
-    }
-
-    func generateExistTextEntityWithMaterial(position: SIMD3<Float>, modelName: String) -> ModelEntity {
-
-        let lineHeight: CGFloat = 0.05
-        let font = MeshResource.Font.systemFont(ofSize: lineHeight)
-        let textMesh = MeshResource.generateText(modelName, extrusionDepth: Float(lineHeight * 0.1), font: font)
-
-        // video material을 넣어주는 코드
-        guard let url = Bundle.main.url(forResource: "glowing1", withExtension: ".mp4") else {
-            return ModelEntity()
+        case .selected:
+            // 커스텀 텍스쳐
+            textEntity = self.generateTextModel(text: modelName, color: UIColor.black, customMaterial: true)
         }
 
-        let player = AVPlayer(url: url)
-        let material = VideoMaterial(avPlayer: player)
-        material.controller.audioInputMode = .spatial
+        let raycastDistance = distance(realPosition, self.arView.cameraTransform.translation)
 
-        let model = ModelEntity(mesh: textMesh, materials: [material])
+        textEntity.scale = .one * raycastDistance * (realModelHeight != 0 ? 2.5 : 1)
 
-        player.play()
+        if realModelHeight != 0 {
+            // imported 모델일 경우
+            textEntity.position += realPosition
+        } else {
+            // classification일 경우
+            var resultWithCameraOrientation = self.arView.cameraTransform
+              resultWithCameraOrientation.translation = realPosition
 
-        model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
-        model.position.y += 0.015
-        model.position.x += Float(modelName.count) * 0.005
+              textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
+        }
 
-        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
-
-
-        model.scale = .one * raycastDistance
-
-        var resultWithCameraOrientation = self.arView.cameraTransform
-          resultWithCameraOrientation.translation = position
-
-        model.orientation = simd_quatf(resultWithCameraOrientation.matrix)
-        model.name = "\(modelName)_text"
-
-        return model
-
-    }
-
-    func generateTextEntity(position: SIMD3<Float>, modelName: String) -> ModelEntity {
-
-//        let rayDirection = normalize(position - self.arView.cameraTransform.translation)
-
-//        let textPositionInWorldCoordinates = position - (rayDirection * 0.1)
-
-//        let textPositionInWorldCoordinates = position
-
-        // 5. Create a 3D text to visualize the classification result
-        let textEntity = self.generateTextModel(text: modelName)
-
-        // 6. Scale the text depending on the distance
-        let raycastDistance = distance(position, self.arView.cameraTransform.translation)
-
-        textEntity.scale = .one * raycastDistance * 2
-
-
-//        // 7. Place the text facing the camera
-//        var resultWithCameraOrientation = self.arView.cameraTransform
-////
-//        resultWithCameraOrientation.translation = position
-//
-//        textEntity.orientation = simd_quatf(resultWithCameraOrientation.matrix)
-        textEntity.position += position
         textEntity.name = "\(modelName)_text"
-//        textEntity.scale
-
         return textEntity
     }
 
-    private func getCamVector() -> (position: SIMD3<Float>, direciton: SIMD3<Float>) {
-
-        let cameraTransform = arView.cameraTransform
-
-        let camDir = cameraTransform.matrix.columns.2
-        return (cameraTransform.translation, -[camDir.x, camDir.y, camDir.z])
-    }
 
 }
 
+//
+//    private func getCamVector() -> (position: SIMD3<Float>, direciton: SIMD3<Float>) {
+//
+//        let cameraTransform = arView.cameraTransform
+//
+//        let camDir = cameraTransform.matrix.columns.2
+//        return (cameraTransform.translation, -[camDir.x, camDir.y, camDir.z])
+//    }
 
 //    private func camRayCast() -> ARRaycastResult {
 //        let (camPos, camDir) = getCamVector()

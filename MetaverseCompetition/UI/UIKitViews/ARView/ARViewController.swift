@@ -52,17 +52,22 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
                 guard let self = self else { return ("", AnchorEntity(), nil)}
 
-                let modelHeight = (modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!
+                let modelHeight = ((modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!) / 100
 
+                // 이름인자를 안넣어줌 ㅋㅋ
+                modelEntity.name = "\(modelName)_model"
+
+//                var position = modelEntity.position
+//                position.y += modelHeight / 100
                 var position = modelEntity.position
-                position.y += modelHeight / 100
 
                 let anchorEntity = AnchorEntity(plane: .any)
                 // model 넣어줌
                 anchorEntity.addChild(modelEntity.clone(recursive: true))
 
-                let sphereEntity = self.generateTextSphereEntity!.generateSphereEntity(position: position, modelName: modelName)
-                let textEntity = self.generateTextSphereEntity!.generateTextEntity(position: position, modelName: modelName)
+                let sphereEntity = self.generateTextSphereEntity!.generateSphereEntity(position: position, modelName: modelName, textModelState: .add, modelHeight: modelHeight)
+
+                let textEntity = self.generateTextSphereEntity!.generateTextEntity(position: position, modelName: modelName, textModelState: .add, modelHeight: modelHeight)
 
                 anchorEntity.addChild(sphereEntity)
                 anchorEntity.addChild(textEntity)
@@ -269,16 +274,12 @@ class ARViewController: UIViewController, ARSessionDelegate {
             let position = wordModel.rayTracingResult.worldTransform.position
 
             // 같은 자리에 ?를 넣는다
-            let model = generateTextSphereEntity!.generateQuestionMark(position: position, modelName: wordModel.word)
+            let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: wordModel.word, textModelState: .questionMark, modelHeight: nil)
 
             // 그리고 기존의 anchor에 추가
             arView.scene.findEntity(named: "\(wordModel.word)_anchor")?.addChild(model)
 
         }
-    }
-
-    func changeModelTextToQuestionMark() {
-
     }
 
 
@@ -384,7 +385,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
 
         // 다시 만든다
-        let model = generateTextSphereEntity!.generateExistTextEntityWithMaterial(position: position, modelName: String(modelName))
+        let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: String(modelName), textModelState: .selected, modelHeight: nil)
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
@@ -406,7 +407,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         arView.scene.findEntity(named: "\(modelName)_text")?.removeFromParent(preservingWorldTransform: true)
 
         // 다시 만든다
-        let model = generateTextSphereEntity!.generateExistTextEntity(position: position, modelName: String(modelName))
+        let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: String(modelName), textModelState: .finished, modelHeight: nil)
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
