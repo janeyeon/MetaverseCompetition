@@ -26,11 +26,11 @@ extension TestStateView {
 
         let container: DIContainer
         private var cancelBag = CancelBag()
-
+        var appState: Store<AppState>
 
         init(container: DIContainer) {
             self.container = container
-            let appState = container.appState
+            appState = container.appState
 
             _testState = .init(initialValue: appState.value.testAppState.testState)
 
@@ -107,6 +107,7 @@ extension TestStateView {
             container.services.drawingViewService.setisTranscriptionFinished(to: value)
         }
 
+
     }
 }
 
@@ -140,9 +141,9 @@ struct TestStateView: View {
             }
 
 //            // 최종 popup view를 표시하는 화면
-//            if viewModel.isMemorizedFinishedCount == viewModel.wordModels.count && !viewModel.isTranscriptionFinished {
-//                finalPopupView
-//            }
+            if viewModel.isMemorizedFinishedCount == viewModel.wordModels.count && !viewModel.isTranscriptionFinished {
+                finalPopupView
+            }
         }
     }
 
@@ -153,6 +154,7 @@ struct TestStateView: View {
         }, cancelAction: {
             //MARK: 다시 초기화해서 처음으로 돌아가기
             print("finish!")
+
         }, confirmText: "다시 처음으로 돌아가기", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
             VStack(alignment: .center, spacing: 20) {
                 Text("오늘 yeon친구와 함께 배운 단어는")
@@ -199,14 +201,17 @@ struct TestStateView: View {
 
                     }, cancelAction: {
                         viewModel.settranscriptionPopupView(to: false)
-                    }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, partyBackground: true, content: {
+                    }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 700, partyBackground: true, content: {
                         VStack(alignment: .center, spacing: 20) {
                             Text("잘했어요!!")
                                 .font(.system(size: 50, weight: .heavy))
                             Text("정답:")
                             Text(viewModel.selectedModelForTest!.word)
-                                .font(.system(size: 100, weight: .heavy))
+                                .font(.system(size: min(CGFloat(900 / viewModel.selectedModelForTest!.word.count), CGFloat(100)), weight: .heavy))
                                 .foregroundColor(Color.inside.primaryColor)
+                            Text("이렇게만 한다면 금방 외우겠는걸요?")
+                                .padding(.top, 20)
+                            Text("계속 단어를 외워볼까요?")
                         }
                         .font(.popupTextSize)
                         .foregroundColor(Color.white)
@@ -225,16 +230,19 @@ struct TestStateView: View {
                     viewModel.settranscriptionPopupView(to: false)
                 }, cancelAction: {
                     viewModel.settranscriptionPopupView(to: false)
-                }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
+                }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 700, content: {
                     VStack(alignment: .center, spacing: 20) {
                         Text("정답:")
                         Text(viewModel.selectedModelForTest!.word)
-                            .font(.system(size: 100, weight: .heavy))
+                            .font(.system(size: min(CGFloat(900 / viewModel.selectedModelForTest!.word.count), CGFloat(100)), weight: .heavy))
                             .foregroundColor(Color.inside.primaryColor)
                         Text("내가 쓴 답:")
                         Text(viewModel.transcriptionResult)
-                            .font(.system(size: 100, weight: .heavy))
+                            .font(.system(size: min(CGFloat(900 / viewModel.transcriptionResult.count), CGFloat(100)), weight: .heavy))
                             .foregroundColor(Color.inside.accentColor)
+                        Text("너무 아쉬워요..")
+                            .padding(.top, 20)
+                        Text("한번만 다시 도전해볼까요?")
                     }
                     .font(.popupTextSize)
                     .foregroundColor(Color.white)

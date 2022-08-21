@@ -175,7 +175,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
                         // 모든 text entity를 지우자
                         self.changeAllTextEntities()
-                    }
+                    } 
                 })
         )
 
@@ -309,6 +309,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
             handlePracticeState(tapLocation: tapLocation, result: result)
         case .testState:
             handleTestState(tapLocation: tapLocation, result: result)
+        default:
+            print("hello")
         }
 
     }

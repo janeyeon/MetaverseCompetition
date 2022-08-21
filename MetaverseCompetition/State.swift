@@ -9,7 +9,7 @@
 import Foundation
 
 enum MainViewState: Equatable {
-    case addModelState, practiceState, testState 
+    case addModelState, practiceState, testState
 }
 
 enum AddModelState: Equatable {
@@ -30,5 +30,5 @@ enum TextModelState: Equatable {
     case questionMark // ?로 바꿀떄 -> 빨간색
     case finished // 학습, 외우기가 완료되었을 때 -> 파란색
     case selected // 선택되었을때 -> custom mateiral
-    case justReturn // 선택 되고 다시 돌아올때 
+    case justReturn // 선택 되고 다시 돌아올때
 }

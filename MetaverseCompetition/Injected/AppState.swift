@@ -19,6 +19,8 @@ struct AppState {
     var studyAppState = StudyAppState()
     var testAppState = TestAppState()
 
+    
+
     struct AddModelAppState: Equatable {
         var modelConfirmedForPlacement: String?
         var addModelState: AddModelState = .home

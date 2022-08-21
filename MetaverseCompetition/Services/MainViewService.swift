@@ -93,7 +93,6 @@ final class RealMainViewService: MainViewService {
     }
 
 
-
     func isMemorizedFinished(word: String) {
         // 선택한 모델의 isRight을 바꿔줌
         appState.value.mainViewAppState.selectedModelForTest?.isRight = true

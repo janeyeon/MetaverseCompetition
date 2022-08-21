@@ -362,21 +362,29 @@ struct AddModelStateView: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 30) {
                     ForEach(ViewModel.possibleImportedModel, id: \.self) { name in
-                        Button {
+                        FeatureButton {
                             print("press button named: \(name)")
 
                             viewModel.selectedModel = name
                             // placement
                             viewModel.isPlacementEnabled = true
                         } label: {
-                            Image(uiImage: UIImage(named: name)!)
-                                .resizable()
-                                .frame(height: 80)
-                                .aspectRatio(1/1, contentMode: .fit)
-                                .background(.white)
-                                .cornerRadius(12)
+                            VStack {
+                                Image(uiImage: UIImage(named: name)!)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .background(.white)
+                                    .cornerRadius(12)
+                                Text(name)
+                                    .font(.defaultTextSize)
+                                    .foregroundColor(Color.white)
+                            }
+                            .frame(height: 100)
+
+//                            .aspectRatio(1/1, contentMode: .fit)
+
+
                         }
-                        .buttonStyle(.plain)
 
                     }
                 }

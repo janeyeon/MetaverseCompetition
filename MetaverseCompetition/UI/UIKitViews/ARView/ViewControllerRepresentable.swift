@@ -136,6 +136,8 @@ extension MyARViewControllerRepresentable {
             container.services.addModelService.setCapturedImage(capturedImage: capturedImage)
         }
 
+    
+
 
 
         func addAnimation(anchorEntity: AnchorEntity) {

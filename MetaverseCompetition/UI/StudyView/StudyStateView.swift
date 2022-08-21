@@ -78,6 +78,11 @@ extension StudyStateView {
             // 여기에서 초기화등 필요한 함수 진행
             container.services.mainViewService.changeMainViewState(to: .testState)
         }
+
+        /// 아예 모든 진행이 다 끝난 상태
+        func pressFinishButton() {
+            
+        }
     }
 }
 
@@ -91,14 +96,19 @@ struct StudyStateView: View {
 
             if viewModel.isHeartView {
                 HeartView()
+                    .onAppear {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            withAnimation(.easeOut) {
+                                viewModel.isHeartView = false
+                            }
+                        }
+                    }
             }
 
             // drawing view를 표시하는 화면
             if viewModel.selectedModelForStudy != nil {
                 studyView()
-                    .onAppear {
-                        viewModel.isHeartView = false
-                    }
+
             }
 
 

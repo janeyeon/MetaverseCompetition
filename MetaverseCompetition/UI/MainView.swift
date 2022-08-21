@@ -14,8 +14,10 @@ extension MainView {
         @Published var isSplashDone: Bool = true
         @Published var opacity: Double = 1.0
 
+
         let container: DIContainer
         private var cancelBag = CancelBag()
+
 
 
         init(container: DIContainer) {
@@ -53,7 +55,6 @@ extension MainView {
                 self.isSplashDone = true
             }
         }
-
     }
 }
 
@@ -81,8 +82,6 @@ struct MainView: View {
                     case .testState:
                         TestStateView(viewModel: .init(container: viewModel.container))
                     }
-
-//                    PartyView()
                 }
             } else {
                 // splash 화면 켜지기
