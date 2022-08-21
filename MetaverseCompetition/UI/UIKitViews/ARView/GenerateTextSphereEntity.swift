@@ -142,11 +142,14 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         case .selected:
             // 커스텀 텍스쳐
             textEntity = self.generateTextModel(text: modelName, color: UIColor.black, customMaterial: true)
+        case .justReturn:
+            // 선택되고 나서 그냥 돌아올때 
+            textEntity = self.generateTextModel(text: modelName, color: UIColor.yellow)
         }
 
         let raycastDistance = distance(realPosition, self.arView.cameraTransform.translation)
 
-        textEntity.scale = .one * raycastDistance * (realModelHeight != 0 ? 2.5 : 1)
+        textEntity.scale = .one * raycastDistance * (realModelHeight != 0 ? 3 : 1)
 
         if realModelHeight != 0 {
             // imported 모델일 경우

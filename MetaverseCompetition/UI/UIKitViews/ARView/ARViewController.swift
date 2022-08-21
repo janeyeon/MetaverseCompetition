@@ -133,7 +133,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 guard let selectedModel = selectedModel else { return }
 
                 // 여기에 모델이 선택되면 해야할 일을 명시해 준다
-                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+                self.returnTestModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
 
             }))
 
@@ -152,8 +152,8 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     self.viewModel!.setSelectedModelForStudyOldValue()
                 }
 
-                // 얘가 선택된거라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 다시 원래대로 돌려놔야함
-                self.returnModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+                // 얘가 선택된거라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 바꾸어준다
+                self.returnStudyModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
 
             }))
 
@@ -193,7 +193,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 }
 
                 // 얘가 선택된거라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 다시 원래대로 돌려놔야함
-                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+                self.returnTestModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
 
             }))
 
@@ -369,7 +369,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
     }
 
     /// 선택한 모델의 text의 texture를 바꾸는 함수
-    func changeModelTextTexture(rayCastResult: ARRaycastResult, modelName: String) {
+    func returnTestModelTextTexture(rayCastResult: ARRaycastResult, modelName: String) {
 
         let position = rayCastResult.worldTransform.position
 
@@ -383,18 +383,30 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // 기존의 text entity 지우고
         arView.scene.findEntity(named: "\(modelName)_text")?.removeFromParent(preservingWorldTransform: true)
 
+        // default는 그냥 return하는것
+        var textModelState: TextModelState = .justReturn
+
+        // 선택된 모델이 암기 완료 되었는가?
+        if let model = viewModel?.wordModels.filter({ $0.word == modelName }).first, model.isMemorizedFinished {
+            // 암기 성공
+            textModelState = .finished
+        }
 
         // 다시 만든다
-        let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: String(modelName), textModelState: .selected, modelHeight: nil)
+        let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: String(modelName), textModelState: textModelState, modelHeight: nil)
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
     }
 
     /// 선택한 모델의 text의 texture를 다시 되돌리는 함수
-    func returnModelTextTexture(rayCastResult: ARRaycastResult, modelName: String) {
+    /// 만약 학습 성공시에는 -> .finished
+    /// 학습 실패시에는 -> .justreturn
+    func returnStudyModelTextTexture(rayCastResult: ARRaycastResult, modelName: String) {
 
         let position = rayCastResult.worldTransform.position
+
+
 
         // 해당 text entity가 존재하는지 확인
         guard let _ = arView.scene.findEntity(named: "\(modelName)_text") else {
@@ -406,8 +418,17 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // 기존의 text entity 지우고
         arView.scene.findEntity(named: "\(modelName)_text")?.removeFromParent(preservingWorldTransform: true)
 
+        // default는 그냥 return하는것
+        var textModelState: TextModelState = .justReturn
+
+        // 선택된 모델이 학습 완료 되었는가?
+        if let model = viewModel?.wordModels.filter({ $0.word == modelName }).first, model.isStudyFinished {
+            // 학습 성공
+            textModelState = .finished
+        }
+
         // 다시 만든다
-        let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: String(modelName), textModelState: .finished, modelHeight: nil)
+        let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: String(modelName), textModelState: textModelState, modelHeight: nil)
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
