@@ -28,7 +28,12 @@ public struct SplashView: View {
                         .scaleEffect(CGFloat.random(in: 0.7...1.0))
                 }
             }
-            .zIndex(30)
+
+            // Logo Image
+            Image("vocAR")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 400)
         }
     }
 }
