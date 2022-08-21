@@ -44,7 +44,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
             .compactMap { modelName in modelName }
             .flatMap {
                 Publishers.Zip(
-                    Entity.loadModelAsync(named: $0, in: nil),
+                    Entity.loadAsync(named: $0, in: nil),
                     Just($0).setFailureType(to: Error.self)
                 )
             }
@@ -52,18 +52,20 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
                 guard let self = self else { return ("", AnchorEntity(), nil)}
 
-                let modelHeight = ((modelEntity.model?.mesh.bounds.max.y)! - (modelEntity.model?.mesh.bounds.min.y)!) / 100
+                let modelHeight = (modelEntity.visualBounds(relativeTo: nil).max.y - modelEntity.visualBounds(relativeTo: nil).min.y)
+
+                print("DEBUG: - modelHeight \(modelEntity.scale.y)")
+
 
                 // 이름인자를 안넣어줌 ㅋㅋ
                 modelEntity.name = "\(modelName)_model"
 
-//                var position = modelEntity.position
-//                position.y += modelHeight / 100
                 var position = modelEntity.position
 
                 let anchorEntity = AnchorEntity(plane: .any)
                 // model 넣어줌
-                anchorEntity.addChild(modelEntity.clone(recursive: true))
+                anchorEntity.addChild(modelEntity)
+
 
                 let sphereEntity = self.generateTextSphereEntity!.generateSphereEntity(position: position, modelName: modelName, textModelState: .add, modelHeight: modelHeight)
 
@@ -73,11 +75,11 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 anchorEntity.addChild(textEntity)
                 anchorEntity.name = "\(modelName)_anchor"
 
+
+
                 guard let result = self.arView.raycast(from: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2), allowing: .estimatedPlane, alignment: .any).first else {
                     return ("", AnchorEntity(), nil)
                 }
-
-
                 return (modelName, anchorEntity, result)
             }
             .receive(on: RunLoop.main)
@@ -93,6 +95,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
                 self.arView.scene.addAnchor(anchorEntity)
                 self.viewModel!.addNewWordModel(word: modelName, rayCastResult: rayCastResult!)
+
+                // add animation
+                self.addAnimation(anchorEntity: anchorEntity)
             }))
 
     // focus Entity를 생성하고 없애는 부분
@@ -110,19 +115,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
                 })
         )
-
-//        cancellableBag.append(viewModel.$selectedModelForStudy
-//            .receive(on: RunLoop.main)
-//            .sink(receiveValue: { [weak self] selectedModel in
-//
-//                guard let self = self else { return }
-//                // nil로 바뀌면 아무것도 하지마라
-//                guard let selectedModel = selectedModel else { return }
-//
-//                // 여기에 모델이 선택되면 해야할 일을 명시해 준다
-//                self.changeModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
-//
-//            }))
 
         cancellableBag.append( viewModel.$selectedModelForStudy
             .receive(on: RunLoop.main)
@@ -247,6 +239,26 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // Add tap gesture
         let tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         arView.addGestureRecognizer(tapRecognizer)
+
+
+    }
+
+    func addAnimation(anchorEntity: AnchorEntity) {
+        // animation 추가
+            // imported model에 animation 넣어주기
+//            arView.scene.subscribe(to: SceneEvents.DidAddEntity.self) { _ in
+//                if anchorEntity.isActive {
+                    for entity in anchorEntity.children {
+                        print("DEBUG: -  anchorEntity.children  \(entity.name)")
+                        print("DEBUG: -  anchorEntity.children's animations  \(entity.availableAnimations.map { $0.name })")
+                        for animation in entity.availableAnimations {
+                            print("DEBUG: - animation \(animation.name)")
+                            entity.playAnimation(animation.repeat())
+                        }
+                    }
+//                }
+//            }.store(in: &cancellableBag)
+
     }
 
 
@@ -413,8 +425,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
             return
         }
 
-        print("DEBUG: - raycast position : \(position)")
-
+//
         // 기존의 text entity 지우고
         arView.scene.findEntity(named: "\(modelName)_text")?.removeFromParent(preservingWorldTransform: true)
 
@@ -432,6 +443,10 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
         // 그걸 기존의 anchor에 추가
         arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
+
+//        // texture바꾸기
+//        arView.scene.findEntity(named: "\(modelName)_text")?.parameters[OrbitAnimation.repeatingForever(OrbitAnimation())]
+////            .model!.materials[1] = SimpleMaterial(color: .blue, isMetallic: true)
     }
 
 

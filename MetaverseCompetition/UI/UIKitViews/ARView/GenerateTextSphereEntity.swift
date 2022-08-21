@@ -33,6 +33,7 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
         let font = MeshResource.Font.systemFont(ofSize: lineHeight)
         let textMesh = MeshResource.generateText(text, extrusionDepth: Float(lineHeight * 0.1), font: font)
 
+
         var model: ModelEntity
 
         if customMaterial {
@@ -55,6 +56,34 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
             model = ModelEntity(mesh: textMesh, materials: [textMaterial])
         }
 
+        // 설마 설마 animation이 되려나? 제발 돼라 이눔시키! 
+//        typealias SampledAnimationType = SampledAnimation<Float>
+//        let frameArray: [Float] = [1.0, 2.0, 3.0]
+//        let interval = TimeInterval(1.0)
+//        let sampleAnim = SampledAnimationType.init(
+//            frames: frameArray,
+//            name: "sampledAnim1",
+//            frameInterval: Float(interval),
+//            isAdditive: true,
+//            bindTarget: .transform,
+//            blendLayer: 100,
+//            repeatMode: .autoReverse,
+//            fillMode: .backwards,
+//            trimStart: 1.0,
+//            trimEnd: 10.0,
+//            trimDuration: 9.0,
+//            offset: 2.0,
+//            delay: 1.0,
+//            speed: 2.0)
+//
+//        do {
+//            let animResource = try AnimationResource.generate(with: sampleAnim)
+//            model.playAnimation(animResource)
+//
+//        } catch {
+//            print("fail to generate animation")
+//        }
+
         model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
         model.position.y += 0.015
         model.position.x += Float(text.count) * 0.005
@@ -65,20 +94,12 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
     ///  imported Model의 존재유무를 확인하여 크기를 return 한다
     func checkIfImportedModelExist(modelName: String) -> Float? {
 
-        guard let importedModel = arView.scene.findEntity(named: "\(modelName)_model") as? ModelEntity else {
+        guard let importedModel = arView.scene.findEntity(named: "\(modelName)_model") else {
             // 없다는 소리
             return nil
         }
 
-        guard let maxY = importedModel.model?.mesh.bounds.max.y else {
-            return nil
-        }
-
-        guard let minY = importedModel.model?.mesh.bounds.min.y else {
-            return nil
-        }
-
-        return (maxY - minY) / 100
+        return  (importedModel.visualBounds(relativeTo: nil).max.y - importedModel.visualBounds(relativeTo: nil).min.y)
     }
 
     func generateSphereEntity(position: SIMD3<Float>, modelName: String, textModelState: TextModelState, modelHeight: Float? = nil) -> ModelEntity {
