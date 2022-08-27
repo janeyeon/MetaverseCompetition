@@ -235,7 +235,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         arView.environment.sceneUnderstanding.options.insert(.physics)
 
         // Debug session
-        arView.debugOptions.insert(.showSceneUnderstanding)
+//        arView.debugOptions.insert(.showSceneUnderstanding)
 
         // Disable render options that are not required for this app
         arView.renderOptions = [

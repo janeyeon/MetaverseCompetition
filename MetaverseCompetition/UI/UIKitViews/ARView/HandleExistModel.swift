@@ -47,7 +47,7 @@ class RealClassification: Classification {
                     self?.imagePredictorHandler(predictions) { [self] in
                         // entity를 넣어주는 부분
 
-//                        // capturedImage넣어주기
+////                        // capturedImage넣어주기
 //                        self?.viewModel.setCapturedImage(capturedImage:  SelectedCapturedImage(capturedImage: resizedImage, position: position))
 
 
@@ -85,10 +85,10 @@ class RealClassification: Classification {
 //        let h = UIScreen.main.bounds.size.height / 3 * UIScreen.main.scale
 //        let w = UIScreen.main.bounds.size.width / 3 * UIScreen.main.scale
 
-        let maxWidth = UIScreen.main.bounds.width
-        let maxHeight = UIScreen.main.bounds.height
-        let rectWidth : CGFloat = 500
-        let rectHeight : CGFloat = 600
+        let maxWidth = UIScreen.main.bounds.width * UIScreen.main.scale
+        let maxHeight = UIScreen.main.bounds.height * UIScreen.main.scale
+        let rectWidth : CGFloat = 500 * UIScreen.main.scale
+        let rectHeight : CGFloat = 600 * UIScreen.main.scale
 
         let cgImage = uiImage.cgImage
 

@@ -137,6 +137,13 @@ struct AddModelStateView: View {
         if viewModel.isPopupView {
             popupView
         }
+
+//        if viewModel.capturedImage != nil {
+//            Image(uiImage: viewModel.capturedImage!.capturedImage)
+//                .resizable()
+//                .scaledToFit()
+//                .frame(width: 300)
+//        }
     }
 
     var popupView: some View {
