@@ -54,6 +54,9 @@ struct AppState {
 
         // text state에서 선택된 wordModel
         var selectedModelForTest: SelectedWordModel?
+
+        // 초기화 시킬때 사용하는 state
+        var resetState: ResetState = .none
     }
 
     struct DrawingViewAppState: Equatable {

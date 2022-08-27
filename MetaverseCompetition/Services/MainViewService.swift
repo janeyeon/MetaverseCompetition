@@ -33,6 +33,8 @@ protocol MainViewService {
 
     func increaseCount(word: String)
 
+    func changeResetState(to state: ResetState)
+
 }
 
 
@@ -113,6 +115,27 @@ final class RealMainViewService: MainViewService {
             if appState.value.mainViewAppState.wordModels[index].word == word {
                 appState.value.mainViewAppState.wordModels[index].isMemorizedFinished = true
             }
+
+        }
+    }
+
+    func changeResetState(to state: ResetState) {
+        switch state {
+        case .none:
+            // do nothing
+            print("DEBUG: change resetState")
+            appState.value.mainViewAppState.resetState = .none
+        case .testViewReset :
+            // testView에서 가장 마지막 단계에서 전체 초기화를 해주어야 할때
+            appState.value.mainViewAppState.resetState = .testViewReset
+
+            resetAllApp()
+        }
+    }
+
+    /// testView에서 가장 마지막 단계에서 전체 초기화를 해주어야 할때
+    private func resetAllApp() {
+        for variable in appState.value.addModelAppState {
 
         }
     }

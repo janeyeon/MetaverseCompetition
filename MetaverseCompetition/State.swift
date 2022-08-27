@@ -32,3 +32,10 @@ enum TextModelState: Equatable {
     case selected // 선택되었을때 -> custom mateiral
     case justReturn // 선택 되고 다시 돌아올때
 }
+
+/// 다시 초기화 시킬때 사용하는  state
+enum ResetState: Equatable {
+    case none // 아무것도 선택하지 않았을 때
+    case testViewReset // 가장 마지막 팝업에서 전체 초기화 진행할때
+//    case studyViewReset // 
+}
