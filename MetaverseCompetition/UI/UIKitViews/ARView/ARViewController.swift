@@ -194,8 +194,11 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     self.viewModel!.setSelectedModelForTestOldValue()
                 }
 
-                // 얘가 선택된거라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 다시 원래대로 돌려놔야함
-                self.returnTestModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+                // 얘가 선택된거라면 + wordModels의 isMemorizedFinished가 true라면 -> 기존의 모델이 nil로 바뀌었다는 소리 -> texture를 다시 원래대로 돌려놔야함
+                if viewModel.wordModels.filter { $0.word ==  selectedModel.word }.first!.isMemorizedFinished {
+                    self.returnTestModelTextTexture(rayCastResult: selectedModel.rayCastResult, modelName: selectedModel.word)
+                }
+
 
             }))
 
