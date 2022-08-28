@@ -133,8 +133,9 @@ struct StudyStateView: View {
         }, confirmText: "좋아요!", cancelText: "아직 아니요..", isCancelButtonExist: false, isXmarkExist: false, maxWidth: 450, content: {
             VStack(alignment: .center, spacing: 20) {
                 Text("모든 단어들을 다 외웠나요?")
-                Text("그럼 잘 외웠는지")
-                Text("다같이 확인해볼까요?")
+                Text("좋아요 버튼을 누르시면")
+                Text("3초후에 테스트가 시작됩니다!")
+                Text("빠르게 단어들을 맞춰주세요")
             }
             .font(.popupTextSize)
             .foregroundColor(Color.white)

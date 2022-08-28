@@ -11,7 +11,7 @@ import SwiftUI
 extension MainView {
     class ViewModel: ObservableObject {
         @Published var mainViewState: MainViewState
-        @Published var isSplashDone: Bool = false
+        @Published var isSplashDone: Bool = true
         @Published var opacity: Double = 1.0
 
 

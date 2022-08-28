@@ -20,6 +20,22 @@ extension TestStateView {
         @Published var capturedImage: UIImage
         @Published var isTranscriptionFinished: Bool
 
+        @Published var duration: String = "00:00"
+        let dateFormatter = DateFormatter()
+        var initialTime: Date?
+        @Published var countDownTimer: Int = 3
+        @Published var timerOpacity: Double = 1.0 {
+            didSet {
+                if timerOpacity == 1.0 {
+                    withAnimation(.easeIn(duration: 1.0)) {
+                        self.timerOpacity = 0
+                    }
+                }
+            }
+        }
+
+        var isInitialTimerFinished: Bool = true
+
         var isMemorizedFinishedCount: Int {
             return wordModels.filter { $0.isMemorizedFinished == true }.count
         }
@@ -31,6 +47,7 @@ extension TestStateView {
         init(container: DIContainer) {
             self.container = container
             appState = container.appState
+            dateFormatter.dateFormat = "mm:ss"
 
             _testState = .init(initialValue: appState.value.testAppState.testState)
 
@@ -73,6 +90,30 @@ extension TestStateView {
 
             }
         }
+
+
+        func increaseDuration() {
+            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+                self.duration = self.initialTime!.timeIntervalSinceNow.stringFromTimeInterval()
+            }
+        }
+
+        func callTimer() {
+        Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
+                if self.countDownTimer == 1 {
+                    self.isInitialTimerFinished = false
+                    // 끝나자마자 initialTime 세기 시작
+                    self.initialTime = Date()
+                    self.increaseDuration()
+                    // 그리고 timer를 멈춰준다
+                    timer.invalidate()
+                } else {
+                    self.countDownTimer -= 1
+                    self.timerOpacity = 1
+                }
+            }
+        }
+
 
         func changeTestState(to state: TestState) {
             container.services.testService.changeTestState(to: state)
@@ -140,10 +181,29 @@ struct TestStateView: View {
                 transcriptionPopupView
             }
 
-//            // 최종 popup view를 표시하는 화면
+            // 최종 popup view를 표시하는 화면
             if viewModel.isMemorizedFinishedCount == viewModel.wordModels.count && !viewModel.isTranscriptionFinished {
                 finalPopupView
             }
+
+            // timer view
+            if viewModel.isInitialTimerFinished {
+                timerView
+            }
+
+        }
+        .onAppear {
+            viewModel.callTimer()
+            viewModel.timerOpacity = 1
+        }
+    }
+
+    var timerView: some View {
+        VStack {
+            Text(String(viewModel.countDownTimer))
+                .font(.system(size: 250, weight: .heavy))
+                .foregroundColor(Color.white)
+                .opacity(viewModel.timerOpacity)
         }
     }
 
@@ -385,6 +445,14 @@ struct TestStateView: View {
                         .foregroundColor(Color.inside.primaryColor)
                 }
                 //MARK: 이 밑에 timer 심어두기
+                HStack {
+                    Image(systemName: "timer")
+                        .resizable()
+                        .frame(width: 32, height: 32)
+                        .foregroundColor(Color.white)
+                    Text(viewModel.duration)
+                        .foregroundColor(Color.inside.primaryColor)
+                }
             }
             .font(.statusTextSize)
             .foregroundColor(Color.white)

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		260A68BA28BA4A44008CD348 /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 260A68B928BA4A44008CD348 /* Timer.swift */; };
 		261836EB289CF90B005092A8 /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261836EA289CF90B005092A8 /* MainView.swift */; };
 		261836EF289CFC5C005092A8 /* ImagePredictor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 261836EE289CFC5C005092A8 /* ImagePredictor.swift */; };
 		261836F1289CFD98005092A8 /* MobileNetV2.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 261836F0289CFD98005092A8 /* MobileNetV2.mlmodel */; };
@@ -72,6 +73,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		260A68B928BA4A44008CD348 /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		261836EA289CF90B005092A8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		261836EE289CFC5C005092A8 /* ImagePredictor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePredictor.swift; sourceTree = "<group>"; };
 		261836F0289CFD98005092A8 /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
@@ -324,6 +326,7 @@
 			isa = PBXGroup;
 			children = (
 				261B369628B0BF0A00DDDD72 /* TestStateView.swift */,
+				260A68B928BA4A44008CD348 /* Timer.swift */,
 			);
 			path = TestView;
 			sourceTree = "<group>";
@@ -493,6 +496,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				260A68BA28BA4A44008CD348 /* Timer.swift in Sources */,
 				261B369B28B0F3DC00DDDD72 /* String.swift in Sources */,
 				26E340C628AFB097000B86C6 /* PopupView.swift in Sources */,
 				26E340A228AE2C44000B86C6 /* Store.swift in Sources */,
