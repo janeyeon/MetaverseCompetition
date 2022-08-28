@@ -93,8 +93,13 @@ extension TestStateView {
 
 
         func increaseDuration() {
-            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { timer in
                 self.duration = self.initialTime!.timeIntervalSinceNow.stringFromTimeInterval()
+
+                // 다 끝나면 timer 종료
+                if self.isMemorizedFinishedCount == self.wordModels.count && !self.isTranscriptionFinished {
+                    timer.invalidate()
+                }
             }
         }
 
@@ -235,7 +240,12 @@ struct TestStateView: View {
                         Text("총 외운단어: ")
                         Text("\(viewModel.wordModels.count)개")
                             .foregroundColor(Color.inside.primaryColor)
+                        Spacer()
+                        Text("걸린시간: ")
+                        Text("\(viewModel.duration)")
+                            .foregroundColor(Color.inside.primaryColor)
                     }
+                    .font(.system(size: 20))
                 }
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 20).foregroundColor(Color.inside.backgroundColor))
