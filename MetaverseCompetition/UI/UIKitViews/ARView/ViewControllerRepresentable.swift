@@ -34,6 +34,8 @@ extension MyARViewControllerRepresentable {
         @Published var selectedModelForTestOldValue: SelectedWordModel?
         @Published var wordModels: [WordModel]
         @Published var anchorEntities: [AnchorEntity]
+        @Published var modelConfirmentForCancel: String?
+
 
 
         let container: DIContainer
@@ -64,6 +66,8 @@ extension MyARViewControllerRepresentable {
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
 
             _anchorEntities = .init(initialValue: appState.value.testAppState.anchorEntities)
+
+            _modelConfirmentForCancel = .init(initialValue: appState.value.addModelAppState.modelConfirmentForCancel)
 
 
             cancelBag.collect{
@@ -104,6 +108,10 @@ extension MyARViewControllerRepresentable {
                 appState.map(\.testAppState.anchorEntities)
                     .removeDuplicates()
                     .weakAssign(to: \.anchorEntities, on: self)
+
+                appState.map(\.addModelAppState.modelConfirmentForCancel)
+                    .removeDuplicates()
+                    .weakAssign(to: \.modelConfirmentForCancel, on: self)
             }
         }
 
@@ -136,8 +144,17 @@ extension MyARViewControllerRepresentable {
             container.services.addModelService.setCapturedImage(capturedImage: capturedImage)
         }
 
-    
+        func setSelectedModelForCancel(selectedModel: String?) {
+            container.services.addModelService.setSelectedModelForCancel(selectedModel: selectedModel)
+        }
 
+        func finishedRemoveModel() {
+            container.services.addModelService.finishedRemoveModel()
+        }
+
+        func removeWordModel(word: String) {
+            container.services.mainViewService.removeWordModel(word: word)
+        }
 
 
         func addAnimation(anchorEntity: AnchorEntity) {

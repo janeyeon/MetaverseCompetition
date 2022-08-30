@@ -13,7 +13,7 @@ enum MainViewState: Equatable {
 }
 
 enum AddModelState: Equatable {
-    case home, handleExistingModel, handleImportedModel
+    case home, handleExistingModel, handleImportedModel, cancelModel
 }
 
 enum StudyState: Equatable {

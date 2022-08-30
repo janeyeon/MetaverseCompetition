@@ -22,6 +22,9 @@ extension AddModelStateView {
         @Published var isPopupView: Bool = false
         @Published var isClassificationPopupView: Bool = false
 
+        @Published var selectedModelForCancel: String?
+        @Published var modelConfirmentForCancel: String?
+
 
         let container: DIContainer
         private var cancelBag = CancelBag()
@@ -37,6 +40,10 @@ extension AddModelStateView {
             _wordModels = .init(initialValue: appState.value.mainViewAppState.wordModels)
 
             _capturedImage = .init(initialValue: appState.value.addModelAppState.capturedImage)
+
+            _modelConfirmentForCancel = .init(initialValue: appState.value.addModelAppState.modelConfirmentForCancel)
+
+            _selectedModelForCancel = .init(initialValue: appState.value.addModelAppState.selectedModelForCancel)
 
             cancelBag.collect{
 
@@ -56,6 +63,14 @@ extension AddModelStateView {
                 appState.map(\.addModelAppState.capturedImage)
                     .removeDuplicates()
                     .weakAssign(to: \.capturedImage, on: self)
+
+                appState.map(\.addModelAppState.modelConfirmentForCancel)
+                    .removeDuplicates()
+                    .weakAssign(to: \.modelConfirmentForCancel, on: self)
+
+                appState.map(\.addModelAppState.selectedModelForCancel)
+                    .removeDuplicates()
+                    .weakAssign(to: \.selectedModelForCancel, on: self)
 
             }
         }
@@ -111,6 +126,14 @@ extension AddModelStateView {
         func setisClassificationRight(to value: Bool) {
             container.services.addModelService.setisClassificationRight(to: value)
         }
+
+        func setModelConfirmentForCancel() {
+            container.services.addModelService.setModelConfirmentForCancel()
+        }
+
+        func setSelectedModelConfirmentForCancel(selectedModel: String?) {
+            container.services.addModelService.setSelectedModelForCancel(selectedModel: selectedModel)
+        }
     }
 }
 
@@ -133,10 +156,22 @@ struct AddModelStateView: View {
         if viewModel.addModelState == .home && viewModel.wordModels.count > 0 {
             nextStateButton
         }
+
+        // cancelView에서 주의문구 추가
+        if viewModel.addModelState == .cancelModel {
+            cancelWarning
+        }
+
         // popup view를 표시하는 화면
         if viewModel.isPopupView {
             popupView
         }
+
+        // 삭제하고자 하는 wordModel을 지울건지 확인하는 창
+        if viewModel.selectedModelForCancel != nil {
+            cancelPopupView
+        }
+
 
 //        if viewModel.capturedImage != nil {
 //            Image(uiImage: viewModel.capturedImage!.capturedImage)
@@ -144,6 +179,41 @@ struct AddModelStateView: View {
 //                .scaledToFit()
 //                .frame(width: 300)
 //        }
+    }
+
+    var cancelWarning: some View {
+        VStack(alignment: .center, spacing: .zero) {
+            Spacer()
+            Text(viewModel.wordModels.count == 0 ? "삭제할 단어가 없습니다. 단어를 추가한 후에 삭제를 진행해주세요" : "삭제할 단어를 선택해주세요")
+                .font(.defaultTextSize)
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 10).foregroundColor(Color.inside.darkerBackgroundColor))
+                .padding(.bottom, 270)
+        }
+    }
+
+    var cancelPopupView: some View {
+        PopupView(confirmAction: {
+            // 모델을 삭제하기
+            viewModel.setModelConfirmentForCancel()
+        }, cancelAction: {
+            // 대충 선택해놨던 모델을 nil로 바꿔놓기
+            viewModel.setSelectedModelConfirmentForCancel(selectedModel: nil)
+        }, confirmText: "삭제하기", cancelText: "돌아가기", isCancelButtonExist: true, isXmarkExist: false, maxWidth: 450, content: {
+            VStack(alignment: .center, spacing: 20) {
+                HStack(spacing: 0) {
+                    Text("\"\(viewModel.selectedModelForCancel ?? "아무거나")\"")
+                        .foregroundColor(Color.inside.primaryColor)
+                    Text("를")
+                }
+                Text("정말로 삭제하시겠습니까?")
+            }
+            .font(.popupTextSize)
+            .foregroundColor(Color.white)
+            .padding(.vertical, 60)
+            .padding(.top, 30)
+        })
+
     }
 
     var popupView: some View {
@@ -323,11 +393,7 @@ struct AddModelStateView: View {
                     FeatureButtonView(buttonLabel: "홈", buttonIcon: Image(systemName: "house.fill"), isSelected: viewModel.addModelState == .home)
                 }
 
-//                FeatureButton {
-//                    print("DEBUG: - press 다시하기 버튼 ")
-//                } label: {
-//                    FeatureButtonView(buttonLabel: "다시하기", buttonIcon: Image(systemName: "gobackward"), isSelected: false)
-//                }
+
 
                 FeatureButton {
                     print("DEBUG: - press 추가하기 버튼 ")
@@ -342,6 +408,13 @@ struct AddModelStateView: View {
                     viewModel.changeAddModelState(to: .handleExistingModel)
                 } label: {
                     FeatureButtonView(buttonLabel: "인식 하기", buttonIcon: Image(systemName: "eyes"), isSelected: viewModel.addModelState == .handleExistingModel)
+                }
+
+                FeatureButton {
+                    print("DEBUG: - press 삭제하기 버튼 ")
+                    viewModel.changeAddModelState(to: .cancelModel)
+                } label: {
+                FeatureButtonView(buttonLabel: "삭제하기", buttonIcon: Image(systemName: "xmark"), isSelected: viewModel.addModelState == .cancelModel)
                 }
                 Spacer()
             }

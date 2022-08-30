@@ -62,10 +62,9 @@ class ARViewController: UIViewController, ARSessionDelegate {
                     let ratio = standardSize / modelHeight
                     modelEntity.setScale(ratio * modelEntity.scale, relativeTo: nil)
 
-                    // 다시 model의 높이를 정해줘요 
+                    // 다시 model의 높이를 정해줘요
                     modelHeight = (modelEntity.visualBounds(relativeTo: nil).max.y - modelEntity.visualBounds(relativeTo: nil).min.y)
                 }
-
 
                 // 이름인자를 안넣어줌 ㅋㅋ
                 modelEntity.name = "\(modelName)_model"
@@ -213,6 +212,30 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
             }))
 
+        // 삭제할 모델이 확실하게 정해졌다면 삭제해주자
+        cancellableBag.append(viewModel.$modelConfirmentForCancel
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] selectedModel in
+
+                // 끝내기 전에 nil로 만들어주세유
+                defer {
+                    self?.viewModel!.finishedRemoveModel()
+                }
+
+                // nil이면 넘어가유
+                guard let selectedModel = selectedModel else {
+                    return
+                }
+
+                // 삭제할 모델이 확실히 정해졌다면 삭제해주세요
+                // 자기 자신도 삭제
+                self?.arView.scene.findEntity(named: "\(selectedModel)_anchor")?.removeFromParent()
+
+                // wordModel도 삭제해줌
+                viewModel.removeWordModel(word: selectedModel)
+            })
+        )
+
     }
 
     required init?(coder: NSCoder) {
@@ -318,7 +341,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // MARK: - State별로 구분 중요
         switch viewModel!.mainViewState {
         case .addModelState:
-            handleAddModelState(position: position)
+            handleAddModelState(tapLocation: tapLocation, position: position)
         case .practiceState:
             handlePracticeState(tapLocation: tapLocation, result: result)
         case .testState:
@@ -352,7 +375,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
     }
 
     /// 있던 물체를 불러오거나 classification 진행하기
-    func handleAddModelState(position: SIMD3<Float>) {
+    func handleAddModelState(tapLocation: CGPoint, position: SIMD3<Float>) {
         switch viewModel!.addModelState {
         case .home:
             print("DEBUG: arViewState is none")
@@ -360,6 +383,16 @@ class ARViewController: UIViewController, ARSessionDelegate {
             self.classificationModel!.handleExistModel(position: position)
         case .handleImportedModel:
             print("DEBUG: arViewState is handleImportedModel")
+        case .cancelModel:
+            // 선택한 모델을 삭제하는 부분
+            // 모델을 선택하고
+            guard let selectedModelName = selectedModelName(tapLocation: tapLocation) else {
+                return
+            }
+
+            // 모델을 선택해준다
+            viewModel!.setSelectedModelForCancel(selectedModel: selectedModelName)
+
         }
     }
 

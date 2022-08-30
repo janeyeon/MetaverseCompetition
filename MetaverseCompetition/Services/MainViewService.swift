@@ -15,6 +15,8 @@ protocol MainViewService {
 
     func addNewWordModel(word: String, rayCastResult: ARRaycastResult)
 
+    func removeWordModel(word: String)
+
     // ------- for study state view --------
 
     func setSelectedModelForStudy(selectedModel: SelectedWordModel?)
@@ -45,6 +47,14 @@ final class RealMainViewService: MainViewService {
 
     func changeMainViewState(to state: MainViewState) {
         appState.value.mainViewAppState.mainViewState = state
+    }
+
+    func removeWordModel(word: String) {
+        for index in appState.value.mainViewAppState.wordModels.indices {
+            if appState.value.mainViewAppState.wordModels[index].word == word {
+                appState.value.mainViewAppState.wordModels.remove(at: index)
+            }
+        }
     }
 
     func setSelectedModelForStudy(selectedModel: SelectedWordModel?) {
