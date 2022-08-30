@@ -100,6 +100,15 @@ extension AddModelStateView {
             container.services.addModelService.changeAddModelState(to: state)
         }
 
+        func setModelConfirmentForClassification() {
+            container.services.addModelService.setModelConfirmentForClassification()
+        }
+
+        /// classification 선택 안했으면 nil로 바꿔놓기
+        func cancelClassification() {
+            container.services.addModelService.setCapturedImage(capturedImage: nil)
+        }
+
 
         func modelPlacementCancelButton() {
             container.services.addModelService.modelPlacementCancelButton()
@@ -173,12 +182,39 @@ struct AddModelStateView: View {
         }
 
 
-//        if viewModel.capturedImage != nil {
-//            Image(uiImage: viewModel.capturedImage!.capturedImage)
-//                .resizable()
-//                .scaledToFit()
-//                .frame(width: 300)
-//        }
+        if viewModel.capturedImage != nil {
+            classificationConfirmPopup
+        }
+    }
+
+    var classificationConfirmPopup: some View {
+        PopupView(confirmAction: {
+            // 해당하는 위치에 classification result 넣어주기
+            viewModel.setModelConfirmentForClassification()
+        }, cancelAction: {
+            // 대충 선택해놨던 모델을 nil로 바꿔놓기
+            viewModel.cancelClassification()
+        }, confirmText: "맞아요", cancelText: "아니요", isCancelButtonExist: true, isXmarkExist: false, maxWidth: 450, content: {
+            VStack(alignment: .center, spacing: 20) {
+                HStack(spacing: 0) {
+                    Text("이 물체가 ")
+                    Text("\(viewModel.capturedImage!.word)")
+                        .foregroundColor(Color.inside.primaryColor)
+                    Text("맞나요?")
+                }
+                Image(uiImage: viewModel.capturedImage!.capturedImage)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 300)
+
+                Text("맞아요를 누르시면 새로운 단어가 추가됩니다")
+                    .font(.system(size: 20, weight: .heavy))
+            }
+            .font(.popupTextSize)
+            .foregroundColor(Color.white)
+            .padding(.vertical, 60)
+            .padding(.top, 30)
+        })
     }
 
     var cancelWarning: some View {

@@ -49,5 +49,9 @@ struct SelectedWordModel: Equatable {
 /// classification을 위해 캡쳐한 이미지
 struct SelectedCapturedImage: Equatable {
     var capturedImage: UIImage
-    var position: SIMD3<Float>
+    var rayCastResult: ARRaycastResult
+    var word: String
+
+//    var position: SIMD3<Float>
+
 }

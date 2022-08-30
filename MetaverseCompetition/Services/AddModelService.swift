@@ -14,6 +14,8 @@ protocol AddModelService {
     func modelPlacementConfirmButton(selectedModel: String)
     func modelPlacementCancelButton()
     func setCapturedImage(capturedImage: SelectedCapturedImage?)
+    func setModelConfirmentForClassification()
+    func finishedClassification()
     func setisClassificationRight(to value: Bool)
     func setModelConfirmentForCancel()
     func finishedRemoveModel()
@@ -35,6 +37,16 @@ final class RealAddModelService: AddModelService {
         appState.value.addModelAppState.modelConfirmentForCancel = nil
     }
 
+    func setModelConfirmentForClassification() {
+        appState.value.addModelAppState.modelConfirmentForClassification = appState.value.addModelAppState.capturedImage
+
+        appState.value.addModelAppState.capturedImage = nil
+    }
+
+    func finishedClassification() {
+        appState.value.addModelAppState.modelConfirmentForClassification = nil
+    }
+
     func setModelConfirmentForCancel() {
         // 먼저 modelConfirmentForCancel를 설정해준다음
         appState.value.addModelAppState.modelConfirmentForCancel = appState.value.addModelAppState.selectedModelForCancel
@@ -42,7 +54,6 @@ final class RealAddModelService: AddModelService {
         // 얘를 초기화 해준다
         appState.value.addModelAppState.selectedModelForCancel = nil
 
-        print("DEBUG: - modelConfirmentForCancel \(appState.value.addModelAppState.modelConfirmentForCancel) ")
     }
 
     func setSelectedModelForCancel(selectedModel: String?) {

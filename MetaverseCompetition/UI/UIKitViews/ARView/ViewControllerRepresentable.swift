@@ -35,6 +35,7 @@ extension MyARViewControllerRepresentable {
         @Published var wordModels: [WordModel]
         @Published var anchorEntities: [AnchorEntity]
         @Published var modelConfirmentForCancel: String?
+        @Published var modelConfirmentForClassification: SelectedCapturedImage?
 
 
 
@@ -68,6 +69,10 @@ extension MyARViewControllerRepresentable {
             _anchorEntities = .init(initialValue: appState.value.testAppState.anchorEntities)
 
             _modelConfirmentForCancel = .init(initialValue: appState.value.addModelAppState.modelConfirmentForCancel)
+
+            _modelConfirmentForClassification = .init(initialValue: appState.value.addModelAppState.modelConfirmentForClassification)
+
+
 
 
             cancelBag.collect{
@@ -112,6 +117,10 @@ extension MyARViewControllerRepresentable {
                 appState.map(\.addModelAppState.modelConfirmentForCancel)
                     .removeDuplicates()
                     .weakAssign(to: \.modelConfirmentForCancel, on: self)
+
+                appState.map(\.addModelAppState.modelConfirmentForClassification)
+                    .removeDuplicates()
+                    .weakAssign(to: \.modelConfirmentForClassification, on: self)
             }
         }
 
@@ -127,10 +136,16 @@ extension MyARViewControllerRepresentable {
         func setSelectedModelForTestOldValue() {
             container.services.mainViewService.setSelectedModelForTestOldValue()
         }
+        
+
+        func finishedClassification() {
+            container.services.addModelService.finishedClassification()
+        }
 
         func setSelectedModelForTest(selectedModel: SelectedWordModel) {
             container.services.mainViewService.setSelectedModelForTest(selectedModel: selectedModel)
         }
+
 
         func addNewWordModel(word: String, rayCastResult: ARRaycastResult) {
             container.services.mainViewService.addNewWordModel(word: word, rayCastResult: rayCastResult)

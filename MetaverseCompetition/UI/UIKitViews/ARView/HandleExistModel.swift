@@ -11,7 +11,7 @@ import Vision
 import RealityKit
 
 protocol Classification {
-    func handleExistModel(position: SIMD3<Float>)
+    func handleExistModel(result: ARRaycastResult)
 }
 
 class RealClassification: Classification {
@@ -31,11 +31,11 @@ class RealClassification: Classification {
         self.viewModel = viewModel
     }
 
-    func handleExistModel(position: SIMD3<Float>) {
-        self.classifyImage(position: position)
+    func handleExistModel(result: ARRaycastResult) {
+        self.classifyImage(result: result)
     }
 
-    private func classifyImage(position: SIMD3<Float>) {
+    private func classifyImage(result: ARRaycastResult) {
 
         // TODO: - snapshot시에 생성된 text model 들은 없애고 캡쳐하는 방법 있을까?
         self.arView.snapshot(saveToHDR: true) { image in
@@ -45,33 +45,9 @@ class RealClassification: Classification {
                 try self.imagePredictor.makePredictions(for: resizedImage) { [weak self] predictions in
                     // 반드시 mainview의 latestPrediction을 넣어주고 밑의 부분이 실행되어야 함
                     self?.imagePredictorHandler(predictions) { [self] in
-                        // entity를 넣어주는 부분
 
-////                        // capturedImage넣어주기
-//                        self?.viewModel.setCapturedImage(capturedImage:  SelectedCapturedImage(capturedImage: resizedImage, position: position))
-
-
-                        // 나중에 넣어서 엮어주기
-                        // TODO: - 나중에 이부분을 다른 model entity생성하는 부분과 합치기
-                        let anchorEntity = AnchorEntity(world: position)
-
-                        let sphereEntity = (self?.generateTextSphereEntity.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: self!.latestPrediction, textModelState: .add, modelHeight: nil))!
-
-                        let textEntity = (self?.generateTextSphereEntity.generateTextEntity(position: position, modelName: self!.latestPrediction, textModelState: .add, modelHeight: nil))!
-
-                        anchorEntity.addChild(sphereEntity)
-                        anchorEntity.addChild(textEntity)
-                        anchorEntity.name = "\(self!.latestPrediction)_anchor"
-
-                        guard let result = self?.arView.raycast(from: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2), allowing: .estimatedPlane, alignment: .any).first else {
-                            return
-                        }
-
-                        DispatchQueue.main.async {
-                            self?.arView.scene.addAnchor(anchorEntity)
-                            self?.viewModel.addNewWordModel(word: self!.latestPrediction, rayCastResult: result)
-                            self?.viewModel.addAnimation(anchorEntity: anchorEntity)
-                        }
+                        // capturedImage넣어주기
+                        self?.viewModel.setCapturedImage(capturedImage:  SelectedCapturedImage(capturedImage: resizedImage, rayCastResult: result, word: self!.latestPrediction))
                     }
                 }
             } catch {

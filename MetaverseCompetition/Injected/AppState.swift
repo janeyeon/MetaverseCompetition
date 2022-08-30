@@ -28,6 +28,7 @@ struct AppState {
         var selectedModelForCancel: String?
         var addModelState: AddModelState = .home
         var capturedImage: SelectedCapturedImage?
+        var modelConfirmentForClassification: SelectedCapturedImage?
         var isClassificationRight: Bool = false
     }
 
@@ -57,8 +58,6 @@ struct AppState {
 
         // text state에서 선택된 wordModel
         var selectedModelForTest: SelectedWordModel?
-
-
     }
 
     struct DrawingViewAppState: Equatable {

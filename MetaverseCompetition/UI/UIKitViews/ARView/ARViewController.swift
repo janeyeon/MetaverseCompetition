@@ -84,8 +84,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
                 anchorEntity.addChild(textEntity)
                 anchorEntity.name = "\(modelName)_anchor"
 
-
-
                 guard let result = self.arView.raycast(from: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2), allowing: .estimatedPlane, alignment: .any).first else {
                     return ("", AnchorEntity(), nil)
                 }
@@ -236,15 +234,46 @@ class ARViewController: UIViewController, ARSessionDelegate {
             })
         )
 
+        // classification 결과가 확실하게 되었다면 모델을 추가해주자
+        cancellableBag.append(viewModel
+            .$modelConfirmentForClassification
+            .receive(on: RunLoop.main)
+            .sink(receiveValue: { [weak self] selectedImageModel in
+                // 끝내고 modelConfirmentForClassification를 다시 nil로 바꾸어 준다
+                defer {
+                    self?.viewModel!.finishedClassification()
+                }
+
+                guard let selectedImageModel = selectedImageModel else {
+                    return
+                }
+                // 여기에서 확정된 모델을 생성해서 넣어준다
+                let position = selectedImageModel.rayCastResult.worldTransform.position
+
+               let anchorEntity = AnchorEntity(world: position)
+
+                let sphereEntity = (self?.generateTextSphereEntity!.generateSphereEntity(position: SIMD3<Float>(0, 0, 0), modelName: selectedImageModel.word, textModelState: .add, modelHeight: nil))!
+
+                let textEntity = (self?.generateTextSphereEntity!.generateTextEntity(position: position, modelName: selectedImageModel.word, textModelState: .add, modelHeight: nil))!
+
+               anchorEntity.addChild(sphereEntity)
+               anchorEntity.addChild(textEntity)
+                anchorEntity.name = "\(selectedImageModel.word)_anchor"
+
+//               guard let result = self?.arView.raycast(from: CGPoint(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2), allowing: .estimatedPlane, alignment: .any).first else {
+//                   return
+//               }
+
+               self?.arView.scene.addAnchor(anchorEntity)
+                self?.viewModel!.addNewWordModel(word: selectedImageModel.word, rayCastResult: selectedImageModel.rayCastResult)
+
+            }))
+
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) is not supported")
     }
-
-//    deinit {
-//        cancellableBag.map { $0.cancel() }
-//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -306,7 +335,6 @@ class ARViewController: UIViewController, ARSessionDelegate {
     func changeAllTextEntities() {
 
         // 우선 모든 단어 이름들을 가져온다
-//        let words = viewModel!.wordModels.map { $0.word }
         for wordModel in viewModel!.wordModels {
             // text entity를 지운다
             arView.scene.findEntity(named: "\(wordModel.word)_text")?.removeFromParent(preservingWorldTransform: true)
@@ -341,7 +369,7 @@ class ARViewController: UIViewController, ARSessionDelegate {
         // MARK: - State별로 구분 중요
         switch viewModel!.mainViewState {
         case .addModelState:
-            handleAddModelState(tapLocation: tapLocation, position: position)
+            handleAddModelState(tapLocation: tapLocation, result: result)
         case .practiceState:
             handlePracticeState(tapLocation: tapLocation, result: result)
         case .testState:
@@ -375,12 +403,12 @@ class ARViewController: UIViewController, ARSessionDelegate {
     }
 
     /// 있던 물체를 불러오거나 classification 진행하기
-    func handleAddModelState(tapLocation: CGPoint, position: SIMD3<Float>) {
+    func handleAddModelState(tapLocation: CGPoint, result: ARRaycastResult) {
         switch viewModel!.addModelState {
         case .home:
             print("DEBUG: arViewState is none")
         case .handleExistingModel:
-            self.classificationModel!.handleExistModel(position: position)
+            self.classificationModel!.handleExistModel(result: result)
         case .handleImportedModel:
             print("DEBUG: arViewState is handleImportedModel")
         case .cancelModel:
