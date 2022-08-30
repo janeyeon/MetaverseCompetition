@@ -148,7 +148,7 @@ extension TestStateView {
             container.services.mainViewService.setSelectedModelForTest(selectedModel: nil)
         }
 
-        /// transcirptionPopupView 의 값을 정해줌
+        /// transcirptionPopup이 닫혔을 때의 일을 정해줌
         func settranscriptionPopupView(to value: Bool) {
             container.services.drawingViewService.setisTranscriptionFinished(to: value)
         }
@@ -245,7 +245,7 @@ struct TestStateView: View {
                         Text("\(viewModel.duration)")
                             .foregroundColor(Color.inside.primaryColor)
                     }
-                    .font(.system(size: 20))
+                    
                 }
                 .padding()
                 .background(RoundedRectangle(cornerRadius: 20).foregroundColor(Color.inside.backgroundColor))
@@ -312,7 +312,7 @@ struct TestStateView: View {
                             .foregroundColor(Color.inside.primaryColor)
                         Text("내가 쓴 답:")
                         Text(viewModel.transcriptionResult)
-                            .font(.system(size: min(CGFloat(900 / viewModel.transcriptionResult.count), CGFloat(100)), weight: .heavy))
+                            .font(.system(size: min(CGFloat(900 / max(viewModel.transcriptionResult.count, 1)), CGFloat(100)), weight: .heavy))
                             .foregroundColor(Color.inside.accentColor)
                         Text("너무 아쉬워요..")
                             .padding(.top, 20)

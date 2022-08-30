@@ -666,7 +666,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "yeon.apple-samplecode.VisualizingSceneSemantics";
+				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition;
 				PRODUCT_NAME = "Scene Semantics";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -688,7 +688,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "yeon.apple-samplecode.VisualizingSceneSemantics";
+				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition;
 				PRODUCT_NAME = "Scene Semantics";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
