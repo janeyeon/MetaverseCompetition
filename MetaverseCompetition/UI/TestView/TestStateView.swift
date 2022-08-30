@@ -481,11 +481,11 @@ struct TestStateView: View {
                     FeatureButtonView(buttonLabel: "홈", buttonIcon: Image(systemName: "house.fill"), isSelected: viewModel.testState == .home)
                 }
 
-                FeatureButton {
-                    print("DEBUG: - press 다시하기 버튼 ")
-                } label: {
-                    FeatureButtonView(buttonLabel: "다시하기", buttonIcon: Image(systemName: "gobackward"), isSelected: false)
-                }
+//                FeatureButton {
+//                    print("DEBUG: - press 다시하기 버튼 ")
+//                } label: {
+//                    FeatureButtonView(buttonLabel: "다시하기", buttonIcon: Image(systemName: "gobackward"), isSelected: false)
+//                }
 
                 FeatureButton {
                     viewModel.changeTestState(to: .previousState)
