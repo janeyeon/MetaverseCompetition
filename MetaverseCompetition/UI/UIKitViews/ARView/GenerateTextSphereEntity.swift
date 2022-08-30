@@ -57,9 +57,9 @@ class RealGenerateTextSphereEntity : GenerateTextSphereEntity {
             model = ModelEntity(mesh: textMesh, materials: [textMaterial])
         }
 
-        model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
+//        model.position.x -= model.visualBounds(relativeTo: nil).extents.x / 2
         model.position.y += 0.015
-        model.position.x += Float(text.count) * 0.005
+        model.position.x -= Float(text.count) * 0.005
 
         return model
     }
