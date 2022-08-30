@@ -52,9 +52,19 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
                 guard let self = self else { return ("", AnchorEntity(), nil)}
 
-                let modelHeight = (modelEntity.visualBounds(relativeTo: nil).max.y - modelEntity.visualBounds(relativeTo: nil).min.y)
+                var modelHeight = (modelEntity.visualBounds(relativeTo: nil).max.y - modelEntity.visualBounds(relativeTo: nil).min.y)
 
-                print("DEBUG: - modelHeight \(modelEntity.scale.y)")
+                print("DEBUG: - modelScale \(modelEntity.scale)")
+
+//                // 너무 크기가 크면 사이즈를 줄여주세요
+                let standardSize: Float = 0.2
+                if modelHeight > standardSize {
+                    let ratio = standardSize / modelHeight
+                    modelEntity.setScale(ratio * modelEntity.scale, relativeTo: nil)
+
+                    // 다시 model의 높이를 정해줘요 
+                    modelHeight = (modelEntity.visualBounds(relativeTo: nil).max.y - modelEntity.visualBounds(relativeTo: nil).min.y)
+                }
 
 
                 // 이름인자를 안넣어줌 ㅋㅋ
