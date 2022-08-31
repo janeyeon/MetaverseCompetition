@@ -36,6 +36,7 @@ extension MyARViewControllerRepresentable {
         @Published var anchorEntities: [AnchorEntity]
         @Published var modelConfirmentForCancel: String?
         @Published var modelConfirmentForClassification: SelectedCapturedImage?
+        @Published var isMeshGridEnable: Bool
 
 
 
@@ -71,6 +72,8 @@ extension MyARViewControllerRepresentable {
             _modelConfirmentForCancel = .init(initialValue: appState.value.addModelAppState.modelConfirmentForCancel)
 
             _modelConfirmentForClassification = .init(initialValue: appState.value.addModelAppState.modelConfirmentForClassification)
+
+            _isMeshGridEnable = .init(initialValue: appState.value.mainViewAppState.isMeshGridEnable)
 
 
 
@@ -121,6 +124,10 @@ extension MyARViewControllerRepresentable {
                 appState.map(\.addModelAppState.modelConfirmentForClassification)
                     .removeDuplicates()
                     .weakAssign(to: \.modelConfirmentForClassification, on: self)
+
+                appState.map(\.mainViewAppState.isMeshGridEnable)
+                    .removeDuplicates()
+                    .weakAssign(to: \.isMeshGridEnable, on: self)
             }
         }
 

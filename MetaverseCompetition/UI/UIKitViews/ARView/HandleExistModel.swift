@@ -80,7 +80,11 @@ class RealClassification: Classification {
         }
 
         let formattedPrediction = formatPredictions(predictions)
-        let predictionString = formattedPrediction.first!
+        var predictionString = formattedPrediction.first!
+
+        if predictionString == "Granny Smith" {
+            predictionString = "Apple"
+        }
 
         // Update ui-related variable in main thread
         DispatchQueue.main.async {

@@ -24,6 +24,7 @@ extension AddModelStateView {
 
         @Published var selectedModelForCancel: String?
         @Published var modelConfirmentForCancel: String?
+        @Published var isMeshGrid: Bool = false
 
 
         let container: DIContainer
@@ -142,6 +143,11 @@ extension AddModelStateView {
 
         func setSelectedModelConfirmentForCancel(selectedModel: String?) {
             container.services.addModelService.setSelectedModelForCancel(selectedModel: selectedModel)
+        }
+
+        func setMeshGrid() {
+            isMeshGrid.toggle()
+            container.services.mainViewService.setMeshGridEnable(value: isMeshGrid)
         }
     }
 }
@@ -452,6 +458,15 @@ struct AddModelStateView: View {
                 } label: {
                 FeatureButtonView(buttonLabel: "삭제하기", buttonIcon: Image(systemName: "xmark"), isSelected: viewModel.addModelState == .cancelModel)
                 }
+
+                FeatureButton {
+                    print("DEBUG: - press mesh grid 버튼 ")
+                    // 부르기
+                    viewModel.setMeshGrid()
+                } label: {
+                FeatureButtonView(buttonLabel: "mesh 확인하기", buttonIcon: Image(systemName: "arkit"), isSelected: viewModel.isMeshGrid)
+                }
+
                 Spacer()
             }
             .padding()

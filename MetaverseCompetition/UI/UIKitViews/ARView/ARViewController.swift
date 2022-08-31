@@ -269,6 +269,25 @@ class ARViewController: UIViewController, ARSessionDelegate {
 
             }))
 
+        // mesh grid를 켤까 말까
+        cancellableBag.append(
+            viewModel.$isMeshGridEnable
+                .sink(receiveValue: { [weak self] isMeshGridEnable in
+                    guard let self = self else {
+                        return
+                    }
+                    // mesh grid 만들어주기
+                    if isMeshGridEnable {
+                        self.arView.debugOptions.insert(.showSceneUnderstanding)
+                    } else {
+                        // 만든거 없애기
+                        if self.arView.debugOptions.contains(.showSceneUnderstanding) {
+                            self.arView.debugOptions.remove(.showSceneUnderstanding)
+                        }
+                    }
+                })
+        )
+
     }
 
     required init?(coder: NSCoder) {

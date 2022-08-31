@@ -17,6 +17,8 @@ protocol MainViewService {
 
     func removeWordModel(word: String)
 
+    func setMeshGridEnable(value: Bool)
+
     // ------- for study state view --------
 
     func setSelectedModelForStudy(selectedModel: SelectedWordModel?)
@@ -47,6 +49,10 @@ final class RealMainViewService: MainViewService {
 
     func changeMainViewState(to state: MainViewState) {
         appState.value.mainViewAppState.mainViewState = state
+    }
+
+    func setMeshGridEnable(value: Bool) {
+        appState.value.mainViewAppState.isMeshGridEnable = value
     }
 
     func removeWordModel(word: String) {

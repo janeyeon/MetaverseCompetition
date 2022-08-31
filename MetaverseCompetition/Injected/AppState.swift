@@ -58,6 +58,9 @@ struct AppState {
 
         // text state에서 선택된 wordModel
         var selectedModelForTest: SelectedWordModel?
+
+        // mesh grid를 켤까 말까
+        var isMeshGridEnable: Bool = false
     }
 
     struct DrawingViewAppState: Equatable {
