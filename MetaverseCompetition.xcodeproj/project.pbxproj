@@ -75,7 +75,7 @@
 		261836EA289CF90B005092A8 /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		261836EE289CFC5C005092A8 /* ImagePredictor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePredictor.swift; sourceTree = "<group>"; };
 		261836F0289CFD98005092A8 /* MobileNetV2.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = MobileNetV2.mlmodel; sourceTree = "<group>"; };
-		261836F2289CFDBD005092A8 /* Scene Semantics.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Scene Semantics.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		261836F2289CFDBD005092A8 /* vocAR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = vocAR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		261836F3289CFE0C005092A8 /* CGImagePropertyOrientation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGImagePropertyOrientation.swift; sourceTree = "<group>"; };
 		261836F5289CFE2A005092A8 /* ConfidencePercentageString.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfidencePercentageString.swift; sourceTree = "<group>"; };
 		2618370A289E5AB4005092A8 /* robot.usdz */ = {isa = PBXFileReference; lastKnownFileType = file.usdz; path = robot.usdz; sourceTree = "<group>"; };
@@ -376,7 +376,7 @@
 				717F7FEE23F054DC00208378 /* README.md */,
 				E1635E1423D5BDFD0031A7D8 /* MetaverseCompetition */,
 				108BE83088A2EF0C2296E2EC /* LICENSE */,
-				261836F2289CFDBD005092A8 /* Scene Semantics.app */,
+				261836F2289CFDBD005092A8 /* vocAR.app */,
 			);
 			sourceTree = "<group>";
 		};
@@ -418,7 +418,7 @@
 				261B36AB28B1FEFE00DDDD72 /* LottieUI */,
 			);
 			productName = MeshingSample;
-			productReference = 261836F2289CFDBD005092A8 /* Scene Semantics.app */;
+			productReference = 261836F2289CFDBD005092A8 /* vocAR.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -661,13 +661,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 73QU843D5C;
 				INFOPLIST_FILE = "$(SRCROOT)/MetaverseCompetition/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = vocAR;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition;
-				PRODUCT_NAME = "Scene Semantics";
+				PRODUCT_NAME = vocAR;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
@@ -683,13 +684,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 73QU843D5C;
 				INFOPLIST_FILE = "$(SRCROOT)/MetaverseCompetition/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = vocAR;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition;
-				PRODUCT_NAME = "Scene Semantics";
+				PRODUCT_NAME = vocAR;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
 				SWIFT_VERSION = 5.0;
