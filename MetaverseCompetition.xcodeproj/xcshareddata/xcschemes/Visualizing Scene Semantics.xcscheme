@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E1635E1123D5BDFD0031A7D8"
-               BuildableName = "Scene Semantics.app"
+               BuildableName = "vocAR.app"
                BlueprintName = "MetaverseCompetition"
                ReferencedContainer = "container:MetaverseCompetition.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1635E1123D5BDFD0031A7D8"
-            BuildableName = "Scene Semantics.app"
+            BuildableName = "vocAR.app"
             BlueprintName = "MetaverseCompetition"
             ReferencedContainer = "container:MetaverseCompetition.xcodeproj">
          </BuildableReference>
@@ -62,7 +62,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E1635E1123D5BDFD0031A7D8"
-            BuildableName = "Scene Semantics.app"
+            BuildableName = "vocAR.app"
             BlueprintName = "MetaverseCompetition"
             ReferencedContainer = "container:MetaverseCompetition.xcodeproj">
          </BuildableReference>

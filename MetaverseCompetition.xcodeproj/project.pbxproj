@@ -667,7 +667,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition;
+				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition.enginnering;
 				PRODUCT_NAME = vocAR;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;
@@ -690,7 +690,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition;
+				PRODUCT_BUNDLE_IDENTIFIER = yeon.metaverseCompetition.enginnering;
 				PRODUCT_NAME = vocAR;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = iphoneos;

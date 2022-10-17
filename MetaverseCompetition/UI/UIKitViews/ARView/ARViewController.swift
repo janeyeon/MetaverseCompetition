@@ -525,18 +525,20 @@ class ARViewController: UIViewController, ARSessionDelegate {
         let model = generateTextSphereEntity!.generateTextEntity(position: position, modelName: String(modelName), textModelState: textModelState, modelHeight: nil)
 
         // 그걸 기존의 anchor에 추가
-        arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
-
-        let orbitAnim = OrbitAnimation(name: "orbit")
-        do {
-            let animResource = try AnimationResource.generate(with: orbitAnim)
-            DispatchQueue.main.async {
-                self.arView.scene.findEntity(named: "\(modelName)_coin")?.playAnimation(animResource)
-            }
-
-        } catch {
-            print("fail to generate animation")
+        DispatchQueue.main.async {
+            self.arView.scene.findEntity(named: "\(modelName)_anchor")?.addChild(model)
         }
+
+//        let orbitAnim = OrbitAnimation(name: "orbit")
+//        do {
+//            let animResource = try AnimationResource.generate(with: orbitAnim)
+//            DispatchQueue.main.async {
+//                self.arView.scene.findEntity(named: "\(modelName)_coin")?.playAnimation(animResource)
+//            }
+//
+//        } catch {
+//            print("fail to generate animation")
+//        }
 
 //        // texture바꾸기
 //        arView.scene.findEntity(named: "\(modelName)_text")?.parameters[OrbitAnimation.repeatingForever(OrbitAnimation())]
