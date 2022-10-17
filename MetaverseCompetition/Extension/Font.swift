@@ -10,5 +10,7 @@ import Foundation
 import SwiftUI
 
 extension Font {
-    static let defaultTextSize = Font.system(size: 16)
+    static let defaultTextSize = Font.system(size: 16, weight: .heavy)
+    static let statusTextSize = Font.system(size: 26)
+    static let popupTextSize = Font.system(size: 25, weight: .heavy)
 }

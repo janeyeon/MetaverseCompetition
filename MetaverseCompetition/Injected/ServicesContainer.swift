@@ -12,5 +12,7 @@ extension DIContainer {
         let addModelService: AddModelService
         let mainViewService: MainViewService
         let drawingViewService: DrawingViewService
+        let studyService: StudyService
+        let testService: TestService
     }
 }

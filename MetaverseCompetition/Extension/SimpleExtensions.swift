@@ -36,3 +36,16 @@ extension CGRect {
 
 
 
+extension TimeInterval{
+        func stringFromTimeInterval() -> String {
+
+            let time = -NSInteger(self)
+
+            let ms = -Int((self.truncatingRemainder(dividingBy: 1)) * 10)
+            let seconds = time % 60
+            let minutes = (time / 60) % 60
+
+            return String(format: "%02d:%02d:%01d",minutes,seconds,ms)
+
+        }
+    }

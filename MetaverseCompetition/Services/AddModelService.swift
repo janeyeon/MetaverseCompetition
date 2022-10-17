@@ -7,12 +7,21 @@
 //
 
 import Foundation
+import UIKit
 
 protocol AddModelService {
     func changeAddModelState(to state: AddModelState)
     func modelPlacementConfirmButton(selectedModel: String)
     func modelPlacementCancelButton()
+    func setCapturedImage(capturedImage: SelectedCapturedImage?)
+    func setModelConfirmentForClassification()
+    func finishedClassification()
+    func setisClassificationRight(to value: Bool)
+    func setModelConfirmentForCancel()
+    func finishedRemoveModel()
+    func setSelectedModelForCancel(selectedModel: String?)
 }
+
 
 
 final class RealAddModelService: AddModelService {
@@ -22,6 +31,34 @@ final class RealAddModelService: AddModelService {
       self.appState = appState
     }
 
+    /// 모델 삭제하기가 다 끝나고 해줘야할 일들을 명시
+    func finishedRemoveModel() {
+        // modelConfirmentForCancel를 없애준다
+        appState.value.addModelAppState.modelConfirmentForCancel = nil
+    }
+
+    func setModelConfirmentForClassification() {
+        appState.value.addModelAppState.modelConfirmentForClassification = appState.value.addModelAppState.capturedImage
+
+        appState.value.addModelAppState.capturedImage = nil
+    }
+
+    func finishedClassification() {
+        appState.value.addModelAppState.modelConfirmentForClassification = nil
+    }
+
+    func setModelConfirmentForCancel() {
+        // 먼저 modelConfirmentForCancel를 설정해준다음
+        appState.value.addModelAppState.modelConfirmentForCancel = appState.value.addModelAppState.selectedModelForCancel
+
+        // 얘를 초기화 해준다
+        appState.value.addModelAppState.selectedModelForCancel = nil
+
+    }
+
+    func setSelectedModelForCancel(selectedModel: String?) {
+        appState.value.addModelAppState.selectedModelForCancel = selectedModel
+    }
 
 
     func changeAddModelState(to state: AddModelState) {
@@ -34,5 +71,13 @@ final class RealAddModelService: AddModelService {
 
     func modelPlacementConfirmButton(selectedModel: String) {
         appState.value.addModelAppState.modelConfirmedForPlacement = selectedModel
+    }
+
+    func setCapturedImage(capturedImage: SelectedCapturedImage?) {
+        appState.value.addModelAppState.capturedImage = capturedImage
+    }
+
+    func setisClassificationRight(to value: Bool) {
+        appState.value.addModelAppState.isClassificationRight = value
     }
 }
